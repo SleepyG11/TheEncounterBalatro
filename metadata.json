@@ -1,0 +1,14 @@
+{
+	"id": "TheEncounter",
+	"name": "TheEncounter",
+	"display_name": "TheEncounter",
+	"author": ["SleepyG11", "N'"],
+	"description": "Choices, choices, choices...",
+	"prefix": "enc",
+	"main_file": "index.lua",
+	"priority": 0,
+	"badge_colour": "#f5e27a",
+	"badge_text_colour": "#ffffff",
+	"version": "0.1.0",
+	"conflicts": ["HotPot"]
+}
