@@ -61,3 +61,30 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	atlas = "enc_event_default",
 	pos = { x = 0, y = 0 },
 })
+
+TheEncounter.Scenario({
+	key = "nothing",
+	starting_step_key = "enc_nothing",
+	loc_txt = {
+		name = "Test scenario",
+		text = {
+			"Ha, text",
+		},
+	},
+	domains = {
+		enc_occurence = true,
+	},
+})
+TheEncounter.Scenario({
+	key = "nothing_2",
+	starting_step_key = "enc_nothing_2",
+	loc_txt = {
+		name = "Test scenario 2",
+		text = {
+			"Ha, text 2",
+		},
+	},
+	domains = {
+		enc_encounter = true,
+	},
+})

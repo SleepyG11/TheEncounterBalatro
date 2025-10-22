@@ -53,3 +53,27 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	atlas = "enc_event_default",
 	pos = { x = 0, y = 0 },
 })
+
+TheEncounter.Domain({
+	key = "occurence",
+	loc_txt = {
+		name = "Occurence",
+		text = {
+			"Regular events",
+		},
+	},
+
+	colour = HEX("AB00D6"),
+})
+
+TheEncounter.Domain({
+	key = "encounter",
+	loc_txt = {
+		name = "Encounter",
+		text = {
+			"Wanna fight?",
+		},
+	},
+
+	colour = HEX("B61744"),
+})

@@ -1,0 +1,25 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = '''if first_pass and not (_c.set == 'Edition') and badges then'''
+position = 'before'
+payload = '''
+if first_pass and card and card.enc_scenario then
+  local event = TheEncounter.Scenarios[card.enc_scenario]
+  local t = { key = card.enc_scenario, set = 'enc_Scenario' }
+  local res = {}
+  if event.collection_loc_vars and type(event.collection_loc_vars) == 'function' then
+    res = event:collection_loc_vars(info_queue) or {}
+    t.vars = res.vars or {}
+    t.key = res.key or t.key
+    t.set = res.set or t.set
+  end
+  info_queue[#info_queue+1] = t
+end
+'''
+match_indent = true
