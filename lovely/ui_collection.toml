@@ -23,3 +23,16 @@ if first_pass and card and card.enc_scenario then
 end
 '''
 match_indent = true
+
+# Add EventScenarios as a set to be localized here
+[[patches]]
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = '''if _c.set == 'Other' then
+        localize{type = 'other', key = _c.key, nodes = desc_nodes, vars = specific_vars or _c.vars}'''
+position = 'after'
+payload = '''
+elseif _c.set == 'enc_Scenario' then
+  localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars}
+'''
+match_indent = true
