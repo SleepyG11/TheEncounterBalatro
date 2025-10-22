@@ -25,21 +25,41 @@ local function collection_domains_list(e)
 				set = "enc_Domain",
 			})
 
-			object_tabs[#object_tabs + 1] = UIBox_button({
-				button = "your_collection_enc_event_domain",
-				label = { loc_name },
-				minw = 3,
-				colour = domain.colour,
-				text_colour = domain.text_colour,
-				ref_table = domain,
-			})
+			local button = {
+				n = G.UIT.R,
+				config = {
+					button = "your_collection_enc_event_domain",
+					minw = 3,
+					minh = 0.9,
+					colour = domain.colour,
+					ref_table = domain,
+					-- TODO: generate_card_ui with full info_queue somehow for button, no idea how to do it sorry
+					func = "enc_collection_domain_tooltip",
+					r = 0.1,
+					hover = true,
+					shadow = true,
+					padding = 0.25,
+					align = "cm",
+				},
+				nodes = {
+					{
+						n = G.UIT.T,
+						config = {
+							text = loc_name,
+							scale = 0.5,
+							colour = domain.text_colour,
+						},
+					},
+				},
+			}
+			object_tabs[#object_tabs + 1] = button
 		end
 	end
 	local custom_gameobject_rows = {}
 	if #object_tabs > 0 then
 		for _, gameobject_tabs in ipairs(object_tabs) do
 			table.insert(custom_gameobject_tabs[curr_col], gameobject_tabs)
-			curr_height = curr_height + gameobject_tabs.nodes[1].config.minh
+			curr_height = curr_height + gameobject_tabs.config.minh
 			if curr_height > 2 then
 				curr_height = 0
 				curr_col = curr_col + 1
@@ -91,14 +111,8 @@ local function collection_domain_events_list(e)
 			"Events are encountered after the Boss Blind shop",
 		},
 		modify_card = function(card, scenario)
-			local temp_blind = AnimatedSprite(
-				card.children.center.T.x,
-				card.children.center.T.y,
-				1.3,
-				1.3,
-				G.ANIMATION_ATLAS[scenario.atlas],
-				scenario.pos
-			)
+			local atlas, pos = scenario:get_atlas(domain)
+			local temp_blind = AnimatedSprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
 			temp_blind.states.click.can = false
 			temp_blind.states.drag.can = false
 			temp_blind.states.hover.can = true
@@ -120,12 +134,91 @@ local function collection_domain_events_list(e)
 				{ shader = "dissolve" },
 			})
 			temp_blind.float = true
+			card.enc_domain = domain.key
 			card.enc_scenario = scenario.key
 		end,
 	})
 end
 
 --
+
+G.FUNCS.enc_collection_domain_tooltip = function(e)
+	if e.enc_collection_domain_tooltip then
+		return
+	end
+	e.config.func = nil
+	e.enc_collection_domain_tooltip = true
+	local popup_hover = function(self)
+		local domain = e.config.ref_table
+		local t = { key = domain.key, set = "enc_Domain" }
+		local res = {}
+		if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
+			res = domain:collection_loc_vars({}) or {}
+			t.vars = res.vars or {}
+			t.key = res.key or t.key
+			t.set = res.set or t.set
+		end
+		local popup_content = {}
+		localize({
+			type = "descriptions",
+			set = t.set,
+			key = t.key,
+			nodes = popup_content,
+			vars = t.vars or {},
+		})
+		local desc_lines = {}
+		for _, line in ipairs(popup_content) do
+			table.insert(desc_lines, {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.01,
+				},
+				nodes = line,
+			})
+		end
+
+		self.config.h_popup_config = { align = "mt", offset = { x = 0, y = -0.1 }, major = e }
+		self.config.h_popup = {
+			n = G.UIT.ROOT,
+			config = { align = "cm", colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.C,
+					config = {
+						align = "cm",
+					},
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {
+								padding = 0.05,
+								r = 0.12,
+								colour = lighten(G.C.JOKER_GREY, 0.5),
+								emboss = 0.07,
+							},
+							nodes = {
+								{
+									n = G.UIT.R,
+									config = {
+										align = "cm",
+										padding = 0.07,
+										r = 0.1,
+										colour = adjust_alpha(darken(G.C.BLACK, 0.1), 0.8),
+									},
+									nodes = { desc_from_rows({ desc_lines }) },
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Node.hover(self)
+	end
+
+	e.hover = popup_hover
+end
 
 G.FUNCS.your_collection_enc_events = function(e)
 	G.SETTINGS.paused = true

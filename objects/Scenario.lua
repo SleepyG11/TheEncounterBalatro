@@ -45,7 +45,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	loc_vars = function(self)
 		return {}
 	end,
-	collection_loc_vars = function(self, info_queue)
+	collection_loc_vars = function(self, info_queue, domain)
 		return {}
 	end,
 
@@ -58,22 +58,28 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 
 	no_collection = false,
 
-	atlas = "enc_event_default",
-	pos = { x = 0, y = 0 },
+	get_atlas = function(self, domain)
+		local domain_atlas, domain_pos = domain:get_atlas()
+		local atlas = (self.atlas and G.ANIMATION_ATLAS[self.atlas]) or domain_atlas
+		return atlas, self.pos or domain_pos
+	end,
 })
 
 TheEncounter.Scenario({
 	key = "nothing",
 	starting_step_key = "enc_nothing",
 	loc_txt = {
-		name = "Test scenario",
+		name = "Test {C:attention}scenario{}",
 		text = {
-			"Ha, text",
+			"Ha, {C:attention}text{} x#1#",
 		},
 	},
 	domains = {
 		enc_occurence = true,
 	},
+	collection_loc_vars = function(self, info_queue)
+		return { vars = { "NEXT" } }
+	end,
 })
 TheEncounter.Scenario({
 	key = "nothing_2",

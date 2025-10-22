@@ -14,7 +14,7 @@ if first_pass and card and card.enc_scenario then
   local t = { key = card.enc_scenario, set = 'enc_Scenario' }
   local res = {}
   if event.collection_loc_vars and type(event.collection_loc_vars) == 'function' then
-    res = event:collection_loc_vars(info_queue) or {}
+    res = event:collection_loc_vars(info_queue, TheEncounter.Domains[card.enc_domain]) or {}
     t.vars = res.vars or {}
     t.key = res.key or t.key
     t.set = res.set or t.set
@@ -32,7 +32,7 @@ pattern = '''if _c.set == 'Other' then
         localize{type = 'other', key = _c.key, nodes = desc_nodes, vars = specific_vars or _c.vars}'''
 position = 'after'
 payload = '''
-elseif _c.set == 'enc_Scenario' then
+elseif _c.set == 'enc_Scenario' or _c.set == 'enc_Domain' then
   localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars}
 '''
 match_indent = true

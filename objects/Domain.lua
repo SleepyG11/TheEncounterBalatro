@@ -18,6 +18,8 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 		extra = {},
 	},
 
+	reward = 1,
+
 	-- main text colour
 	text_colour = G.C.UI.TEXT_LIGHT,
 	-- UI colour
@@ -52,6 +54,10 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 
 	atlas = "enc_event_default",
 	pos = { x = 0, y = 0 },
+
+	get_atlas = function(self)
+		return G.ANIMATION_ATLAS[self.atlas], self.pos
+	end,
 })
 
 TheEncounter.Domain({
@@ -69,7 +75,9 @@ TheEncounter.Domain({
 TheEncounter.Domain({
 	key = "encounter",
 	loc_txt = {
-		name = "Encounter",
+		name = {
+			"{C:attention}Encounter{} baby",
+		},
 		text = {
 			"Wanna fight?",
 		},
