@@ -1,0 +1,28 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# G.FUNCS.toggle_shop
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "G.STATE = G.STATES.BLIND_SELECT"
+position = 'after'
+payload = '''
+G.STATE = G.STATES.ENC_EVENT_SELECT
+'''
+match_indent = true
+
+# Game:update
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+position = 'before'
+pattern = '''if self.STATE == self.STATES.PLAY_TAROT then'''
+payload = '''
+if self.STATE == self.STATES.ENC_EVENT_SELECT then
+  self:update_enc_event_select(dt)
+end
+'''
+match_indent = true

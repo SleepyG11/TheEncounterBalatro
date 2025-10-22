@@ -1,5 +1,7 @@
 TheEncounter = setmetatable({
 	current_mod = SMODS.current_mod,
+
+	UI = {},
 }, {})
 
 SMODS.Atlas({
@@ -17,3 +19,6 @@ assert(SMODS.load_file("objects/Step.lua"))()
 assert(SMODS.load_file("objects/Scenario.lua"))()
 
 assert(SMODS.load_file("ui/collection.lua"))()
+assert(SMODS.load_file("ui/blind_select.lua"))()
+
+assert(SMODS.load_file("logic/blind_select.lua"))()

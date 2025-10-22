@@ -19,10 +19,20 @@ local function collection_domains_list(e)
 	local object_tabs = {}
 	for _, domain in ipairs(G.P_CENTER_POOLS.enc_Domain) do
 		if not domain.no_collection then
+			local t = { key = domain.key, set = "enc_Domain" }
+			local res = {}
+			if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
+				res = domain:collection_loc_vars({}) or {}
+				t.vars = res.vars or {}
+				t.key = res.key or t.key
+				t.set = res.set or t.set
+			end
 			local loc_name = localize({
-				type = "name_text",
-				key = domain.key,
-				set = "enc_Domain",
+				type = "name",
+				key = t.key,
+				set = t.set,
+				vars = t.vars or {},
+				no_spacing = true,
 			})
 
 			local button = {
@@ -43,12 +53,9 @@ local function collection_domains_list(e)
 				},
 				nodes = {
 					{
-						n = G.UIT.T,
-						config = {
-							text = loc_name,
-							scale = 0.5,
-							colour = domain.text_colour,
-						},
+						n = G.UIT.C,
+						config = { align = "cm" },
+						nodes = loc_name,
 					},
 				},
 			}
@@ -94,9 +101,9 @@ local function collection_domain_events_list(e)
 	local domain = e.config.ref_table
 	local pool = {}
 
-	for _, event in ipairs(G.P_CENTER_POOLS.enc_Scenario) do
-		if event.domains and event.domains[domain.key] then
-			pool[#pool + 1] = event
+	for _, scenario in ipairs(G.P_CENTER_POOLS.enc_Scenario) do
+		if not scenario.no_collection and scenario.domains and scenario.domains[domain.key] then
+			pool[#pool + 1] = scenario
 		end
 	end
 

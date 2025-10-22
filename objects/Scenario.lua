@@ -42,7 +42,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		return self.weight
 	end,
 
-	loc_vars = function(self)
+	loc_vars = function(self, info_queue, domain)
 		return {}
 	end,
 	collection_loc_vars = function(self, info_queue, domain)
@@ -69,17 +69,22 @@ TheEncounter.Scenario({
 	key = "nothing",
 	starting_step_key = "enc_nothing",
 	loc_txt = {
-		name = "Test {C:attention}scenario{}",
+		name = "Next {C:attention}scenario{}",
 		text = {
-			"Ha, {C:attention}text{} x#1#",
+			"Ha, {C:attention}text{}!",
 		},
 	},
 	domains = {
 		enc_occurence = true,
 	},
-	collection_loc_vars = function(self, info_queue)
+	loc_vars = function(self, info_queue, domain)
 		return { vars = { "NEXT" } }
 	end,
+	collection_loc_vars = function(self, info_queue, domain)
+		return { vars = { "NEXT" } }
+	end,
+
+	reward = "Unknown",
 })
 TheEncounter.Scenario({
 	key = "nothing_2",
@@ -87,9 +92,11 @@ TheEncounter.Scenario({
 	loc_txt = {
 		name = "Test scenario 2",
 		text = {
-			"Ha, text 2",
+			"Ha, {C:mult}text{} 2",
 		},
 	},
+	colour = HEX("FFFFFF"),
+	-- text_colour = HEX("000000"),
 	domains = {
 		enc_encounter = true,
 	},

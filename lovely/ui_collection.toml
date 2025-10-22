@@ -33,6 +33,6 @@ pattern = '''if _c.set == 'Other' then
 position = 'after'
 payload = '''
 elseif _c.set == 'enc_Scenario' or _c.set == 'enc_Domain' then
-  localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars}
+  localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars or {}}
 '''
 match_indent = true

@@ -63,20 +63,34 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 TheEncounter.Domain({
 	key = "occurence",
 	loc_txt = {
-		name = "Occurence",
+		name = "Occurrence",
 		text = {
 			"Regular events",
 		},
 	},
 
 	colour = HEX("AB00D6"),
+
+	reward = function(self)
+		return {
+			full_ui = {
+				n = G.UIT.T,
+				config = {
+					text = "Hai!",
+					scale = 0.25,
+					colour = G.C.MULT,
+				},
+			},
+		}
+	end,
 })
 
 TheEncounter.Domain({
 	key = "encounter",
 	loc_txt = {
 		name = {
-			"{C:attention}Encounter{} baby",
+			"Encounter",
+			"{C:mult}Really hard one{}",
 		},
 		text = {
 			"Wanna fight?",
@@ -84,4 +98,13 @@ TheEncounter.Domain({
 	},
 
 	colour = HEX("B61744"),
+
+	reward = function(self)
+		return {
+			value = 8,
+			colour = G.C.CHIPS,
+			scale = 0.75,
+			symbol = "&",
+		}
+	end,
 })
