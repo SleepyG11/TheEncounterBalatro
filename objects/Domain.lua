@@ -60,6 +60,14 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	end,
 })
 
+TheEncounter.Domain.resolve = function(domain)
+	if type(domain) == "string" then
+		return TheEncounter.Domains[domain]
+	else
+		return domain
+	end
+end
+
 TheEncounter.Domain({
 	key = "occurence",
 	loc_txt = {

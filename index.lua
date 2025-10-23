@@ -2,6 +2,7 @@ TheEncounter = setmetatable({
 	current_mod = SMODS.current_mod,
 
 	UI = {},
+	POOL = {},
 }, {})
 
 SMODS.Atlas({
@@ -13,6 +14,8 @@ SMODS.Atlas({
 	frames = 21,
 })
 
+assert(SMODS.load_file("utils/table.lua"))()
+
 assert(SMODS.load_file("objects/Choice.lua"))()
 assert(SMODS.load_file("objects/Domain.lua"))()
 assert(SMODS.load_file("objects/Step.lua"))()
@@ -22,3 +25,4 @@ assert(SMODS.load_file("ui/collection.lua"))()
 assert(SMODS.load_file("ui/blind_select.lua"))()
 
 assert(SMODS.load_file("logic/blind_select.lua"))()
+assert(SMODS.load_file("logic/pool.lua"))()

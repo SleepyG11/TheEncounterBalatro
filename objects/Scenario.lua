@@ -65,6 +65,14 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	end,
 })
 
+TheEncounter.Scenario.resolve = function(scenario)
+	if type(scenario) == "string" then
+		return TheEncounter.Scenarios[scenario]
+	else
+		return scenario
+	end
+end
+
 TheEncounter.Scenario({
 	key = "nothing",
 	starting_step_key = "enc_nothing",

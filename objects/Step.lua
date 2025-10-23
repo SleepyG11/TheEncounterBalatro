@@ -54,3 +54,11 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	end,
 	inject = function() end,
 })
+
+TheEncounter.Step.resolve = function(step)
+	if type(step) == "string" then
+		return TheEncounter.Steps[step]
+	else
+		return step
+	end
+end

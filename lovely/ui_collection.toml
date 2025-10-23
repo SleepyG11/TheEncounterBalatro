@@ -24,7 +24,6 @@ end
 '''
 match_indent = true
 
-# Add EventScenarios as a set to be localized here
 [[patches]]
 [patches.pattern]
 target = '''functions/common_events.lua'''
