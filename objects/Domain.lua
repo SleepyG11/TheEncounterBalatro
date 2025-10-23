@@ -71,7 +71,7 @@ end
 --------------
 
 TheEncounter.Domain({
-	key = "occurence",
+	key = "occurrence",
 	loc_txt = {
 		name = "Occurrence",
 		text = {

@@ -36,10 +36,10 @@ function Game:update_enc_event_select(dt)
 										domain_key = "enc_encounter",
 									},
 									{
-										domain_key = "enc_occurence",
+										domain_key = "enc_occurrence",
 									},
 									{
-										domain_key = "enc_occurence",
+										domain_key = "enc_occurrence",
 										scenario_key = "enc_nothing",
 									},
 								}),

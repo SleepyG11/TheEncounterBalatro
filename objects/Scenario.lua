@@ -34,7 +34,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	background_colour = nil,
 
 	can_repeat = false,
-	in_pool = function(self)
+	in_pool = function(self, domain)
 		return true
 	end,
 	weight = 5,
