@@ -26,6 +26,16 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 	inject = function() end,
 })
 
+TheEncounter.Choice.resolve = function(choice)
+	if type(choice) == "string" then
+		return TheEncounter.Choices[choice]
+	else
+		return choice
+	end
+end
+
+--------------
+
 TheEncounter.Choice({
 	key = "move_on",
 	loc_txt = {
@@ -35,11 +45,3 @@ TheEncounter.Choice({
 		},
 	},
 })
-
-TheEncounter.Choice.resolve = function(choice)
-	if type(choice) == "string" then
-		return TheEncounter.Choices[choice]
-	else
-		return choice
-	end
-end

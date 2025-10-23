@@ -73,39 +73,17 @@ TheEncounter.Scenario.resolve = function(scenario)
 	end
 end
 
-TheEncounter.Scenario({
-	key = "nothing",
-	starting_step_key = "enc_nothing",
-	loc_txt = {
-		name = "Next {C:attention}scenario{}",
-		text = {
-			"Ha, {C:attention}text{}!",
-		},
-	},
-	domains = {
-		enc_occurence = true,
-	},
-	loc_vars = function(self, info_queue, domain)
-		return { vars = { "NEXT" } }
-	end,
-	collection_loc_vars = function(self, info_queue, domain)
-		return { vars = { "NEXT" } }
-	end,
+--------------
 
-	reward = "Unknown",
-})
-TheEncounter.Scenario({
-	key = "nothing_2",
-	starting_step_key = "enc_nothing_2",
-	loc_txt = {
-		name = "Test scenario 2",
-		text = {
-			"Ha, {C:mult}text{} 2",
+for i = 1, 5 do
+	TheEncounter.Scenario({
+		key = "nothing_" .. i,
+		starting_step_key = "enc_nothing",
+		loc_txt = {
+			name = "Nothing " .. i,
+			text = {
+				"Nothing desc " .. i,
+			},
 		},
-	},
-	colour = HEX("FFFFFF"),
-	-- text_colour = HEX("000000"),
-	domains = {
-		enc_encounter = true,
-	},
-})
+	})
+end

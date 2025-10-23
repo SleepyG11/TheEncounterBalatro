@@ -36,7 +36,7 @@ TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 	end
 
 	-- Check is this domain in duplicate_list + bypass
-	if not (domain.allow_duplicates or args.allow_duplicates or pool_opts.allow_duplicates) then
+	if not (domain.ignore_unique or args.ignore_unique or pool_opts.ignore_unique) then
 		if duplicates_list[domain.key] then
 			return false, pool_opts
 		end
@@ -44,16 +44,16 @@ TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 
 	return true, pool_opts
 end
-TheEncounter.POOL.get_domains_pool = function(args)
+TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	args = args or {}
 	local options = args.options or TheEncounter.Domains
 	-- Make a blacklist dictionary
-	local duplicates_pool = TheEncounter.table.to_keys_dictionary(args.initial_pool or {})
+	local duplicates_pool = TheEncounter.table.to_keys_dictionary(duplicates_list or {})
 	local temp_pool = {}
 
 	local encounters_table = G.GAME.enc_encountered_domains or {}
 
-	for _, domain in ipairs(options) do
+	for _, domain in pairs(options) do
 		-- So, we check is domain is already present in initial_pool
 		-- Then, we add domain which passed a check to both result_pool and pool which we use for deduping
 		local in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
@@ -70,46 +70,42 @@ TheEncounter.POOL.get_domains_pool = function(args)
 	end
 
 	local result_pool = {}
-	local all = function()
+	local is_filled = false
+
+	-- Now we have list of domains in pool, now we're doing a loop like in vanilla for blinds
+	if not args.allow_duplicates then
+		-- Count minimal encounters amount
+		local min_value, max_value = math.huge, 0
+		for _, item in ipairs(temp_pool) do
+			if not (item.domain.allow_duplicates or item.opts.allow_duplicates) then
+				max_value = math.max(max_value, item.count)
+				min_value = math.min(min_value, item.count)
+			end
+		end
+
+		if max_value > min_value then
+			-- Add only which are less than minimal value
+			for _, item in ipairs(temp_pool) do
+				if item.domain.allow_duplicates or item.opts.allow_duplicates or item.count < max_value then
+					table.insert(result_pool, item.domain)
+				end
+			end
+			is_filled = true
+		end
+	end
+
+	if not is_filled then
 		for _, item in ipairs(temp_pool) do
 			table.insert(result_pool, item.domain)
 		end
 	end
 
-	-- Now we have list of domains in pool, now we're doing a loop like in vanilla for blinds
-	if not args.ignore_loop then
-		-- Count minimal encounters amount
-		local min_value = 0
-		for _, item in ipairs(temp_pool) do
-			if not (item.domain.ignore_loop or item.opts.ignore_loop) then
-				if item.count > min_value then
-					min_value = item.count
-				end
-			end
-		end
-
-		if min_value > 0 then
-			-- Add only which are less than minimal value
-			for _, item in ipairs(temp_pool) do
-				if not (item.domain.ignore_loop or item.opts.ignore_loop) then
-					if item.count < min_value then
-						table.insert(result_pool, item.domain)
-					end
-				end
-			end
-		else
-			all()
-		end
-	else
-		all()
-	end
-
 	return result_pool
 end
-TheEncounter.POOL.poll_domain = function(args)
+TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 	args = args or {}
 
-	local options = TheEncounter.POOL.get_domains_pool(args)
+	local options = TheEncounter.POOL.get_domains_pool(args, duplicates_list)
 
 	local pullable = {}
 	local total_weight = 0
@@ -132,6 +128,29 @@ TheEncounter.POOL.poll_domain = function(args)
 			return item.key
 		end
 	end
+end
 
-	return "enc_occurrence"
+function TheEncounter.POOL.poll_domains(amount, args, duplicates_list)
+	amount = amount or 0
+	args = args or {}
+	local result = {}
+	local duplicates_pool = TheEncounter.table.to_keys_dictionary(duplicates_list or {})
+	for i = 1, amount do
+		local domain_key = TheEncounter.POOL.poll_domain(args, duplicates_pool)
+		if domain_key then
+			table.insert(result, domain_key)
+			duplicates_pool[domain_key] = true
+			if args.increment_usage then
+				if not G.GAME.enc_encountered_domains then
+					G.GAME.enc_encountered_domains = {}
+				end
+				if not G.GAME.enc_encountered_domains[domain_key] then
+					G.GAME.enc_encountered_domains[domain_key] = 1
+				else
+					G.GAME.enc_encountered_domains[domain_key] = G.GAME.enc_encountered_domains[domain_key] + 1
+				end
+			end
+		end
+	end
+	return result
 end

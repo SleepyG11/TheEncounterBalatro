@@ -62,3 +62,5 @@ TheEncounter.Step.resolve = function(step)
 		return step
 	end
 end
+
+--------------

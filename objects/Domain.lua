@@ -68,6 +68,8 @@ TheEncounter.Domain.resolve = function(domain)
 	end
 end
 
+--------------
+
 TheEncounter.Domain({
 	key = "occurence",
 	loc_txt = {
@@ -79,40 +81,21 @@ TheEncounter.Domain({
 
 	colour = HEX("AB00D6"),
 
-	reward = function(self)
-		return {
-			full_ui = {
-				n = G.UIT.T,
-				config = {
-					text = "Hai!",
-					scale = 0.25,
-					colour = G.C.MULT,
-				},
+	reward = 1,
+})
+
+for i = 1, 10 do
+	TheEncounter.Domain({
+		key = "noth_" .. i,
+		loc_txt = {
+			name = "Noth " .. i,
+			text = {
+				"Domain " .. i,
 			},
-		}
-	end,
-})
-
-TheEncounter.Domain({
-	key = "encounter",
-	loc_txt = {
-		name = {
-			"Encounter",
-			"{C:mult}Really hard one{}",
 		},
-		text = {
-			"Wanna fight?",
-		},
-	},
 
-	colour = HEX("B61744"),
+		colour = HEX("AB00D6"),
 
-	reward = function(self)
-		return {
-			value = 8,
-			colour = G.C.CHIPS,
-			scale = 0.75,
-			symbol = "&",
-		}
-	end,
-})
+		reward = 1,
+	})
+end
