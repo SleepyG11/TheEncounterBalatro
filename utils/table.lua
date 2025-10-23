@@ -1,3 +1,5 @@
+TheEncounter.table = {}
+
 -- Checks is `t[v]` present, or is `v` present in array `t`
 function TheEncounter.table.contains_key(t, v)
 	if t == nil or v == nil or type(t) ~= "table" then

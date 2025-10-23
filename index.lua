@@ -2,7 +2,6 @@ TheEncounter = setmetatable({
 	current_mod = SMODS.current_mod,
 
 	UI = {},
-	POOL = {},
 }, {})
 
 SMODS.Atlas({

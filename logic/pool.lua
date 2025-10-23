@@ -1,3 +1,5 @@
+TheEncounter.POOL = {}
+
 TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 	args = args or {}
 	duplicates_list = duplicates_list or {}
