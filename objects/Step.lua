@@ -3,6 +3,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	obj_table = TheEncounter.Steps,
 	set = "enc_Step",
 	obj_buffer = {},
+	class_prefix = "st",
 	required_params = {
 		"key",
 	},

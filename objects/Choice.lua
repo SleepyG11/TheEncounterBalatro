@@ -3,6 +3,7 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 	obj_table = TheEncounter.Choices,
 	set = "enc_Choice",
 	obj_buffer = {},
+	class_prefix = "ch",
 	required_params = {
 		"key",
 	},

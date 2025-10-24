@@ -3,6 +3,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	obj_table = TheEncounter.Scenarios,
 	set = "enc_Scenario",
 	obj_buffer = {},
+	class_prefix = "sc",
 	required_params = {
 		"key",
 		"starting_step_key",
@@ -111,9 +112,9 @@ end
 for i = 1, 5 do
 	TheEncounter.Scenario({
 		key = "nothing_" .. i,
-		starting_step_key = "enc_nothing",
+		starting_step_key = "st_enc_nothing",
 		domains = {
-			["enc_occurrence"] = true,
+			["do_enc_occurrence"] = true,
 		},
 		loc_txt = {
 			name = "Nothing " .. i,

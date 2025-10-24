@@ -33,13 +33,13 @@ function Game:update_enc_event_select(dt)
 								config = { colour = G.C.CLEAR },
 								nodes = TheEncounter.UI.blind_choices({
 									{
-										domain_key = "enc_occurrence",
+										domain_key = "do_enc_occurrence",
 									},
 									{
-										domain_key = "enc_u_occurrence",
+										domain_key = "do_enc_u_occurrence",
 									},
 									{
-										domain_key = "enc_r_occurrence",
+										domain_key = "do_enc_r_occurrence",
 									},
 								}),
 							},

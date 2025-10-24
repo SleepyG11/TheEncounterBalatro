@@ -480,3 +480,15 @@ TheEncounter.POOL.poll_scenarios = function(domain, amount, args, duplicates_lis
 	end
 	return result
 end
+
+-- General pool
+TheEncounter.poll_choices = function(amount, args, duplicates_list)
+	local result = {}
+	local poll_result = TheEncounter.POOL.poll_domains(amount, args, duplicates_list)
+	for _, item in ipairs(poll_result) do
+		table.insert(result, {
+			domain_key = item,
+		})
+	end
+	return result
+end

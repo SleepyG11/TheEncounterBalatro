@@ -3,7 +3,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	obj_table = TheEncounter.Domains,
 	set = "enc_Domain",
 	obj_buffer = {},
-
+	class_prefix = "do",
 	required_params = {
 		"key",
 	},
