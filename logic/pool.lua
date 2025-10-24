@@ -1,5 +1,82 @@
 TheEncounter.POOL = {}
 
+local vanilla_rarities = {
+	[1] = "Common",
+	[2] = "Uncommon",
+	[3] = "Rare",
+	[4] = "Legendary",
+}
+local vanilla_reverse_rarities = {
+	["Common"] = 1,
+	["Uncommon"] = 2,
+	["Rare"] = 3,
+	["Legendary"] = 4,
+}
+
+-- Rarity pool
+TheEncounter.POOL.get_fallback_rarity = function()
+	return 1
+end
+
+TheEncounter.POOL.poll_rarity = function(args)
+	args = args or {}
+	local possible_rarities = {}
+
+	-- Collect all rarities
+	local all_domains = args.domains_in_pool or TheEncounter.Domains
+	for _, domain in pairs(all_domains) do
+		possible_rarities[vanilla_rarities[domain.rarity] or domain.rarity] = true
+	end
+
+	local available_rarities = {}
+	for key, rarity in pairs(SMODS.Rarities) do
+		table.insert(available_rarities, {
+			key = key,
+			weight = rarity.default_weight,
+		})
+	end
+	local filtered_rarities = {}
+
+	-- Calculate total rates of rarities
+	local total_weight = 0
+	for _, v in ipairs(available_rarities) do
+		if possible_rarities[v.key] then
+			v.mod = G.GAME["enc_" .. tostring(v.key):lower() .. "_mod"] or 1
+			-- Should this fully override the v.weight calcs?
+			if
+				SMODS.Rarities[v.key]
+				and SMODS.Rarities[v.key].get_weight
+				and type(SMODS.Rarities[v.key].get_weight) == "function"
+			then
+				v.weight = SMODS.Rarities[v.key]:get_weight(v.weight, SMODS.ObjectTypes["enc_Domain"])
+			end
+			v.weight = v.weight * v.mod
+			total_weight = total_weight + v.weight
+			table.insert(filtered_rarities, v)
+		end
+	end
+	-- recalculate rarities to account for v.mod
+	for _, v in ipairs(filtered_rarities) do
+		v.weight = v.weight / total_weight
+	end
+
+	-- GAMBLING!
+	local rarity_poll = pseudorandom(args.seed or ("enc_rarity" .. G.GAME.round_resets.ante))
+
+	-- Calculate selected rarity
+	local weight_i = 0
+	for _, v in ipairs(filtered_rarities) do
+		weight_i = weight_i + v.weight
+		if rarity_poll < weight_i then
+			return vanilla_reverse_rarities[v.key] or v.key
+		end
+	end
+	if args.will_fallback then
+		return TheEncounter.POOL.get_fallback_rarity(), true
+	end
+	return nil, true
+end
+
 -- Domains pool
 TheEncounter.POOL.get_fallback_domain = function()
 	return "enc_occurrence"
@@ -95,14 +172,34 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		end
 	end
 
-	local result_pool = {}
+	local rarity_pool = {}
+	-- Check is polled item in rarity poll
+	if args.ignore_everything or args.ignore_rarity then
+		rarity_pool = temp_pool
+	else
+		local items_in_pool = {}
+		for _, v in ipairs(temp_pool) do
+			table.insert(items_in_pool, v.value)
+		end
+		local rarity = TheEncounter.POOL.poll_rarity({
+			domains_in_pool = items_in_pool,
+			with_fallback = args.with_fallback,
+		})
+		for _, item in ipairs(temp_pool) do
+			if item.opts.ignore_rarity or (rarity and item.value.rarity == rarity) then
+				table.insert(rarity_pool, item)
+			end
+		end
+	end
+
 	local is_filled = false
+	local result_pool = {}
 
 	-- Now we have list of domains in pool, now we're doing a loop like in vanilla for blinds
 	if not args.allow_duplicates and not args.ignore_everything then
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
-		for _, item in ipairs(temp_pool) do
+		for _, item in ipairs(rarity_pool) do
 			if not (item.value.allow_duplicates or item.opts.allow_duplicates) then
 				max_value = math.max(max_value, item.count)
 				min_value = math.min(min_value, item.count)
@@ -111,7 +208,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 
 		if max_value > min_value then
 			-- Add only which are less than minimal value
-			for _, item in ipairs(temp_pool) do
+			for _, item in ipairs(rarity_pool) do
 				if item.value.allow_duplicates or item.opts.allow_duplicates or item.count < max_value then
 					table.insert(result_pool, item.value)
 				end
@@ -121,7 +218,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	end
 
 	if not is_filled then
-		for _, item in ipairs(temp_pool) do
+		for _, item in ipairs(rarity_pool) do
 			table.insert(result_pool, item.value)
 		end
 	end
@@ -150,7 +247,7 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 		return fallback, true
 	else
 		-- GAMBLING!
-		local domain_poll = pseudorandom(args.seed or "enc_domain")
+		local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
 
 		local weight_i = 0
 		for _, item in ipairs(pullable) do
@@ -352,7 +449,7 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 		return fallback, true
 	else
 		-- GAMBLING!
-		local scenario_poll = pseudorandom(args.seed or "enc_scenario")
+		local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
 
 		local weight_i = 0
 		for _, item in ipairs(pullable) do

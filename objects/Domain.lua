@@ -18,6 +18,8 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 		extra = {},
 	},
 
+	rarity = 1,
+
 	reward = 1,
 
 	-- main text colour
@@ -60,6 +62,10 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	end,
 })
 
+SMODS.ObjectType({
+	key = "enc_Domain",
+})
+
 TheEncounter.Domain.resolve = function(domain)
 	if type(domain) == "string" then
 		return TheEncounter.Domains[domain]
@@ -82,6 +88,37 @@ TheEncounter.Domain({
 	colour = HEX("AB00D6"),
 
 	reward = 1,
+	rarity = 1,
+})
+
+TheEncounter.Domain({
+	key = "u_occurrence",
+	loc_txt = {
+		name = "Uncommon Occurrence",
+		text = {
+			"Uncommon events",
+		},
+	},
+
+	colour = HEX("AB00D6"),
+
+	reward = 1,
+	rarity = 2,
+})
+
+TheEncounter.Domain({
+	key = "r_occurrence",
+	loc_txt = {
+		name = "Rare Occurrence",
+		text = {
+			"Rare events",
+		},
+	},
+
+	colour = HEX("AB00D6"),
+
+	reward = 1,
+	rarity = 3,
 })
 
 for i = 1, 10 do
