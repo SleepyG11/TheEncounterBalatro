@@ -63,6 +63,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		local atlas = (self.atlas and G.ANIMATION_ATLAS[self.atlas]) or domain_atlas
 		return atlas, self.pos or domain_pos
 	end,
+	set_badges = function(self, domain, badges) end,
 })
 
 TheEncounter.Scenario.resolve = function(scenario)
@@ -79,6 +80,9 @@ for i = 1, 5 do
 	TheEncounter.Scenario({
 		key = "nothing_" .. i,
 		starting_step_key = "enc_nothing",
+		domains = {
+			["enc_occurrence"] = true,
+		},
 		loc_txt = {
 			name = "Nothing " .. i,
 			text = {

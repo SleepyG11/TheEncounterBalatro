@@ -60,6 +60,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	get_atlas = function(self)
 		return G.ANIMATION_ATLAS[self.atlas], self.pos
 	end,
+	set_badges = function(self, badges) end,
 })
 
 SMODS.ObjectType({
@@ -85,7 +86,7 @@ TheEncounter.Domain({
 		},
 	},
 
-	colour = HEX("AB00D6"),
+	colour = HEX("0093ff"),
 
 	reward = 1,
 	rarity = 1,
@@ -100,7 +101,7 @@ TheEncounter.Domain({
 		},
 	},
 
-	colour = HEX("AB00D6"),
+	colour = HEX("35bd86"),
 
 	reward = 1,
 	rarity = 2,
@@ -115,7 +116,7 @@ TheEncounter.Domain({
 		},
 	},
 
-	colour = HEX("AB00D6"),
+	colour = HEX("F30808"),
 
 	reward = 1,
 	rarity = 3,

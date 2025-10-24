@@ -1,0 +1,20 @@
+TheEncounter.UI.get_badges = function(domain, scenario, args, badges)
+	domain = TheEncounter.Domain.resolve(domain)
+	scenario = TheEncounter.Scenario.resolve(scenario)
+	args = args or {}
+
+	badges = badges or {}
+	if scenario then
+		scenario:set_badges(domain, badges)
+	end
+	domain:set_badges(badges)
+	if not args.no_rarity then
+		badges[#badges + 1] =
+			create_badge(SMODS.Rarity:get_rarity_badge(domain.rarity), G.C.RARITY[domain.rarity], nil, 1.2)
+	end
+	if not args.no_mod then
+		SMODS.create_mod_badges(scenario or domain, badges)
+		badges.mod_set = nil
+	end
+	return badges
+end

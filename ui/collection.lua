@@ -185,6 +185,8 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 			})
 		end
 
+		local badges = TheEncounter.UI.get_badges(domain, nil)
+
 		self.config.h_popup_config = { align = "mt", offset = { x = 0, y = -0.1 }, major = e }
 		self.config.h_popup = {
 			n = G.UIT.ROOT,
@@ -213,7 +215,14 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 										r = 0.1,
 										colour = adjust_alpha(darken(G.C.BLACK, 0.1), 0.8),
 									},
-									nodes = { desc_from_rows({ desc_lines }) },
+									nodes = {
+										desc_from_rows({ desc_lines }),
+										{
+											n = G.UIT.R,
+											config = { align = "cm", padding = 0.03 },
+											nodes = badges,
+										},
+									},
 								},
 							},
 						},

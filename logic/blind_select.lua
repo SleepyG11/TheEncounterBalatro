@@ -33,14 +33,13 @@ function Game:update_enc_event_select(dt)
 								config = { colour = G.C.CLEAR },
 								nodes = TheEncounter.UI.blind_choices({
 									{
-										domain_key = "enc_encounter",
-									},
-									{
 										domain_key = "enc_occurrence",
 									},
 									{
-										domain_key = "enc_occurrence",
-										scenario_key = "enc_nothing",
+										domain_key = "enc_u_occurrence",
+									},
+									{
+										domain_key = "enc_r_occurrence",
 									},
 								}),
 							},
@@ -51,7 +50,7 @@ function Game:update_enc_event_select(dt)
 								bond = "Weak",
 							},
 						})
-						G.enc_event_blind_select.alignment.offset.y = 0.8
+						G.enc_event_blind_select.alignment.offset.y = 0
 							- (G.hand.T.y - G.jokers.T.y)
 							+ G.enc_event_blind_select.T.h
 						G.ROOM.jiggle = G.ROOM.jiggle + 3
@@ -64,4 +63,12 @@ function Game:update_enc_event_select(dt)
 			end,
 		}))
 	end
+end
+
+local old_draw = CardArea.draw
+function CardArea:draw(...)
+	if G.STATE == G.STATES.ENC_EVENT_SELECT and self == G.hand then
+		return
+	end
+	return old_draw(self, ...)
 end

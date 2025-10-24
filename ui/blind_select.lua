@@ -43,6 +43,7 @@ local function create_UIBox_choice(index, total, domain, scenario)
 		vars = t.vars or {},
 		no_spacing = true,
 		fixed_scale = 0.45 / 0.55,
+		maxw = 2.7,
 	})
 
 	local blind_text = {}
@@ -50,7 +51,7 @@ local function create_UIBox_choice(index, total, domain, scenario)
 	for _, line in ipairs(raw_blind_text) do
 		table.insert(blind_text, {
 			n = G.UIT.R,
-			config = { align = "cm", minh = 0.1 },
+			config = { align = "cm", minh = 0.1, maxw = 3 },
 			nodes = SMODS.localize_box(loc_parse_string(line), {
 				colour = text_col,
 				default_colour = text_col,
@@ -174,6 +175,8 @@ local function create_UIBox_choice(index, total, domain, scenario)
 		}
 	end
 
+	local badges = TheEncounter.UI.get_badges(domain, scenario)
+
 	-- Render
 	local t = {
 		n = G.UIT.R,
@@ -193,6 +196,7 @@ local function create_UIBox_choice(index, total, domain, scenario)
 					outline = 1,
 					outline_colour = mix_colours(G.C.BLACK, blind_col, 0.25),
 					minw = 3.3,
+					maxw = 3.3,
 				},
 				nodes = {
 					{
@@ -240,6 +244,8 @@ local function create_UIBox_choice(index, total, domain, scenario)
 									outline_colour = blind_col,
 									colour = darken(blind_col, 0.3),
 									minw = 2.9,
+									maxw = 2.9,
+									minh = 0.6,
 									emboss = 0.1,
 									padding = 0.07,
 									line_emboss = 1,
@@ -295,6 +301,11 @@ local function create_UIBox_choice(index, total, domain, scenario)
 											reward_render,
 										},
 									},
+									{
+										n = G.UIT.R,
+										config = { align = "cm", padding = 0.03 },
+										nodes = badges,
+									},
 								},
 							},
 						},
@@ -345,7 +356,13 @@ function TheEncounter.UI.blind_choices(choices)
 			)
 		)
 	end
-	return choice_nodes
+	return {
+		{
+			n = G.UIT.R,
+			config = { padding = 0.5 },
+			nodes = choice_nodes,
+		},
+	}
 end
 
 function G.FUNCS.enc_noop() end

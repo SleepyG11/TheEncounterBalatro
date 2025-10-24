@@ -3,6 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
+# Name
 [[patches]]
 [patches.pattern]
 target = '''functions/common_events.lua'''
@@ -24,6 +25,7 @@ end
 '''
 match_indent = true
 
+# Description
 [[patches]]
 [patches.pattern]
 target = '''functions/common_events.lua'''
@@ -33,5 +35,18 @@ position = 'after'
 payload = '''
 elseif _c.set == 'enc_Scenario' or _c.set == 'enc_Domain' then
   localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars or {}}
+'''
+match_indent = true
+
+# Badges
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''if AUT.badges then'''
+position = 'before'
+payload = '''
+if card.enc_scenario then
+    TheEncounter.UI.get_badges(card.enc_domain, card.enc_scenario, nil, badges)
+end
 '''
 match_indent = true
