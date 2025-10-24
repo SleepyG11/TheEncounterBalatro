@@ -13,6 +13,7 @@ function Game:update_enc_event_select(dt)
 	if not G.STATE_COMPLETE then
 		stop_use()
 		ease_background_colour_blind(G.STATES.BLIND_SELECT)
+		TheEncounter.poll_choices()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				save_run()
@@ -31,17 +32,7 @@ function Game:update_enc_event_select(dt)
 							definition = {
 								n = G.UIT.ROOT,
 								config = { colour = G.C.CLEAR },
-								nodes = TheEncounter.UI.blind_choices({
-									{
-										domain_key = "do_enc_occurrence",
-									},
-									{
-										domain_key = "do_enc_u_occurrence",
-									},
-									{
-										domain_key = "do_enc_r_occurrence",
-									},
-								}),
+								nodes = TheEncounter.UI.blind_choices(G.GAME.TheEncounter_choices),
 							},
 							config = {
 								align = "bmi",
@@ -67,7 +58,13 @@ end
 
 local old_draw = CardArea.draw
 function CardArea:draw(...)
-	if G.STATE == G.STATES.ENC_EVENT_SELECT and self == G.hand then
+	if
+		(
+			G.STATE == G.STATES.ENC_EVENT_SELECT
+			or G.TAROT_INTERRUPT == G.STATES.ENC_EVENT_SELECT
+			or G.PACK_INTERRUPT == G.STATES.ENC_EVENT_SELECT
+		) and self == G.hand
+	then
 		return
 	end
 	return old_draw(self, ...)

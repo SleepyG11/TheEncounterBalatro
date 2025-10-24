@@ -482,13 +482,32 @@ TheEncounter.POOL.poll_scenarios = function(domain, amount, args, duplicates_lis
 end
 
 -- General pool
-TheEncounter.poll_choices = function(amount, args, duplicates_list)
+TheEncounter.poll_choices = function()
+	G.GAME.TheEncounter_choices_amount = G.GAME.TheEncounter_choices_amount or 2
+	G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args or {
+		increment_usage = true,
+	}
+	G.GAME.TheEncounter_choices = G.GAME.TheEncounter_choices or {}
+
+	local duplicates_list = {}
+	for _, item in ipairs(G.GAME.TheEncounter_choices) do
+		if item.scenario_key then
+			duplicates_list[item.scenario_key] = true
+		end
+		duplicates_list[item.domain_key] = true
+	end
+
 	local result = {}
-	local poll_result = TheEncounter.POOL.poll_domains(amount, args, duplicates_list)
+	local poll_result = TheEncounter.POOL.poll_domains(
+		G.GAME.TheEncounter_choices_amount,
+		G.GAME.TheEncounter_choices_args,
+		duplicates_list
+	)
 	for _, item in ipairs(poll_result) do
 		table.insert(result, {
 			domain_key = item,
 		})
 	end
-	return result
+
+	G.GAME.TheEncounter_choices = result
 end
