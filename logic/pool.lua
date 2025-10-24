@@ -136,7 +136,8 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 	local pullable = {}
 	local total_weight = 0
 	for _, domain in ipairs(options) do
-		local weight = type(domain.get_weight) == "function" and domain:get_weight() or domain.weight or 5
+		local weight = type(domain.get_weight) == "function" and domain:get_weight(domain.default_weight or 5)
+			or (domain.default_weight or 5)
 		total_weight = total_weight + weight
 		table.insert(pullable, {
 			weight = weight,
@@ -336,7 +337,9 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 	local pullable = {}
 	local total_weight = 0
 	for _, scenario in ipairs(options) do
-		local weight = type(scenario.get_weight) == "function" and scenario:get_weight(domain) or scenario.weight or 1
+		local weight = type(scenario.get_weight) == "function"
+				and scenario:get_weight(scenario.default_weight or 5, domain)
+			or (scenario.default_weight or 5)
 		total_weight = total_weight + weight
 		table.insert(pullable, {
 			weight = weight,

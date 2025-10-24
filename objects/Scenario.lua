@@ -37,8 +37,8 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	in_pool = function(self, domain)
 		return true
 	end,
-	weight = 5,
-	get_weight = function(self, domain)
+	default_weight = 5,
+	get_weight = function(self, weight, domain)
 		return self.weight
 	end,
 
