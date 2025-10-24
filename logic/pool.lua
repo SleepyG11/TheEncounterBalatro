@@ -79,14 +79,17 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	for _, domain in pairs(options) do
 		-- So, we check is domain is already present in initial_pool
 		-- Then, we add domain which passed a check to both result_pool and pool which we use for deduping
-		local in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
+		local in_pool, pool_opts = args.ignore_everything, nil
+		if not in_pool then
+			in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
+		end
 		if in_pool then
 			local d = TheEncounter.Domain.resolve(domain)
 			duplicates_pool[d.key] = true
 			table.insert(temp_pool, {
 				key = d.key,
 				value = d,
-				opts = pool_opts,
+				opts = pool_opts or {},
 				count = encounters_table[d.key] or 0,
 			})
 		end
@@ -210,7 +213,7 @@ TheEncounter.POOL.is_scenario_in_pool = function(scenario, domain, args, duplica
 		return false
 	end
 
-	-- Execute domain:in_pool()
+	-- Execute scenario:in_pool()
 	local add, pool_opts = true, {}
 	if type(scenario.in_pool) == "function" then
 		add, pool_opts = scenario:in_pool(args, domain)
@@ -276,14 +279,17 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	for _, scenario in pairs(options) do
 		-- So, we check is scenario is already present in initial_pool
 		-- Then, we add scenario which passed a check to both result_pool and pool which we use for deduping
-		local in_pool, pool_opts = TheEncounter.POOL.is_scenario_in_pool(scenario, domain, args, duplicates_pool)
+		local in_pool, pool_opts = args.ignore_everything, nil
+		if not in_pool then
+			in_pool, pool_opts = TheEncounter.POOL.is_scenario_in_pool(scenario, domain, args, duplicates_pool)
+		end
 		if in_pool then
 			local s = TheEncounter.Scenario.resolve(scenario)
 			duplicates_pool[s.key] = true
 			table.insert(temp_pool, {
 				key = s.key,
 				value = s,
-				opts = pool_opts,
+				opts = pool_opts or {},
 				count = encounters_table[s.key] or 0,
 			})
 		end
@@ -293,7 +299,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	local is_filled = false
 
 	-- Now we have list of scenarios in pool, now we're doing a loop like in vanilla for blinds
-	if not args.allow_duplicates then
+	if not args.allow_duplicates and not args.ignore_everything then
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
 		for _, item in ipairs(temp_pool) do
