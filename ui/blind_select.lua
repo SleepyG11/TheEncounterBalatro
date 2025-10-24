@@ -175,7 +175,9 @@ local function create_UIBox_choice(index, total, domain, scenario)
 		}
 	end
 
-	local badges = TheEncounter.UI.get_badges(domain, scenario)
+	local badges = TheEncounter.UI.get_badges(domain, scenario, {
+		bypass_discovery_check = true,
+	})
 
 	-- Render
 	local t = {

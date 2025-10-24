@@ -12,7 +12,10 @@ TheEncounter.UI.get_badges = function(domain, scenario, args, badges)
 		badges[#badges + 1] =
 			create_badge(SMODS.Rarity:get_rarity_badge(domain.rarity), G.C.RARITY[domain.rarity], nil, 1.2)
 	end
-	if not args.no_mod then
+	if
+		not args.no_mod
+		or (scenario and (args.bypass_discovery_check or not scenario.discoverable or scenario.discovered))
+	then
 		SMODS.create_mod_badges(scenario or domain, badges)
 		badges.mod_set = nil
 	end

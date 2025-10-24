@@ -57,6 +57,9 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	end,
 
 	no_collection = false,
+	unlocked = true,
+	discoverable = true,
+	discovered = false,
 
 	get_atlas = function(self, domain)
 		local domain_atlas, domain_pos = domain:get_atlas()
@@ -72,6 +75,35 @@ TheEncounter.Scenario.resolve = function(scenario)
 	else
 		return scenario
 	end
+end
+
+--------------
+
+local set_profile_progress_ref = set_profile_progress
+function set_profile_progress(...)
+	local result = set_profile_progress_ref(...)
+	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
+		or {}
+	for key, scenario in pairs(TheEncounter.Scenarios) do
+		if scenario.discoverable and G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][key] then
+			scenario.discovered = true
+		end
+	end
+	return result
+end
+
+local old_unlock_all = G.FUNCS.unlock_all
+function G.FUNCS.unlock_all(...)
+	local result = old_unlock_all(...)
+	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
+		or {}
+	for key, scenario in pairs(TheEncounter.Scenarios) do
+		if scenario.discoverable then
+			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][key] = true
+			scenario.discovered = true
+		end
+	end
+	return result
 end
 
 --------------

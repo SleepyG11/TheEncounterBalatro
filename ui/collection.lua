@@ -118,13 +118,31 @@ local function collection_domain_events_list(e)
 			"Events are encountered after the Boss Blind shop",
 		},
 		modify_card = function(card, scenario)
-			local atlas, pos = scenario:get_atlas(domain)
-			local temp_blind = AnimatedSprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
-			temp_blind.states.click.can = false
-			temp_blind.states.drag.can = false
-			temp_blind.states.hover.can = true
-			card.children.center = temp_blind
-			temp_blind:set_role({ major = card, role_type = "Glued", draw_major = card })
+			-- TODO: make debug CTRL + 2 discover event properly
+			local set_sprite = function()
+				local atlas, pos
+				if not scenario.discoverable or scenario.discovered then
+					atlas, pos = scenario:get_atlas(domain)
+				else
+					atlas, pos = G.ANIMATION_ATLAS["blind_chips"], G.b_undiscovered.pos
+				end
+				card.children.center:remove()
+				local temp_blind =
+					AnimatedSprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
+				temp_blind.states.click.can = false
+				temp_blind.states.drag.can = false
+				temp_blind.states.hover.can = true
+				temp_blind:set_role({ major = card, role_type = "Glued", draw_major = card })
+				temp_blind:define_draw_steps({
+					{ shader = "dissolve", shadow_height = 0.05 },
+					{ shader = "dissolve" },
+				})
+				temp_blind.float = true
+				card.T.w = 1.3
+				card.T.h = 1.3
+				card.children.center = temp_blind
+			end
+
 			card.set_sprites = function(...)
 				local args = { ... }
 				if not args[1].animation then
@@ -133,16 +151,13 @@ local function collection_domain_events_list(e)
 				local c = card.children.center
 				Card.set_sprites(...)
 				card.children.center = c
+				set_sprite()
 			end
-			card.T.w = 1.3
-			card.T.h = 1.3
-			temp_blind:define_draw_steps({
-				{ shader = "dissolve", shadow_height = 0.05 },
-				{ shader = "dissolve" },
-			})
-			temp_blind.float = true
-			card.enc_domain = domain.key
-			card.enc_scenario = scenario.key
+
+			set_sprite()
+
+			card.enc_domain_collection = domain.key
+			card.enc_scenario_collection = scenario.key
 		end,
 	})
 end
