@@ -1,4 +1,4 @@
-TheEncounter.UI.get_badges = function(domain, scenario, args, badges)
+TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 	domain = TheEncounter.Domain.resolve(domain)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 	args = args or {}
@@ -20,4 +20,17 @@ TheEncounter.UI.get_badges = function(domain, scenario, args, badges)
 		badges.mod_set = nil
 	end
 	return badges
+end
+
+TheEncounter.UI.set_element_object = function(container, object)
+	if container then
+		container.config.object:remove()
+		container.config.object = object
+		if object then
+			object.config.parent = container
+		else
+			container.config.object = Moveable()
+		end
+		container.UIBox:recalculate()
+	end
 end

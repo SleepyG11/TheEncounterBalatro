@@ -50,7 +50,7 @@ pattern = '''if AUT.badges then'''
 position = 'before'
 payload = '''
 if card.enc_scenario_collection then
-    TheEncounter.UI.get_badges(card.enc_domain_collection, card.enc_scenario_collection, nil, badges)
+    TheEncounter.UI.get_badges(card.enc_scenario_collection, card.enc_domain_collection, nil, badges)
 end
 '''
 match_indent = true

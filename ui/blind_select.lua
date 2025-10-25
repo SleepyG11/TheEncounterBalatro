@@ -1,4 +1,4 @@
-local function create_UIBox_choice(index, total, domain, scenario)
+local function create_UIBox_choice(index, total, scenario, domain)
 	local disabled = false
 	local run_info = false
 
@@ -175,7 +175,7 @@ local function create_UIBox_choice(index, total, domain, scenario)
 		}
 	end
 
-	local badges = TheEncounter.UI.get_badges(domain, scenario, {
+	local badges = TheEncounter.UI.get_badges(scenario, domain, {
 		bypass_discovery_check = true,
 	})
 
@@ -217,7 +217,9 @@ local function create_UIBox_choice(index, total, domain, scenario)
 									shadow = true,
 									hover = true,
 									one_press = true,
-									button = "enc_noop",
+									button = "enc_start_event",
+									enc_domain = domain,
+									enc_scenario = scenario,
 								},
 								nodes = {
 									{
@@ -318,8 +320,7 @@ local function create_UIBox_choice(index, total, domain, scenario)
 	}
 	return t
 end
-
-local function get_blind_choice(index, total, domain, scenario)
+local function get_blind_choice(index, total, scenario, domain)
 	local blind_col = (scenario and scenario.colour) or domain.colour or G.C.MULT
 	return {
 		n = G.UIT.O,
@@ -331,7 +332,7 @@ local function get_blind_choice(index, total, domain, scenario)
 					config = { align = "cm", colour = G.C.CLEAR },
 					nodes = {
 						UIBox_dyn_container(
-							{ create_UIBox_choice(index, total, domain, scenario) },
+							{ create_UIBox_choice(index, total, scenario, domain) },
 							false,
 							blind_col,
 							mix_colours(G.C.BLACK, blind_col, 0.8)
@@ -353,8 +354,8 @@ function TheEncounter.UI.blind_choices(choices)
 			get_blind_choice(
 				i,
 				total_items,
-				TheEncounter.Domains[choice.domain_key],
-				TheEncounter.Scenarios[choice.scenario_key] or nil
+				TheEncounter.Scenarios[choice.scenario_key] or nil,
+				TheEncounter.Domains[choice.domain_key]
 			)
 		)
 	end
@@ -367,4 +368,6 @@ function TheEncounter.UI.blind_choices(choices)
 	}
 end
 
-function G.FUNCS.enc_noop() end
+function G.FUNCS.enc_start_event(e)
+	TheEncounter.select_choice(e.config.enc_scenario, e.config.enc_domain)
+end

@@ -39,7 +39,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 
 	get_choices = function(self, event)
 		return {
-			TheEncounter.Choices.enc_move_on,
+			"ch_enc_move_on",
 		}
 	end,
 
@@ -63,5 +63,3 @@ TheEncounter.Step.resolve = function(step)
 		return step
 	end
 end
-
---------------

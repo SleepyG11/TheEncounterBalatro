@@ -104,3 +104,35 @@ function TheEncounter.table.to_keys_dictionary(t)
 	end
 	return res
 end
+
+--- @generic T
+--- @generic S
+--- @param target T
+--- @param source S
+--- @param ... any
+--- @return T | S
+function TheEncounter.table.merge(target, source, ...)
+	assert(type(target) == "table", "Target is not a table")
+	local tables_to_merge = { source, ... }
+	if #tables_to_merge == 0 then
+		return target
+	end
+
+	for k, t in ipairs(tables_to_merge) do
+		assert(type(t) == "table", string.format("Expected a table as parameter %d", k))
+	end
+
+	for i = 1, #tables_to_merge do
+		local from = tables_to_merge[i]
+		for k, v in pairs(from) do
+			if type(v) == "table" then
+				target[k] = target[k] or {}
+				target[k] = TheEncounter.table.merge(target[k], v)
+			else
+				target[k] = v
+			end
+		end
+	end
+
+	return target
+end

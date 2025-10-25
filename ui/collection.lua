@@ -200,7 +200,7 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 			})
 		end
 
-		local badges = TheEncounter.UI.get_badges(domain, nil)
+		local badges = TheEncounter.UI.get_badges(nil, domain)
 
 		self.config.h_popup_config = { align = "mt", offset = { x = 0, y = -0.1 }, major = e }
 		self.config.h_popup = {

@@ -15,7 +15,7 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 	end,
 
 	button = function(self, event)
-		event.finish_scenario()
+		event:finish_scenario()
 	end,
 	func = function(self, event)
 		return true
@@ -34,15 +34,3 @@ TheEncounter.Choice.resolve = function(choice)
 		return choice
 	end
 end
-
---------------
-
-TheEncounter.Choice({
-	key = "move_on",
-	loc_txt = {
-		label = "{C:inactive}Move on{}",
-		text = {
-			"{C:attention}End event{}",
-		},
-	},
-})

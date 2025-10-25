@@ -63,10 +63,6 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	set_badges = function(self, badges) end,
 })
 
-SMODS.ObjectType({
-	key = "enc_Domain",
-})
-
 TheEncounter.Domain.resolve = function(domain)
 	if type(domain) == "string" then
 		return TheEncounter.Domains[domain]
@@ -75,65 +71,6 @@ TheEncounter.Domain.resolve = function(domain)
 	end
 end
 
---------------
-
-TheEncounter.Domain({
-	key = "occurrence",
-	loc_txt = {
-		name = "Occurrence",
-		text = {
-			"Regular events",
-		},
-	},
-
-	colour = HEX("0093ff"),
-
-	reward = 1,
-	rarity = 1,
+SMODS.ObjectType({
+	key = "enc_Domain",
 })
-
-TheEncounter.Domain({
-	key = "u_occurrence",
-	loc_txt = {
-		name = "Uncommon Occurrence",
-		text = {
-			"Uncommon events",
-		},
-	},
-
-	colour = HEX("35bd86"),
-
-	reward = 1,
-	rarity = 2,
-})
-
-TheEncounter.Domain({
-	key = "r_occurrence",
-	loc_txt = {
-		name = "Rare Occurrence",
-		text = {
-			"Rare events",
-		},
-	},
-
-	colour = HEX("F30808"),
-
-	reward = 1,
-	rarity = 3,
-})
-
-for i = 1, 10 do
-	TheEncounter.Domain({
-		key = "noth_" .. i,
-		loc_txt = {
-			name = "Noth " .. i,
-			text = {
-				"Domain " .. i,
-			},
-		},
-
-		colour = HEX("AB00D6"),
-
-		reward = 1,
-	})
-end

@@ -12,3 +12,4 @@ SMODS.Atlas({
 assert(SMODS.load_file("ui/utils.lua"))()
 assert(SMODS.load_file("ui/collection.lua"))()
 assert(SMODS.load_file("ui/blind_select.lua"))()
+assert(SMODS.load_file("ui/event.lua"))()

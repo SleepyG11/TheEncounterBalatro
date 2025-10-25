@@ -15,13 +15,13 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		SMODS.process_loc_text(G.localization.descriptions.enc_Scenario, self.key:lower(), self.loc_txt)
 	end,
 
-	config = {
-		hide_hand = true,
-		hide_deck = false,
-		hide_text = false,
-		hide_image = false,
-		hide_buttons = false,
+	hide_hand = true,
+	hide_deck = false,
+	hide_text = false,
+	hide_image = false,
+	hide_buttons = false,
 
+	config = {
 		extra = {},
 	},
 
@@ -105,22 +105,4 @@ function G.FUNCS.unlock_all(...)
 		end
 	end
 	return result
-end
-
---------------
-
-for i = 1, 5 do
-	TheEncounter.Scenario({
-		key = "nothing_" .. i,
-		starting_step_key = "st_enc_nothing",
-		domains = {
-			["do_enc_occurrence"] = true,
-		},
-		loc_txt = {
-			name = "Nothing " .. i,
-			text = {
-				"Nothing desc " .. i,
-			},
-		},
-	})
 end
