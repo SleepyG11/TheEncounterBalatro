@@ -192,6 +192,9 @@ function TheEncounter.Event.load(save_table)
 	return TheEncounter.Event(save_table.scenario, save_table.domain, save_table)
 end
 
+function TheEncounter.Event:show_lines(amount, instant)
+	TheEncounter.UI.event_show_lines(self, amount, instant)
+end
 function TheEncounter.Event:start_step(key)
 	self.next_step = TheEncounter.Step.resolve(key)
 	self:leave_step(function()

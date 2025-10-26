@@ -50,7 +50,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	save = function(self, event, save_table) end,
 	load = function(self, event, save_table) end,
 
-	loc_vars = function(self, event)
+	loc_vars = function(self, info_queue, event)
 		return {}
 	end,
 	inject = function() end,

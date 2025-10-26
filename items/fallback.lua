@@ -25,7 +25,7 @@ TheEncounter.Step({
 		text = {
 			"Looks like there's nothing here...",
 			" ",
-			"Maybe I should look better?",
+			"{C:inactive}Maybe I should look better?{}",
 		},
 	},
 	get_choices = function(self, event)
@@ -42,6 +42,10 @@ TheEncounter.Step({
 	colour = HEX("BF009D"),
 	background_colour = HEX("9A007F"),
 	should_save = true,
+	start = function(self, event)
+		event:show_lines(1)
+		delay(1)
+	end,
 })
 TheEncounter.Step({
 	key = "nothing_inside",

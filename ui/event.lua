@@ -295,16 +295,23 @@ end
 TheEncounter.UI.event_text_lines = function(event)
 	local step = event.current_step
 
-	-- TODO: proper localize and loc_vars
+	local t = { key = step.key, set = "enc_Step" }
+	local res = {}
+	if step.loc_vars and type(step.loc_vars) == "function" then
+		res = step:loc_vars({}, event) or {}
+		t.vars = res.vars or {}
+		t.key = res.key or t.key
+		t.set = res.set or t.set
+	end
+
 	local text_objects = {}
-	-- Step text
 	local event_text_content = {}
 	localize({
 		type = "descriptions",
-		set = step.set,
-		key = step.key,
+		set = t.set,
+		key = t.key,
 		nodes = event_text_content,
-		vars = step:loc_vars(event) or {},
+		vars = t.vars or {},
 		default_col = event.ui.text_colour,
 	})
 	local event_text_lines = {}
@@ -325,6 +332,14 @@ TheEncounter.UI.event_text_lines = function(event)
 			},
 			config = {},
 		})
+		if
+			#line == 1
+			and line[1].n == G.UIT.T
+			and line[1].config.text
+			and string.match(line[1].config.text, "^%s*$") ~= nil
+		then
+			text_object.enc_line_silent = true
+		end
 		text_object.states.visible = false
 		table.insert(text_objects, text_object)
 		table.insert(event_text_lines, {
@@ -374,7 +389,9 @@ TheEncounter.UI.event_show_lines = function(event, amount, instant)
 					trigger = "after",
 					delay = instant and 0 or 0.75,
 					func = function()
-						play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
+						if not object.enc_line_silent then
+							play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
+						end
 						object.states.visible = true
 						return true
 					end,
@@ -393,7 +410,9 @@ TheEncounter.UI.event_show_all_text_lines = function(event)
 				trigger = "after",
 				delay = 0.75,
 				func = function()
-					play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
+					if not object.enc_line_silent then
+						play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
+					end
 					object.states.visible = true
 					return true
 				end,
