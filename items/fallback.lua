@@ -32,6 +32,11 @@ TheEncounter.Step({
 			"ch_enc_look_inside",
 		}
 	end,
+	config = {
+		extra = {
+			var_3 = 3,
+		},
+	},
 	colour = HEX("BF009D"),
 	background_colour = HEX("9A007F"),
 	should_save = true,
@@ -45,6 +50,11 @@ TheEncounter.Step({
 			"Looks like you're unlucky today.",
 		},
 	},
+	config = {
+		extra = {
+			var_2 = 2,
+		},
+	},
 	colour = HEX("6900CA"),
 	background_colour = HEX("5700A9"),
 	should_save = true,
@@ -55,6 +65,11 @@ TheEncounter.Scenario({
 		name = "Nothing",
 		text = {
 			"You found nothing... Unfortunate!",
+		},
+	},
+	config = {
+		extra = {
+			var_1 = 1,
 		},
 	},
 	starting_step_key = "st_enc_nothing_1",

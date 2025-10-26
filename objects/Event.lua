@@ -12,19 +12,32 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 
 	self.ui = {}
 
+	self.STATES = {
+		PREPARE = 1,
+		SCENARIO_START = 2,
+		SCENARIO_FINISH = 3,
+		STEP_START = 4,
+		STEP_FINISH = 5,
+		STEP_IDLE = 6,
+		END = 7,
+	}
+	self.STATE = self.STATES.PREPARE
+
 	if save_table then
 		self.previous_step = TheEncounter.Step.resolve(save_table.previous_step) or self.previous_step
 		self.current_step = TheEncounter.Step.resolve(save_table.current_step) or self.current_step
 		self.next_step = TheEncounter.Step.resolve(save_table.next_step) or self.next_step
 
 		self.ability = copy_table(save_table.ability or {})
+
+		self.temp_save_table = save_table
 	end
 
-	self:init_ui(save_table)
+	self:init_ui()
 end
 
-function TheEncounter.Event:set_colours(first_load, from_save)
-	local step_to_check = (first_load and not from_save and self.next_step) or self.current_step
+function TheEncounter.Event:set_colours(first_load)
+	local step_to_check = (first_load and not self.temp_save_table and self.next_step) or self.current_step
 	local new_colour = copy_table(
 		step_to_check and step_to_check.colour or self.ui.colour or self.scenario.colour or self.domain.colour
 	)
@@ -68,8 +81,8 @@ end
 function TheEncounter.Event:set_ability()
 	self.ability = TheEncounter.table.merge(self.ability, self.current_step.config or {})
 end
-function TheEncounter.Event:init_ui(save_table)
-	self:set_colours(true, save_table)
+function TheEncounter.Event:init_ui()
+	self:set_colours(true)
 	TheEncounter.UI.event_panel(self)
 end
 
@@ -79,7 +92,10 @@ function TheEncounter.Event:move_forward()
 	self.next_step = nil
 end
 
-function TheEncounter.Event:start(save_table, func)
+function TheEncounter.Event:start(func)
+	self.STATE = self.STATES.SCENARIO_START
+	local save_table = self.temp_save_table
+	self.temp_save_table = nil
 	if not save_table then
 		SMODS.calculate_context({ enc_scenario_start = true, event = self })
 	end
@@ -87,7 +103,7 @@ function TheEncounter.Event:start(save_table, func)
 	TheEncounter.em.after_callback(function()
 		if save_table then
 			if self.current_step.should_save then
-				self.data = self.current_step:load(self, save_table.data) or {}
+				self.data = self.current_step:load(self, save_table.data or {}) or save_table.data or {}
 				after_load = true
 			end
 		else
@@ -97,6 +113,7 @@ function TheEncounter.Event:start(save_table, func)
 	end, save_table)
 end
 function TheEncounter.Event:enter_step(after_load, func)
+	self.STATE = self.STATES.STEP_START
 	SMODS.calculate_context({ enc_step_start = true, event = self })
 	TheEncounter.em.after_callback(function()
 		self:set_colours()
@@ -114,11 +131,15 @@ function TheEncounter.Event:enter_step(after_load, func)
 			end
 			TheEncounter.UI.event_show_all_text_lines(self)
 			TheEncounter.UI.event_choices(self)
-			TheEncounter.em.after_callback(func)
+			TheEncounter.em.after_callback(function()
+				TheEncounter.em.after_callback(func, true)
+				self.STATE = self.STATES.STEP_IDLE
+			end)
 		end)
 	end, not after_load)
 end
 function TheEncounter.Event:leave_step(func)
+	self.STATE = self.STATES.STEP_FINISH
 	SMODS.calculate_context({ enc_step_finish = true, event = self })
 	TheEncounter.em.after_callback(function()
 		self.current_step:finish(self)
@@ -130,20 +151,17 @@ function TheEncounter.Event:leave_step(func)
 end
 function TheEncounter.Event:finish(func)
 	self:leave_step(function()
+		self.STATE = self.STATES.SCENARIO_FINISH
 		G.FUNCS.draw_from_hand_to_deck()
 		TheEncounter.em.after_callback(function()
 			self:move_forward()
 			SMODS.calculate_context({ enc_scenario_end = true, event = self })
 			TheEncounter.em.after_callback(function()
 				TheEncounter.UI.event_finish(self)
-				G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
-					or {}
-				G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][self.scenario.key] = true
 				TheEncounter.em.after_callback(function()
+					TheEncounter.after_event_finish(self)
 					TheEncounter.em.after_callback(func, true)
-					G.GAME.TheEncounter_save_table = nil
-					G.GAME.TheEncounter_choice = nil
-					G.TheEncounter_event = nil
+					self.STATE = self.STATES.END
 				end)
 			end)
 		end)
@@ -152,7 +170,7 @@ end
 
 function TheEncounter.Event:save()
 	if not self.current_step or not self.current_step.should_save then
-		return
+		return G.GAME.TheEncounter_save_table or nil
 	end
 	local save_table = {
 		domain = self.domain.key,
@@ -164,7 +182,7 @@ function TheEncounter.Event:save()
 
 		ability = self.ability,
 
-		data = self.current_step:save(self.data) or {},
+		data = self.current_step:save(self, self.data) or {},
 	}
 	return save_table
 end

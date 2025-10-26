@@ -17,20 +17,11 @@ function Game:update_enc_event(dt)
 				G.E_MANAGER:add_event(Event({
 					trigger = "immediate",
 					func = function()
-						local event
-						if G.GAME.TheEncounter_save_table then
-							event = TheEncounter.Event.load(G.GAME.TheEncounter_save_table)
-						else
-							event = TheEncounter.Event(
-								G.GAME.TheEncounter_choice.scenario_key,
-								G.GAME.TheEncounter_choice.domain_key
-							)
-						end
-						G.TheEncounter_event = event
+						local event = TheEncounter.before_event_start()
 						G.E_MANAGER:add_event(Event({
 							trigger = "immediate",
 							func = function()
-								event:start(G.GAME.TheEncounter_save_table)
+								event:start()
 								return true
 							end,
 						}))
@@ -41,4 +32,25 @@ function Game:update_enc_event(dt)
 			end,
 		}))
 	end
+end
+
+function TheEncounter.before_event_start()
+	local event
+	if G.GAME.TheEncounter_save_table then
+		event = TheEncounter.Event.load(G.GAME.TheEncounter_save_table)
+	else
+		event = TheEncounter.Event(G.GAME.TheEncounter_choice.scenario_key, G.GAME.TheEncounter_choice.domain_key)
+	end
+	G.TheEncounter_event = event
+	return event
+end
+
+function TheEncounter.after_event_finish(event)
+	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
+		or {}
+	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][event.scenario.key] = true
+	G.GAME.TheEncounter_save_table = nil
+	G.GAME.TheEncounter_choices = nil
+	G.GAME.TheEncounter_choice = nil
+	G.TheEncounter_event = nil
 end
