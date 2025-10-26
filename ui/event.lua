@@ -200,12 +200,27 @@ local function create_choice_button(event, choice, ability)
 		t.set = res.set or t.set
 	end
 
-	-- TODO: localize function
-	local loc_txt = G.localization.descriptions[t.set][t.key].text[1]
-	local localized = SMODS.localize_box(loc_parse_string(loc_txt), {
-		default_col = event.ui.text_colour,
+	local button_text = {}
+	localize({
+		type = "descriptions",
+		set = t.set,
+		key = t.key,
+		nodes = button_text,
 		vars = t.vars or {},
+		default_col = event.ui.text_colour,
 	})
+	local button_lines = {}
+	for _, line in ipairs(button_text) do
+		table.insert(button_lines, {
+			n = G.UIT.R,
+			config = {
+				align = "cm",
+				padding = 0.01,
+			},
+			nodes = line,
+		})
+	end
+
 	return {
 		n = G.UIT.R,
 		config = {
@@ -213,7 +228,8 @@ local function create_choice_button(event, choice, ability)
 			padding = 0.08,
 			r = 0.75,
 			hover = true,
-			colour = choice.colour or G.C.GREY,
+			colour = choice.colour or event.ui.light_colour,
+			inactive_colour = choice.inactive_colour or event.ui.inactive_colour,
 			shadow = true,
 			func = "enc_can_execute_choice",
 			button = "enc_execute_choice",
@@ -221,7 +237,6 @@ local function create_choice_button(event, choice, ability)
 			enc_choice = choice,
 			enc_choice_ability = ability,
 			minh = 0.5,
-			maxh = 0.5,
 		},
 		nodes = {
 			{
@@ -231,7 +246,7 @@ local function create_choice_button(event, choice, ability)
 			{
 				n = G.UIT.C,
 				config = { align = "cm" },
-				nodes = localized,
+				nodes = button_lines,
 			},
 			{
 				n = G.UIT.C,
@@ -280,6 +295,7 @@ end
 TheEncounter.UI.event_text_lines = function(event)
 	local step = event.current_step
 
+	-- TODO: proper localize and loc_vars
 	local text_objects = {}
 	-- Step text
 	local event_text_content = {}
@@ -501,7 +517,7 @@ function G.FUNCS.enc_can_execute_choice(e)
 		or (choice.func and not choice:func(event, e.config.enc_choice_ability))
 	then
 		e.config.button = nil
-		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+		e.config.colour = e.config.inactive_colour
 	else
 		e.config.button = "enc_execute_choice"
 		e.config.colour = e.config.old_colour

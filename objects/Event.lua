@@ -43,10 +43,12 @@ function TheEncounter.Event:set_colours(first_load)
 	)
 	if first_load or not self.ui.colour then
 		self.ui.colour = new_colour
+		self.ui.inactive_colour = mix_colours(G.C.BLACK, new_colour, 0.8)
 		self.ui.dark_colour = mix_colours(G.C.BLACK, new_colour, 0.6)
 		self.ui.light_colour = mix_colours(G.C.BLACK, new_colour, 0.4)
 	else
 		ease_colour(self.ui.colour, new_colour, 0.2)
+		ease_colour(self.ui.inactive_colour, mix_colours(G.C.BLACK, new_colour, 0.8), 0.2)
 		ease_colour(self.ui.dark_colour, mix_colours(G.C.BLACK, new_colour, 0.6), 0.2)
 		ease_colour(self.ui.light_colour, mix_colours(G.C.BLACK, new_colour, 0.4), 0.2)
 	end

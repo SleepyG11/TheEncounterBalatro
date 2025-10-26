@@ -10,7 +10,8 @@ TheEncounter.Choice({
 	key = "look_inside",
 	loc_txt = {
 		text = {
-			"Look inside...",
+			"Look {C:attention}inside{}...",
+			"{C:inactive,s:0.5}I'm feeling lucky today!{}",
 		},
 	},
 	button = function(self, event, ability)
