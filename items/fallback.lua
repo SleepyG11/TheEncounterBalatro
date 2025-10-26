@@ -13,7 +13,7 @@ TheEncounter.Choice({
 			"Look inside...",
 		},
 	},
-	button = function(self, event)
+	button = function(self, event, ability)
 		event:start_step("st_enc_nothing_inside")
 	end,
 	loc_vars = function(self, info_queue, event, ability) end,
