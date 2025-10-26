@@ -16,6 +16,7 @@ TheEncounter.Choice({
 	button = function(self, event)
 		event:start_step("st_enc_nothing_inside")
 	end,
+	loc_vars = function(self, info_queue, event, ability) end,
 })
 TheEncounter.Step({
 	key = "nothing_1",

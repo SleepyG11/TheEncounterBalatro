@@ -14,14 +14,16 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 		SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower(), self.loc_txt)
 	end,
 
-	button = function(self, event)
+	config = {},
+
+	button = function(self, event, ability)
 		event:finish_scenario()
 	end,
-	func = function(self, event)
+	func = function(self, event, ability)
 		return true
 	end,
 
-	loc_vars = function(self, event)
+	loc_vars = function(self, info_queue, event, ability)
 		return {}
 	end,
 	inject = function() end,

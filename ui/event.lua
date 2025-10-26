@@ -190,12 +190,21 @@ local function create_UIBox_event_panel(event)
 		},
 	}
 end
-local function create_choice_button(event, choice)
-	-- TODO: correct localizing by using loc_vars key set etc
-	local loc_txt = G.localization.descriptions.enc_Choice[choice.key].text[1]
+local function create_choice_button(event, choice, ability)
+	local t = { key = choice.key, set = "enc_Choice" }
+	local res = {}
+	if choice.loc_vars and type(choice.loc_vars) == "function" then
+		res = choice:loc_vars({}, event, ability) or {}
+		t.vars = res.vars or {}
+		t.key = res.key or t.key
+		t.set = res.set or t.set
+	end
+
+	-- TODO: localize function
+	local loc_txt = G.localization.descriptions[t.set][t.key].text[1]
 	local localized = SMODS.localize_box(loc_parse_string(loc_txt), {
 		default_col = event.ui.text_colour,
-		vars = choice.loc_vars and type(choice.loc_vars) == "function" or choice:loc_vars(event) or {},
+		vars = t.vars or {},
 	})
 	return {
 		n = G.UIT.R,
@@ -210,6 +219,7 @@ local function create_choice_button(event, choice)
 			button = "enc_execute_choice",
 			enc_event = event,
 			enc_choice = choice,
+			enc_choice_ability = ability,
 			minh = 0.5,
 			maxh = 0.5,
 		},
@@ -346,7 +356,7 @@ TheEncounter.UI.event_show_lines = function(event, amount, instant)
 			if object then
 				G.E_MANAGER:add_event(Event({
 					trigger = "after",
-					delay = no_delay and 0 or 0.75,
+					delay = instant and 0 or 0.75,
 					func = function()
 						play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
 						object.states.visible = true
@@ -384,9 +394,27 @@ TheEncounter.UI.event_choices = function(event)
 		local buttons_in_column = {}
 		local j = i - 1
 		for k = j * 4 + 1, i * 4 do
-			local choice = TheEncounter.Choice.resolve(choices[k])
-			if choice then
-				table.insert(buttons_in_column, create_choice_button(event, choice))
+			local choice = choices[k]
+			local result_choice, result_ability
+			if TheEncounter.Choice:is(choice) then
+				result_choice = choice
+			elseif type(choice) == "string" then
+				result_choice = TheEncounter.Choice.resolve(choice)
+			elseif type(choice) == "table" then
+				if choice.key or choice.choice_key then
+					result_choice = TheEncounter.Choice.resolve(choice.key or choice.choice_key)
+					result_ability = choice.ability
+				end
+			end
+			if result_choice then
+				table.insert(
+					buttons_in_column,
+					create_choice_button(
+						event,
+						result_choice,
+						TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
+					)
+				)
 			end
 		end
 		table.insert(event_buttons_content, {
@@ -470,7 +498,7 @@ function G.FUNCS.enc_can_execute_choice(e)
 	if
 		(G.CONTROLLER.locked or G.CONTROLLER.locks.frame or (G.GAME and (G.GAME.STOP_USE or 0) > 0))
 		or event.STATE ~= event.STATES.STEP_IDLE
-		or (choice.func and not choice:func(event))
+		or (choice.func and not choice:func(event, e.config.enc_choice_ability))
 	then
 		e.config.button = nil
 		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
@@ -483,5 +511,5 @@ function G.FUNCS.enc_execute_choice(e)
 	local choice = e.config.enc_choice
 	local event = e.config.enc_event
 
-	choice:button(event)
+	choice:button(event, e.config.enc_choice_ability)
 end
