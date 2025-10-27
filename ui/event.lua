@@ -83,10 +83,21 @@ function TheEncounter.UI.event_panel_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.O,
+					n = G.UIT.R,
 					config = {
-						id = "text_area",
-						object = Moveable(),
+						minh = text_H,
+						maxh = text_H,
+						align = "c",
+						padding = 0.1,
+					},
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								id = "text_area",
+								object = Moveable(),
+							},
+						},
 					},
 				},
 			},
@@ -139,10 +150,20 @@ function TheEncounter.UI.event_panel_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.O,
+					n = G.UIT.R,
 					config = {
-						id = "choices_area",
-						object = Moveable(),
+						align = "c",
+						minh = choices_H,
+						maxh = choices_H,
+					},
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								id = "choices_area",
+								object = Moveable(),
+							},
+						},
 					},
 				},
 			},
@@ -163,12 +184,7 @@ function TheEncounter.UI.event_panel_render(event)
 		nodes = {
 			{
 				n = G.UIT.R,
-				config = {
-					minh = text_H,
-					maxh = text_H,
-					align = "c",
-					padding = 0.1,
-				},
+				config = {},
 				nodes = {
 					{
 						n = G.UIT.O,
@@ -197,20 +213,10 @@ function TheEncounter.UI.event_panel_render(event)
 						n = G.UIT.C,
 						nodes = {
 							{
-								n = G.UIT.R,
+								n = G.UIT.O,
 								config = {
-									align = "c",
-									minh = choices_H,
-									maxh = choices_H,
-								},
-								nodes = {
-									{
-										n = G.UIT.O,
-										config = {
-											id = "choices_area_container",
-											object = choices_area_container,
-										},
-									},
+									id = "choices_area_container",
+									object = choices_area_container,
 								},
 							},
 						},
@@ -267,10 +273,6 @@ function TheEncounter.UI.event_panel_render(event)
 						n = G.UIT.R,
 						config = {
 							r = 0.1,
-							minh = content_H,
-							maxh = content_H,
-							minw = content_W,
-							maxw = content_W,
 							align = "c",
 						},
 						nodes = main_nodes,
