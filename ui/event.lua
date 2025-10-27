@@ -1,4 +1,4 @@
-local function create_UIBox_event_panel(event)
+function TheEncounter.UI.event_panel_render(event)
 	local scenario = event.scenario
 	local domain = event.domain
 
@@ -125,7 +125,7 @@ local function create_UIBox_event_panel(event)
 		},
 	}
 
-	return {
+	local definition = {
 		n = G.UIT.ROOT,
 		config = {
 			colour = G.C.CLEAR,
@@ -189,8 +189,20 @@ local function create_UIBox_event_panel(event)
 			),
 		},
 	}
+	return {
+		definition = definition,
+		config = {
+			align = "br",
+			major = G.ROOM_ATTACH,
+			bond = "Weak",
+			offset = {
+				x = -15.3,
+				y = G.ROOM.T.y + 21,
+			},
+		},
+	}
 end
-local function create_choice_button(event, choice, ability)
+function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 	local t = { key = choice.key, set = "enc_Choice" }
 	local res = {}
 	if choice.loc_vars and type(choice.loc_vars) == "function" then
@@ -256,19 +268,10 @@ local function create_choice_button(event, choice, ability)
 	}
 end
 
+--
+
 TheEncounter.UI.event_panel = function(event)
-	local event_ui = UIBox({
-		definition = create_UIBox_event_panel(event),
-		config = {
-			align = "br",
-			major = G.ROOM_ATTACH,
-			bond = "Weak",
-			offset = {
-				x = -15.3,
-				y = G.ROOM.T.y + 21,
-			},
-		},
-	})
+	local event_ui = UIBox(TheEncounter.UI.event_panel_render(event))
 
 	event.ui.panel = event_ui
 	event.ui.image = event_ui:get_UIE_by_ID("image_area")
@@ -444,7 +447,7 @@ TheEncounter.UI.event_choices = function(event)
 			if result_choice then
 				table.insert(
 					buttons_in_column,
-					create_choice_button(
+					TheEncounter.UI.choice_button_UIBox(
 						event,
 						result_choice,
 						TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
@@ -523,6 +526,8 @@ TheEncounter.UI.event_finish = function(event)
 	}))
 	delay(0.5)
 end
+
+--
 
 function G.FUNCS.enc_can_execute_choice(e)
 	if not e.config.old_colour then

@@ -345,7 +345,7 @@ function TheEncounter.UI.blind_choice_UIBox_container(index, total, scenario, do
 		},
 	}
 end
-function TheEncounter.UI.blind_choices(choices)
+function TheEncounter.UI.blind_choices_render(choices)
 	local choice_nodes = {}
 	local total_items = #choices
 	for i, choice in ipairs(choices) do
@@ -405,7 +405,7 @@ function TheEncounter.UI.remove_blind_choices()
 end
 
 -- Prompt box
-function TheEncounter.UI.prompt_box()
+function TheEncounter.UI.prompt_box_render()
 	return {
 		definition = {
 			n = G.UIT.ROOT,
