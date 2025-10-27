@@ -22,6 +22,12 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 		END = 7,
 	}
 	self.STATE = self.STATES.PREPARE
+	self.HIDE_AREAS_STATES = {
+		[self.STATES.PREPARE] = true,
+		[self.STATES.SCENARIO_START] = true,
+		[self.STATES.SCENARIO_FINISH] = true,
+		[self.STATES.END] = true,
+	}
 
 	if save_table then
 		self.previous_step = TheEncounter.Step.resolve(save_table.previous_step) or self.previous_step
@@ -116,12 +122,12 @@ function TheEncounter.Event:start(func)
 end
 function TheEncounter.Event:enter_step(after_load, func)
 	self.STATE = self.STATES.STEP_START
+	if not after_load then
+		self:set_ability()
+	end
 	SMODS.calculate_context({ enc_step_start = true, event = self })
 	TheEncounter.em.after_callback(function()
 		self:set_colours()
-		if not after_load then
-			self:set_ability()
-		end
 		TheEncounter.UI.event_text_lines(self)
 		self.current_step:start(self, after_load)
 		TheEncounter.em.after_callback(function()
@@ -207,4 +213,45 @@ function TheEncounter.Event:finish_scenario(transition_func)
 		G.STATE = G.STATES.BLIND_SELECT
 		G.STATE_COMPLETE = false
 	end)
+end
+
+function TheEncounter.Event:update(dt)
+	if self.ui.text then
+		self.ui.text.states.visible = not self.ability.hide_text
+	end
+	if self.ui.image then
+		self.ui.image.states.visible = not self.ability.hide_image
+	end
+	if self.ui.choices then
+		self.ui.choices.states.visible = not self.ability.hide_choices
+	end
+end
+
+--
+
+local old_draw = CardArea.draw
+function CardArea:draw(...)
+	if G.STATE == G.STATES.ENC_EVENT then
+		local event = G.TheEncounter_event
+		if not event or event.HIDE_AREAS_STATES[event.STATE] then
+			if self == G.hand then
+				return
+			elseif self == G.deck then
+				if event and event.ability.hide_deck then
+					return
+				end
+			end
+		else
+			if self == G.hand then
+				if event.ability.hide_hand then
+					return
+				end
+			elseif self == G.deck then
+				if event.ability.hide_deck then
+					return
+				end
+			end
+		end
+	end
+	return old_draw(self, ...)
 end

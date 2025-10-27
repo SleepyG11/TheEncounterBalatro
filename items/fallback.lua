@@ -35,6 +35,9 @@ TheEncounter.Step({
 		}
 	end,
 	config = {
+		hide_hand = true,
+		hide_deck = true,
+		hide_image = true,
 		extra = {
 			var_3 = 3,
 		},
@@ -57,6 +60,9 @@ TheEncounter.Step({
 		},
 	},
 	config = {
+		hide_hand = false,
+		hide_deck = true,
+		hide_image = false,
 		extra = {
 			var_2 = 2,
 		},

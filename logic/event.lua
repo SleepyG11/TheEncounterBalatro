@@ -1,6 +1,9 @@
 G.STATES.ENC_EVENT = 292719887370
 
 function Game:update_enc_event(dt)
+	if G.TheEncounter_event then
+		G.TheEncounter_event:update(dt)
+	end
 	if not G.STATE_COMPLETE then
 		stop_use()
 		ease_background_colour_blind(G.STATES.BLIND_SELECT)

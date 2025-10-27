@@ -15,13 +15,12 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		SMODS.process_loc_text(G.localization.descriptions.enc_Scenario, self.key:lower(), self.loc_txt)
 	end,
 
-	hide_hand = true,
-	hide_deck = false,
-	hide_text = false,
-	hide_image = false,
-	hide_buttons = false,
-
 	config = {
+		hide_hand = true,
+		hide_deck = false,
+		hide_text = false,
+		hide_image = false,
+		hide_buttons = false,
 		extra = {},
 	},
 

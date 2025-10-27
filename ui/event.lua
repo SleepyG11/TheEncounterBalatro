@@ -1,7 +1,4 @@
-function TheEncounter.UI.event_panel_render(event)
-	local scenario = event.scenario
-	local domain = event.domain
-
+function TheEncounter.UI.event_panel_sizes(event)
 	local container_H = 5.6
 	local container_W = G.hand.T.w + 0.15
 	local container_padding = 0.1
@@ -17,6 +14,44 @@ function TheEncounter.UI.event_panel_render(event)
 	local image_area_size = (container_H - container_padding * 2 - header_H - content_padding * 2) / 1.25
 	local choices_H = 2.4
 	local text_H = (image_area_size * 1.25 - content_padding * 2 - choices_H)
+
+	return {
+		container_H = container_H,
+		container_W = container_W,
+		container_padding = container_padding,
+		header_H = header_H,
+		header_W = header_W,
+		header_padding = header_padding,
+		content_H = content_H,
+		content_W = content_W,
+		content_padding = content_padding,
+		image_area_size = image_area_size,
+		choices_H = choices_H,
+		text_H = text_H,
+	}
+end
+
+function TheEncounter.UI.event_panel_render(event)
+	local scenario = event.scenario
+	local domain = event.domain
+
+	local sizes = TheEncounter.UI.event_panel_sizes(event)
+
+	local container_H = sizes.container_H
+	local container_W = sizes.container_W
+	local container_padding = sizes.container_padding
+
+	local header_H = sizes.header_H
+	local header_W = sizes.header_W
+	local header_padding = sizes.header_padding
+
+	local content_H = sizes.content_H
+	local content_W = sizes.content_W
+	local content_padding = sizes.container_padding
+
+	local image_area_size = sizes.image_area_size
+	local choices_H = sizes.choices_H
+	local text_H = sizes.text_H
 
 	local event_text_name = {}
 	localize({
@@ -42,20 +77,13 @@ function TheEncounter.UI.event_panel_render(event)
 
 	local main_nodes = {}
 
-	if not scenario.hide_image_area then
-		main_nodes[#main_nodes + 1] = {
-			n = G.UIT.C,
-			config = {
-				minw = image_area_size,
-				maxw = image_area_size,
-				minh = image_area_size,
-				maxh = image_area_size,
-				colour = { 0, 0, 0, 0.1 },
-				r = 0.1,
-				id = "image_area",
-			},
-		}
-	end
+	main_nodes[#main_nodes + 1] = {
+		n = G.UIT.O,
+		config = {
+			id = "image_area",
+			object = UIBox(TheEncounter.UI.image_area_render(event)),
+		},
+	}
 	main_nodes[#main_nodes + 1] = {
 		n = G.UIT.C,
 		config = {
@@ -200,6 +228,31 @@ function TheEncounter.UI.event_panel_render(event)
 				y = G.ROOM.T.y + 21,
 			},
 		},
+	}
+end
+function TheEncounter.UI.image_area_render(event)
+	local sizes = TheEncounter.UI.event_panel_sizes(event)
+	local image_area_size = sizes.image_area_size
+
+	return {
+		definition = {
+			n = G.UIT.ROOT,
+			config = { colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.C,
+					config = {
+						minw = image_area_size,
+						maxw = image_area_size,
+						minh = image_area_size,
+						maxh = image_area_size,
+						colour = { 0, 0, 0, 0.1 },
+						r = 0.1,
+					},
+				},
+			},
+		},
+		config = {},
 	}
 end
 function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
@@ -392,7 +445,7 @@ TheEncounter.UI.event_show_lines = function(event, amount, instant)
 					trigger = "after",
 					delay = instant and 0 or 0.75,
 					func = function()
-						if not object.enc_line_silent then
+						if not object.enc_line_silent and not event.ability.hide_text then
 							play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
 						end
 						object.states.visible = true
@@ -413,7 +466,7 @@ TheEncounter.UI.event_show_all_text_lines = function(event)
 				trigger = "after",
 				delay = 0.75,
 				func = function()
-					if not object.enc_line_silent then
+					if not object.enc_line_silent and not event.ability.hide_text then
 						play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
 					end
 					object.states.visible = true

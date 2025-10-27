@@ -27,6 +27,11 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	end,
 
 	config = {
+		-- hide_hand = true,
+		-- hide_deck = false,
+		-- hide_text = false,
+		-- hide_image = false,
+		-- hide_buttons = false,
 		extra = {},
 	},
 
