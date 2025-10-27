@@ -12,7 +12,7 @@ end
 
 --
 
-local function collection_domains_list(e)
+function TheEncounter.UI.collection_domains_list_UIBox(e)
 	local custom_gameobject_tabs = { {} }
 	local curr_height = 0
 	local curr_col = 1
@@ -96,8 +96,7 @@ local function collection_domains_list(e)
 		})
 	end
 end
-
-local function collection_domain_events_list(e)
+function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 	local domain = e.config.ref_table
 	local pool = {}
 
@@ -163,6 +162,19 @@ local function collection_domain_events_list(e)
 end
 
 --
+
+G.FUNCS.your_collection_enc_events = function(e)
+	G.SETTINGS.paused = true
+	G.FUNCS.overlay_menu({
+		definition = TheEncounter.UI.collection_domains_list_UIBox(e),
+	})
+end
+G.FUNCS.your_collection_enc_event_domain = function(e)
+	G.SETTINGS.paused = true
+	G.FUNCS.overlay_menu({
+		definition = TheEncounter.UI.collection_domain_events_list_UIBox(e),
+	})
+end
 
 G.FUNCS.enc_collection_domain_tooltip = function(e)
 	if e.enc_collection_domain_tooltip then
@@ -249,18 +261,4 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 	end
 
 	e.hover = popup_hover
-end
-
-G.FUNCS.your_collection_enc_events = function(e)
-	G.SETTINGS.paused = true
-	G.FUNCS.overlay_menu({
-		definition = collection_domains_list(e),
-	})
-end
-
-G.FUNCS.your_collection_enc_event_domain = function(e)
-	G.SETTINGS.paused = true
-	G.FUNCS.overlay_menu({
-		definition = collection_domain_events_list(e),
-	})
 end

@@ -30,13 +30,10 @@ function Game:update_enc_event_select(dt)
 					trigger = "immediate",
 					func = function()
 						play_sound("cancel")
-						G.TheEncounter_blind_select = UIBox(TheEncounter.UI.blind_select(G.GAME.TheEncounter_choices))
+						G.TheEncounter_blind_choices = UIBox(TheEncounter.UI.blind_choices(G.GAME.TheEncounter_choices))
+						TheEncounter.UI.set_blind_choices()
+
 						G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box())
-						G.TheEncounter_blind_select.alignment.offset.y = 0
-							- (G.hand.T.y - G.jokers.T.y)
-							+ G.TheEncounter_blind_select.T.h
-						G.ROOM.jiggle = G.ROOM.jiggle + 3
-						G.TheEncounter_blind_select.alignment.offset.x = 0
 						TheEncounter.UI.set_prompt_box()
 						G.CONTROLLER.lock_input = false
 						return true
@@ -97,27 +94,8 @@ TheEncounter.select_choice = function(scenario, domain)
 	play_sound("timpani", 0.8)
 	play_sound("generic1")
 
-	if G.TheEncounter_blind_select then
-		G.E_MANAGER:add_event(Event({
-			trigger = "before",
-			delay = 0.2,
-			func = function()
-				G.TheEncounter_blind_select.alignment.offset.y = 40
-				G.TheEncounter_blind_select.alignment.offset.x = 0
-				return true
-			end,
-		}))
-		G.E_MANAGER:add_event(Event({
-			trigger = "immediate",
-			func = function()
-				G.TheEncounter_blind_select:remove()
-				G.TheEncounter_blind_select = nil
-				delay(0.2)
-				return true
-			end,
-		}))
-		TheEncounter.UI.remove_prompt_box()
-	end
+	TheEncounter.UI.remove_blind_choices()
+	TheEncounter.UI.remove_prompt_box()
 	G.E_MANAGER:add_event(Event({
 		trigger = "immediate",
 		func = function()

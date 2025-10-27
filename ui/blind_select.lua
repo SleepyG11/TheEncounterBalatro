@@ -1,4 +1,5 @@
-local function create_UIBox_choice(index, total, scenario, domain)
+-- Blind select
+function TheEncounter.UI.blind_choice_UIBox(index, total, scenario, domain)
 	local disabled = false
 	local run_info = false
 
@@ -320,7 +321,7 @@ local function create_UIBox_choice(index, total, scenario, domain)
 	}
 	return t
 end
-local function get_blind_choice(index, total, scenario, domain)
+function TheEncounter.UI.blind_choice_UIBox_container(index, total, scenario, domain)
 	local blind_col = (scenario and scenario.colour) or domain.colour or G.C.MULT
 	return {
 		n = G.UIT.O,
@@ -332,7 +333,7 @@ local function get_blind_choice(index, total, scenario, domain)
 					config = { align = "cm", colour = G.C.CLEAR },
 					nodes = {
 						UIBox_dyn_container(
-							{ create_UIBox_choice(index, total, scenario, domain) },
+							{ TheEncounter.UI.blind_choice_UIBox(index, total, scenario, domain) },
 							false,
 							blind_col,
 							mix_colours(G.C.BLACK, blind_col, 0.8)
@@ -344,14 +345,13 @@ local function get_blind_choice(index, total, scenario, domain)
 		},
 	}
 end
-
-function TheEncounter.UI.blind_select(choices)
+function TheEncounter.UI.blind_choices(choices)
 	local choice_nodes = {}
 	local total_items = #choices
 	for i, choice in ipairs(choices) do
 		table.insert(
 			choice_nodes,
-			get_blind_choice(
+			TheEncounter.UI.blind_choice_UIBox_container(
 				i,
 				total_items,
 				TheEncounter.Scenarios[choice.scenario_key] or nil,
@@ -379,6 +379,32 @@ function TheEncounter.UI.blind_select(choices)
 		},
 	}
 end
+function TheEncounter.UI.set_blind_choices()
+	if G.TheEncounter_blind_choices then
+		G.TheEncounter_blind_choices.alignment.offset.y = 0
+			- (G.hand.T.y - G.jokers.T.y)
+			+ G.TheEncounter_blind_choices.T.h
+		G.ROOM.jiggle = G.ROOM.jiggle + 3
+		G.TheEncounter_blind_choices.alignment.offset.x = 0
+	end
+end
+function TheEncounter.UI.remove_blind_choices()
+	if G.TheEncounter_blind_choices then
+		G.TheEncounter_blind_choices.alignment.offset.y = 40
+		G.TheEncounter_blind_choices.alignment.offset.x = 0
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0.2,
+			func = function()
+				G.TheEncounter_blind_choices:remove()
+				G.TheEncounter_blind_choices = nil
+				return true
+			end,
+		}))
+	end
+end
+
+-- Prompt box
 function TheEncounter.UI.prompt_box()
 	return {
 		definition = {

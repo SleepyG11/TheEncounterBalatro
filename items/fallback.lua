@@ -78,6 +78,9 @@ TheEncounter.Scenario({
 			var_1 = 1,
 		},
 	},
+	domains = {
+		do_enc_occurrence = true,
+	},
 	starting_step_key = "st_enc_nothing_1",
 	no_collection = true,
 	in_pool = function(self, domain)
