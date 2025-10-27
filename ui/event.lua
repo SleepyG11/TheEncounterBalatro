@@ -77,18 +77,85 @@ function TheEncounter.UI.event_panel_render(event)
 
 	local main_nodes = {}
 
+	local text_container = UIBox({
+		definition = {
+			n = G.UIT.ROOT,
+			config = { colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.O,
+					config = {
+						id = "text_area",
+						object = Moveable(),
+					},
+				},
+			},
+		},
+		config = {},
+	})
+	text_container.enc_original_object = true
+
+	local image_area_container = UIBox({
+		definition = {
+			n = G.UIT.ROOT,
+			config = { colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.R,
+					config = {
+						padding = 0.1,
+					},
+					nodes = {
+						{
+							n = G.UIT.C,
+							nodes = {
+								{
+									n = G.UIT.O,
+									config = {
+										id = "image_area",
+										object = UIBox(TheEncounter.UI.image_area_render(event)),
+									},
+								},
+							},
+						},
+						{
+							n = G.UIT.C,
+							config = {
+								minw = 0.1,
+								maxw = 0.1,
+							},
+						},
+					},
+				},
+			},
+		},
+		config = {},
+	})
+	image_area_container.enc_original_object = true
+
+	local choices_area_container = UIBox({
+		definition = {
+			n = G.UIT.ROOT,
+			config = { colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.O,
+					config = {
+						id = "choices_area",
+						object = Moveable(),
+					},
+				},
+			},
+		},
+		config = {},
+	})
+	choices_area_container.enc_original_object = true
+
 	main_nodes[#main_nodes + 1] = {
 		n = G.UIT.O,
 		config = {
-			id = "image_area",
-			object = UIBox(TheEncounter.UI.image_area_render(event)),
-		},
-	}
-	main_nodes[#main_nodes + 1] = {
-		n = G.UIT.C,
-		config = {
-			minw = 0.1,
-			maxw = 0.1,
+			id = "image_area_container",
+			object = image_area_container,
 		},
 	}
 	main_nodes[#main_nodes + 1] = {
@@ -106,8 +173,8 @@ function TheEncounter.UI.event_panel_render(event)
 					{
 						n = G.UIT.O,
 						config = {
-							id = "text_area",
-							object = Moveable(),
+							id = "text_area_container",
+							object = text_container,
 						},
 					},
 				},
@@ -140,8 +207,8 @@ function TheEncounter.UI.event_panel_render(event)
 									{
 										n = G.UIT.O,
 										config = {
-											id = "choices_area",
-											object = Moveable(),
+											id = "choices_area_container",
+											object = choices_area_container,
 										},
 									},
 								},
@@ -327,9 +394,12 @@ TheEncounter.UI.event_panel = function(event)
 	local event_ui = UIBox(TheEncounter.UI.event_panel_render(event))
 
 	event.ui.panel = event_ui
-	event.ui.image = event_ui:get_UIE_by_ID("image_area")
-	event.ui.text = event_ui:get_UIE_by_ID("text_area")
-	event.ui.choices = event_ui:get_UIE_by_ID("choices_area")
+	event.ui.image_container = event_ui:get_UIE_by_ID("image_area_container")
+	event.ui.image = event.ui.image_container.config.object:get_UIE_by_ID("image_area")
+	event.ui.text_container = event_ui:get_UIE_by_ID("text_area_container")
+	event.ui.text = event.ui.text_container.config.object:get_UIE_by_ID("text_area")
+	event.ui.choices_container = event_ui:get_UIE_by_ID("choices_area_container")
+	event.ui.choices = event.ui.choices_container.config.object:get_UIE_by_ID("choices_area")
 
 	G.E_MANAGER:add_event(Event({
 		func = function()

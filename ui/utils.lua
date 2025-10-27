@@ -22,9 +22,11 @@ TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 	return badges
 end
 
-TheEncounter.UI.set_element_object = function(container, object)
+TheEncounter.UI.set_element_object = function(container, object, no_remove)
 	if container then
-		container.config.object:remove()
+		if not no_remove then
+			container.config.object:remove()
+		end
 		container.config.object = object
 		if object then
 			object.config.parent = container

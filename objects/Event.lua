@@ -28,6 +28,13 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 		[self.STATES.SCENARIO_FINISH] = true,
 		[self.STATES.END] = true,
 	}
+	self.NO_UPDATE_STATES = {
+		[self.STATES.PREPARE] = true,
+		[self.STATES.SCENARIO_START] = true,
+		[self.STATES.SCENARIO_FINISH] = true,
+		[self.STATES.END] = true,
+	}
+	self.REMOVED = false
 
 	if save_table then
 		self.previous_step = TheEncounter.Step.resolve(save_table.previous_step) or self.previous_step
@@ -216,14 +223,56 @@ function TheEncounter.Event:finish_scenario(transition_func)
 end
 
 function TheEncounter.Event:update(dt)
-	if self.ui.text then
-		self.ui.text.states.visible = not self.ability.hide_text
+	if self.REMOVED or self.NO_UPDATE_STATES[self.STATE] then
+		return
 	end
-	if self.ui.image then
-		self.ui.image.states.visible = not self.ability.hide_image
+	local containers = {
+		{
+			c = self.ui.text_container,
+			v = not self.ability.hide_text,
+		},
+		{
+			c = self.ui.image_container,
+			v = not self.ability.hide_image,
+		},
+		{
+			c = self.ui.choices_container,
+			v = not self.ability.hide_choices,
+		},
+	}
+	local needs_recalculate = false
+	for _, container in ipairs(containers) do
+		container.c.states.visible = container.v
+		if not container.c.config.enc_original_object then
+			container.c.config.enc_original_object = container.c.config.object
+		end
+		if container.c.config.object then
+			if container.v and not container.c.config.object.enc_original_object then
+				TheEncounter.UI.set_element_object(container.c, container.c.config.enc_original_object)
+				needs_recalculate = true
+			elseif not container.v and container.c.config.object.enc_original_object then
+				TheEncounter.UI.set_element_object(container.c, Moveable(), true)
+				needs_recalculate = true
+			end
+		end
 	end
-	if self.ui.choices then
-		self.ui.choices.states.visible = not self.ability.hide_choices
+	if needs_recalculate then
+		self.ui.panel:recalculate()
+	end
+end
+function TheEncounter.Event:remove()
+	if self.REMOVED then
+		return
+	end
+	self.STATE = self.STATES.REMOVED
+	self.REMOVED = true
+	for key, value in pairs(self.ui) do
+		if Node:is(value) then
+			if value.config and value.config.enc_original_object then
+				value.config.enc_original_object:remove()
+			end
+			value:remove()
+		end
 	end
 end
 
@@ -233,7 +282,7 @@ local old_draw = CardArea.draw
 function CardArea:draw(...)
 	if G.STATE == G.STATES.ENC_EVENT then
 		local event = G.TheEncounter_event
-		if not event or event.HIDE_AREAS_STATES[event.STATE] then
+		if not event or event.REMOVED or event.HIDE_AREAS_STATES[event.STATE] then
 			if self == G.hand then
 				return
 			elseif self == G.deck then

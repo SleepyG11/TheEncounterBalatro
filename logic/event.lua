@@ -55,5 +55,26 @@ function TheEncounter.after_event_finish(event)
 	G.GAME.TheEncounter_save_table = nil
 	G.GAME.TheEncounter_choices = nil
 	G.GAME.TheEncounter_choice = nil
+	G.TheEncounter_event:remove()
 	G.TheEncounter_event = nil
+end
+
+local old_game_delete_run = Game.delete_run
+function Game:delete_run(...)
+	local result = old_game_delete_run(self, ...)
+	if self.TheEncounter_event then
+		self.TheEncounter_event:remove()
+		self.TheEncounter_event = nil
+	end
+	if self.ROOM then
+		if self.TheEncounter_blind_choices then
+			self.TheEncounter_blind_choices:remove()
+			self.TheEncounter_blind_choices = nil
+		end
+		if self.TheEncounter_prompt_box then
+			self.TheEncounter_prompt_box:remove()
+			self.TheEncounter_prompt_box = nil
+		end
+	end
+	return result
 end
