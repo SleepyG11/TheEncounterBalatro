@@ -229,24 +229,33 @@ function TheEncounter.Event:update(dt)
 	local containers = {
 		{
 			c = self.ui.text_container,
+			o = self.ui.text,
 			v = not self.ability.hide_text,
 		},
 		{
 			c = self.ui.image_container,
+			o = self.ui.image,
 			v = not self.ability.hide_image,
 		},
 		{
 			c = self.ui.choices_container,
+			o = self.ui.choices,
 			v = not self.ability.hide_choices,
 		},
 	}
 	local needs_recalculate = false
-	for _, container in ipairs(containers) do
+	for index, container in ipairs(containers) do
 		container.c.states.visible = container.v
+		container.o.states.visible = container.v
 		if not container.c.config.enc_original_object then
 			container.c.config.enc_original_object = container.c.config.object
 		end
+		container.c.config.enc_original_object.states.visible = container.v
+		if container.o and container.o.config.object then
+			container.o.config.object.states.visible = container.v
+		end
 		if container.c.config.object then
+			container.c.config.object.states.visible = container.v
 			if container.v and not container.c.config.object.enc_original_object then
 				TheEncounter.UI.set_element_object(container.c, container.c.config.enc_original_object)
 				needs_recalculate = true
