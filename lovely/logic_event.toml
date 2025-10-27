@@ -34,9 +34,9 @@ match_indent = true
 # position = 'before'
 # pattern = '''if G.shop and not G.shop.alignment.offset.py then'''
 # payload = '''
-# if G.enc_event_blind_select and not G.enc_event_blind_select.alignment.offset.py then
-#     G.enc_event_blind_select.alignment.offset.py = G.enc_event_blind_select.alignment.offset.y
-#     G.enc_event_blind_select.alignment.offset.y = G.ROOM.T.y + 39
+# if G.TheEncounter_blind_select and not G.TheEncounter_blind_select.alignment.offset.py then
+#     G.TheEncounter_blind_select.alignment.offset.py = G.TheEncounter_blind_select.alignment.offset.y
+#     G.TheEncounter_blind_select.alignment.offset.y = G.ROOM.T.y + 39
 # end
 # '''
 # match_indent = true
@@ -48,9 +48,9 @@ match_indent = true
 # position = 'before'
 # pattern = '''if area and area.cards[1] then'''
 # payload = '''
-# if G.enc_event_blind_select then
-#     G.enc_event_blind_select.alignment.offset.y = G.enc_event_blind_select.alignment.offset.py
-#     G.enc_event_blind_select.alignment.offset.py = nil
+# if G.TheEncounter_blind_select then
+#     G.TheEncounter_blind_select.alignment.offset.y = G.TheEncounter_blind_select.alignment.offset.py
+#     G.TheEncounter_blind_select.alignment.offset.py = nil
 # end
 # '''
 # match_indent = true

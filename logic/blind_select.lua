@@ -30,24 +30,14 @@ function Game:update_enc_event_select(dt)
 					trigger = "immediate",
 					func = function()
 						play_sound("cancel")
-						G.enc_event_blind_select = UIBox({
-							definition = {
-								n = G.UIT.ROOT,
-								config = { colour = G.C.CLEAR },
-								nodes = TheEncounter.UI.blind_choices(G.GAME.TheEncounter_choices),
-							},
-							config = {
-								align = "bmi",
-								offset = { x = 0, y = G.ROOM.T.y + 29 },
-								major = G.hand,
-								bond = "Weak",
-							},
-						})
-						G.enc_event_blind_select.alignment.offset.y = 0
+						G.TheEncounter_blind_select = UIBox(TheEncounter.UI.blind_select(G.GAME.TheEncounter_choices))
+						G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box())
+						G.TheEncounter_blind_select.alignment.offset.y = 0
 							- (G.hand.T.y - G.jokers.T.y)
-							+ G.enc_event_blind_select.T.h
+							+ G.TheEncounter_blind_select.T.h
 						G.ROOM.jiggle = G.ROOM.jiggle + 3
-						G.enc_event_blind_select.alignment.offset.x = 0
+						G.TheEncounter_blind_select.alignment.offset.x = 0
+						TheEncounter.UI.set_prompt_box()
 						G.CONTROLLER.lock_input = false
 						return true
 					end,
@@ -107,25 +97,26 @@ TheEncounter.select_choice = function(scenario, domain)
 	play_sound("timpani", 0.8)
 	play_sound("generic1")
 
-	if G.enc_event_blind_select then
+	if G.TheEncounter_blind_select then
 		G.E_MANAGER:add_event(Event({
 			trigger = "before",
 			delay = 0.2,
 			func = function()
-				G.enc_event_blind_select.alignment.offset.y = 40
-				G.enc_event_blind_select.alignment.offset.x = 0
+				G.TheEncounter_blind_select.alignment.offset.y = 40
+				G.TheEncounter_blind_select.alignment.offset.x = 0
 				return true
 			end,
 		}))
 		G.E_MANAGER:add_event(Event({
 			trigger = "immediate",
 			func = function()
-				G.enc_event_blind_select:remove()
-				G.enc_event_blind_select = nil
+				G.TheEncounter_blind_select:remove()
+				G.TheEncounter_blind_select = nil
 				delay(0.2)
 				return true
 			end,
 		}))
+		TheEncounter.UI.remove_prompt_box()
 	end
 	G.E_MANAGER:add_event(Event({
 		trigger = "immediate",
