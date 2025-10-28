@@ -1,0 +1,53 @@
+--- @meta
+
+--- @class TheEncounter.EventUI: table
+--- @field panel? Node Main event ui, were image, text and choices are placed
+--- @field image_container? Node
+--- @field image? Node Image area (a box on right side of panel)
+--- @field text_container? Node
+--- @field text? Node Text lines
+--- @field choices_container? Node
+--- @field choices? Node Buttons list
+--- @field text_objects? Node[] List of text lines which became visible in order
+--- @field next_text_object? number Index of text line which should become visible next
+--- @field colour? table Main UI colour
+--- @field inactive_colour? table UI colour for inactive buttons
+--- @field dark_colour? table Main UI colour, dark variant
+--- @field light_colour? table Main UI colour, slightly variant
+--- @field text_colour? table Main UI text colour (for lines and buttons)
+--- @field background_colour? table UI for background shader
+
+--- @class TheEncounter.Event: Object
+--- @field STATE number State currently event in
+--- @field STATES table<string, number> List of possible event states
+--- @field HIDE_AREAS_STATES table<number, boolean>
+--- @field NO_UPDATE_STATES table<number, boolean>
+--- @field REMOVED boolean If event was removed and should be discarded
+--- @field replaced_state number State which was replaced by event select (by default can be `G.STATES.BLIND_SELECT` or `G.STATES.SHOP`)
+--- @field temp_save_table? table
+--- @field domain TheEncounter.Domain Current domain
+--- @field scenario TheEncounter.Scenario Current scenario
+--- @field previous_step? TheEncounter.Step Previously finished step.
+--- @field current_step? TheEncounter.Step Step which is currently starting, started, in progress, or finishing.
+--- @field next_step? TheEncounter.Step Step which will be started after finishing `current_step`, starting step on scenario start, or `nil` on scenario finish.
+--- @field ability table Similar to `card.ability`, stores information which persists between steps and save/loading.<br/>Composed by merging `domain.config`, `scenario.config`. Each new step entered applies `current_step.ability`.<br/>**Must be serializable**
+--- @field data table Similar to `ability`, but specifically for live objects like cards, areas, etc.<br/>On saving, serialized as output of `current_step:save()`.<br/>On loading, deserialized as output of `current_step:load()`
+--- @field ui TheEncounter.EventUI
+--- @field set_colours fun(self: TheEncounter.Event, first_load: boolean)
+--- @field clear_colours fun(self: TheEncounter.Event)
+--- @field set_ability fun(self: TheEncounter.Event)
+--- @field init_ui fun(self: TheEncounter.Event)
+--- @field move_forward fun(self: TheEncounter.Event)
+--- @field start fun(self: TheEncounter.Event, func?: fun())
+--- @field enter_step fun(self: TheEncounter.Event, after_load: boolean, func?: fun())
+--- @field leave_step fun(self: TheEncounter.Event, func?: fun())
+--- @field finish fun(self: TheEncounter.Event, func?: fun())
+--- @field save fun(self: TheEncounter.Event): table?
+--- @field load fun(save_table: table): TheEncounter.Event
+--- @field show_lines fun(self: TheEncounter.Event, amount?: number, instant?: boolean) Display specified amount of lines of step text and put them in event queue. Useful when needed to do actions between text lines.
+--- @field start_step fun(self: TheEncounter.Event, key: string) Finish current step and start new one
+--- @field finish_scenario fun(self: TheEncounter.Event, transition_func?: fun()) Finish current step and scenario, and call `transition_func` on end, or set `G.STATE = replaced_state`
+--- @field update fun(self: TheEncounter.Event, dt: number)
+--- @field remove fun(self: TheEncounter.Event)
+--- @overload fun(scenario: TheEncounter.Scenario, domain: TheEncounter.Domain, save_table?: table): TheEncounter.Event
+TheEncounter.Event = {}
