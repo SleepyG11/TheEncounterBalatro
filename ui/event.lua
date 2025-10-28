@@ -14,6 +14,10 @@ function TheEncounter.UI.event_panel_sizes(event)
 	local image_area_size = (container_H - container_padding * 2 - header_H - content_padding * 2) / 1.25
 	local choices_H = 2.4
 	local text_H = (image_area_size * 1.25 - content_padding * 2 - choices_H)
+	local text_W = content_W - content_padding * 2
+	if not event.ability.hide_image then
+		text_W = text_W - image_area_size - 0.2
+	end
 
 	return {
 		container_H = container_H,
@@ -27,7 +31,9 @@ function TheEncounter.UI.event_panel_sizes(event)
 		content_padding = content_padding,
 		image_area_size = image_area_size,
 		choices_H = choices_H,
+		choices_W = text_W,
 		text_H = text_H,
+		text_W = text_W,
 	}
 end
 
@@ -52,6 +58,7 @@ function TheEncounter.UI.event_panel_render(event)
 	local image_area_size = sizes.image_area_size
 	local choices_H = sizes.choices_H
 	local text_H = sizes.text_H
+	local text_W = sizes.text_W
 
 	local event_text_name = {}
 	localize({
@@ -75,8 +82,6 @@ function TheEncounter.UI.event_panel_render(event)
 	local blind_dark_col = event.ui.dark_colour
 	local blind_light_col = event.ui.light_colour
 
-	local main_nodes = {}
-
 	local text_container = UIBox({
 		definition = {
 			n = G.UIT.ROOT,
@@ -86,8 +91,7 @@ function TheEncounter.UI.event_panel_render(event)
 					n = G.UIT.R,
 					config = {
 						minh = text_H,
-						maxh = text_H,
-						align = "c",
+						maxw = text_W,
 						padding = 0.1,
 					},
 					nodes = {
@@ -113,9 +117,6 @@ function TheEncounter.UI.event_panel_render(event)
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = {
-						padding = 0.1,
-					},
 					nodes = {
 						{
 							n = G.UIT.C,
@@ -132,8 +133,8 @@ function TheEncounter.UI.event_panel_render(event)
 						{
 							n = G.UIT.C,
 							config = {
-								minw = 0.1,
-								maxw = 0.1,
+								minw = 0.2,
+								maxw = 0.2,
 							},
 						},
 					},
@@ -151,11 +152,7 @@ function TheEncounter.UI.event_panel_render(event)
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = {
-						align = "c",
-						minh = choices_H,
-						maxh = choices_H,
-					},
+					config = {},
 					nodes = {
 						{
 							n = G.UIT.O,
@@ -172,52 +169,43 @@ function TheEncounter.UI.event_panel_render(event)
 	})
 	choices_area_container.enc_original_object = true
 
-	main_nodes[#main_nodes + 1] = {
-		n = G.UIT.O,
-		config = {
-			id = "image_area_container",
-			object = image_area_container,
-		},
-	}
-	main_nodes[#main_nodes + 1] = {
-		n = G.UIT.C,
-		nodes = {
-			{
-				n = G.UIT.R,
-				config = {},
-				nodes = {
-					{
-						n = G.UIT.O,
-						config = {
-							id = "text_area_container",
-							object = text_container,
-						},
+	local main_nodes = {
+		{
+			n = G.UIT.C,
+			nodes = {
+				{
+					n = G.UIT.O,
+					config = {
+						id = "image_area_container",
+						object = image_area_container,
 					},
 				},
 			},
-			{
-				n = G.UIT.R,
-				config = { minh = 0.1 },
-			},
-			{
-				n = G.UIT.R,
-				nodes = {
-					{
-						n = G.UIT.C,
-						config = {
-							minw = 0.23,
-							maxw = 0.23,
+		},
+		{
+			n = G.UIT.C,
+			nodes = {
+				{
+					n = G.UIT.R,
+					config = {},
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								id = "text_area_container",
+								object = text_container,
+							},
 						},
 					},
-					{
-						n = G.UIT.C,
-						nodes = {
-							{
-								n = G.UIT.O,
-								config = {
-									id = "choices_area_container",
-									object = choices_area_container,
-								},
+				},
+				{
+					n = G.UIT.R,
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								id = "choices_area_container",
+								object = choices_area_container,
 							},
 						},
 					},
@@ -241,7 +229,7 @@ function TheEncounter.UI.event_panel_render(event)
 					{
 						n = G.UIT.R,
 						config = {
-							padding = 0.05,
+							padding = 0.025,
 						},
 						nodes = {
 							{
@@ -255,7 +243,6 @@ function TheEncounter.UI.event_panel_render(event)
 									r = 0.1,
 									emboss = 0.05,
 									minh = header_H,
-									maxh = header_H,
 									padding = header_padding,
 									align = "cm",
 								},
@@ -271,10 +258,7 @@ function TheEncounter.UI.event_panel_render(event)
 					},
 					{
 						n = G.UIT.R,
-						config = {
-							r = 0.1,
-							align = "c",
-						},
+						config = { maxw = content_W, minw = content_W },
 						nodes = main_nodes,
 					},
 				},
@@ -421,6 +405,7 @@ TheEncounter.UI.event_panel = function(event)
 	return event
 end
 TheEncounter.UI.event_text_lines = function(event)
+	local sizes = TheEncounter.UI.event_panel_sizes(event)
 	local step = event.current_step
 
 	local t = { key = step.key, set = "enc_Step" }
@@ -453,7 +438,7 @@ TheEncounter.UI.event_text_lines = function(event)
 				nodes = {
 					{
 						n = G.UIT.R,
-						config = { align = "c", minh = 0.35 },
+						config = { align = "c", minh = 0.35, maxw = sizes.text_W },
 						nodes = line,
 					},
 				},
@@ -589,14 +574,15 @@ TheEncounter.UI.event_choices = function(event)
 		})
 	end
 
-	event_buttons_content =
-		{ {
+	event_buttons_content = {
+		{
 			n = G.UIT.R,
 			config = {
 				padding = 0.075,
 			},
 			nodes = event_buttons_content,
-		} }
+		},
+	}
 
 	G.E_MANAGER:add_event(Event({
 		trigger = "after",

@@ -233,16 +233,18 @@ function TheEncounter.Event:update(dt)
 			v = not self.ability.hide_text,
 		},
 		{
-			c = self.ui.image_container,
-			o = self.ui.image,
-			v = not self.ability.hide_image,
-		},
-		{
 			c = self.ui.choices_container,
 			o = self.ui.choices,
 			v = not self.ability.hide_choices,
 		},
 	}
+	if self.STATE == self.STATES.STEP_START then
+		table.insert(containers, {
+			c = self.ui.image_container,
+			o = self.ui.image,
+			v = not self.ability.hide_image,
+		})
+	end
 	local needs_recalculate = false
 	for index, container in ipairs(containers) do
 		container.c.states.visible = container.v

@@ -23,7 +23,7 @@ TheEncounter.Step({
 	key = "nothing_1",
 	loc_txt = {
 		text = {
-			"Looks like there's nothing here...",
+			"Looks like there's nothing here... And here... And here... And here... And here... And here... And here...And here...And here...And here...And here...And here...And here...And here...And here...",
 			" ",
 			"{C:inactive}Maybe I should look better?{}",
 		},
