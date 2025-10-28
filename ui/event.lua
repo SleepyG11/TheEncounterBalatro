@@ -16,7 +16,7 @@ function TheEncounter.UI.event_panel_sizes(event)
 	local text_H = (image_area_size * 1.25 - content_padding * 2 - choices_H)
 	local text_W = content_W - content_padding * 2
 	if not event.ability.hide_image then
-		text_W = text_W - image_area_size - 0.2
+		text_W = text_W - image_area_size
 	end
 
 	return {
@@ -57,6 +57,7 @@ function TheEncounter.UI.event_panel_render(event)
 
 	local image_area_size = sizes.image_area_size
 	local choices_H = sizes.choices_H
+	local choices_W = sizes.choices_W
 	local text_H = sizes.text_H
 	local text_W = sizes.text_W
 
@@ -130,13 +131,6 @@ function TheEncounter.UI.event_panel_render(event)
 								},
 							},
 						},
-						{
-							n = G.UIT.C,
-							config = {
-								minw = 0.2,
-								maxw = 0.2,
-							},
-						},
 					},
 				},
 			},
@@ -172,18 +166,9 @@ function TheEncounter.UI.event_panel_render(event)
 	local main_nodes = {
 		{
 			n = G.UIT.C,
-			nodes = {
-				{
-					n = G.UIT.O,
-					config = {
-						id = "image_area_container",
-						object = image_area_container,
-					},
-				},
+			config = {
+				minw = choices_W + 0.2,
 			},
-		},
-		{
-			n = G.UIT.C,
 			nodes = {
 				{
 					n = G.UIT.R,
@@ -208,6 +193,18 @@ function TheEncounter.UI.event_panel_render(event)
 								object = choices_area_container,
 							},
 						},
+					},
+				},
+			},
+		},
+		{
+			n = G.UIT.C,
+			nodes = {
+				{
+					n = G.UIT.O,
+					config = {
+						id = "image_area_container",
+						object = image_area_container,
 					},
 				},
 			},

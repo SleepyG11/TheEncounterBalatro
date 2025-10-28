@@ -132,5 +132,5 @@ TheEncounter.select_choice = function(scenario, domain)
 	}))
 end
 TheEncounter.should_encounter = function()
-	return false
+	return true
 end
