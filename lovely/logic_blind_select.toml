@@ -11,6 +11,21 @@ pattern = "G.STATE = G.STATES.BLIND_SELECT"
 position = 'after'
 payload = '''
 if TheEncounter.should_encounter() then
+    G.GAME.TheEncounter_replaced_state = G.STATE
+    G.STATE = G.STATES.ENC_EVENT_SELECT
+end
+'''
+match_indent = true
+
+# G.FUNCS.cash_out
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "G.STATE = G.STATES.SHOP"
+position = 'after'
+payload = '''
+if TheEncounter.should_encounter() then
+    G.GAME.TheEncounter_replaced_state = G.STATE
     G.STATE = G.STATES.ENC_EVENT_SELECT
 end
 '''

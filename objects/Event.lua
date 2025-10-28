@@ -36,6 +36,9 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 	}
 	self.REMOVED = false
 
+	self.replaced_state = G.GAME.TheEncounter_replaced_state
+	G.GAME.TheEncounter_replaced_state = nil
+
 	if save_table then
 		self.previous_step = TheEncounter.Step.resolve(save_table.previous_step) or self.previous_step
 		self.current_step = TheEncounter.Step.resolve(save_table.current_step) or self.current_step
@@ -44,6 +47,8 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 		self.ability = copy_table(save_table.ability or {})
 
 		self.temp_save_table = save_table
+
+		self.replaced_state = save_table.replaced_state or self.replaced_state
 	end
 
 	self:init_ui()
@@ -93,6 +98,9 @@ function TheEncounter.Event:set_colours(first_load)
 	end
 	ease_background_colour({ new_colour = new_background_colour, contrast = 1 })
 	G.GAME.blind:change_colour(new_colour)
+end
+function TheEncounter.Event:clear_colours()
+	G.GAME.blind:change_colour()
 end
 function TheEncounter.Event:set_ability()
 	self.ability = TheEncounter.table.merge(self.ability, self.current_step.config or {})
@@ -174,6 +182,7 @@ function TheEncounter.Event:finish(func)
 			SMODS.calculate_context({ enc_scenario_end = true, event = self })
 			TheEncounter.em.after_callback(function()
 				TheEncounter.UI.event_finish(self)
+				self:clear_colours()
 				TheEncounter.em.after_callback(function()
 					TheEncounter.after_event_finish(self)
 					TheEncounter.em.after_callback(func, true)
@@ -199,6 +208,8 @@ function TheEncounter.Event:save()
 		ability = self.ability,
 
 		data = self.current_step:save(self, self.data) or {},
+
+		replaced_state = self.replaced_state,
 	}
 	return save_table
 end
@@ -218,7 +229,7 @@ function TheEncounter.Event:start_step(key)
 end
 function TheEncounter.Event:finish_scenario(transition_func)
 	self:finish(transition_func or function()
-		G.STATE = G.STATES.BLIND_SELECT
+		G.STATE = self.replaced_state or G.STATES.BLIND_SELECT
 		G.STATE_COMPLETE = false
 	end)
 end
