@@ -92,6 +92,7 @@ function TheEncounter.Event:set_colours(first_load)
 		end
 	end
 	ease_background_colour({ new_colour = new_background_colour, contrast = 1 })
+	G.GAME.blind:change_colour(new_colour)
 end
 function TheEncounter.Event:set_ability()
 	self.ability = TheEncounter.table.merge(self.ability, self.current_step.config or {})
