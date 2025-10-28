@@ -196,11 +196,11 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	local result_pool = {}
 
 	-- Now we have list of domains in pool, now we're doing a loop like in vanilla for blinds
-	if not args.allow_duplicates and not args.ignore_everything then
+	if not args.allow_repeats and not args.ignore_everything then
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
 		for _, item in ipairs(rarity_pool) do
-			if not (item.value.allow_duplicates or item.opts.allow_duplicates) then
+			if not (item.value.can_repeat or item.opts.can_repeat) then
 				max_value = math.max(max_value, item.count)
 				min_value = math.min(min_value, item.count)
 			end
@@ -209,7 +209,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		if max_value > min_value then
 			-- Add only which are less than minimal value
 			for _, item in ipairs(rarity_pool) do
-				if item.value.allow_duplicates or item.opts.allow_duplicates or item.count < max_value then
+				if item.value.can_repeat or item.opts.can_repeat or item.count < max_value then
 					table.insert(result_pool, item.value)
 				end
 			end
@@ -397,11 +397,11 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	local is_filled = false
 
 	-- Now we have list of scenarios in pool, now we're doing a loop like in vanilla for blinds
-	if not args.allow_duplicates and not args.ignore_everything then
+	if not args.allow_repeats and not args.ignore_everything then
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
 		for _, item in ipairs(temp_pool) do
-			if not (item.value.allow_duplicates or item.opts.allow_duplicates) then
+			if not (item.value.allow_repeats or item.opts.can_repeat or item.opts.allow_repeats) then
 				max_value = math.max(max_value, item.count)
 				min_value = math.min(min_value, item.count)
 			end
@@ -410,7 +410,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		if max_value > min_value then
 			-- Add only which are less than minimal value
 			for _, item in ipairs(temp_pool) do
-				if item.value.allow_duplicates or item.opts.allow_duplicates or item.count < max_value then
+				if item.value.allow_repeats or item.opts.can_repeat or item.count < max_value then
 					table.insert(result_pool, item.value)
 				end
 			end

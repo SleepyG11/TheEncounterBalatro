@@ -5,7 +5,7 @@ TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 
 	badges = badges or {}
 	if scenario then
-		scenario:set_badges(domain, badges)
+		scenario:set_badges(badges, domain)
 	end
 	domain:set_badges(badges)
 	if not args.no_rarity then

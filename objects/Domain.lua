@@ -38,7 +38,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 		return self.weight
 	end,
 
-	loc_vars = function(self)
+	loc_vars = function(self, info_queue)
 		return {}
 	end,
 	collection_loc_vars = function(self, info_queue)

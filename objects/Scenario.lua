@@ -26,6 +26,8 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 
 	domains = {},
 
+	reward = nil,
+
 	-- main text colour
 	text_colour = nil,
 	-- UI colour
@@ -66,7 +68,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		local atlas = (self.atlas and G.ANIMATION_ATLAS[self.atlas]) or domain_atlas
 		return atlas, self.pos or domain_pos
 	end,
-	set_badges = function(self, domain, badges) end,
+	set_badges = function(self, badges, domain) end,
 })
 
 TheEncounter.Scenario.resolve = function(scenario)
