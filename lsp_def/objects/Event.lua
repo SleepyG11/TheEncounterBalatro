@@ -30,7 +30,7 @@
 --- @field previous_step? TheEncounter.Step Previously finished step.
 --- @field current_step? TheEncounter.Step Step which is currently starting, started, in progress, or finishing.
 --- @field next_step? TheEncounter.Step Step which will be started after finishing `current_step`, starting step on scenario start, or `nil` on scenario finish.
---- @field ability table Similar to `card.ability`, stores information which persists between steps and save/loading.<br/>Composed by merging `domain.config`, `scenario.config`. Each new step entered applies `current_step.ability`.<br/>**Must be serializable**
+--- @field ability TheEncounter.EventAbility Similar to `card.ability`, stores information which persists between steps and save/loading.<br/>Composed by merging `domain.config`, `scenario.config`. Each new step entered applies `current_step.ability`.<br/>**Must be serializable**
 --- @field data table Similar to `ability`, but specifically for live objects like cards, areas, etc.<br/>On saving, serialized as output of `current_step:save()`.<br/>On loading, deserialized as output of `current_step:load()`
 --- @field ui TheEncounter.EventUI
 --- @field set_colours fun(self: TheEncounter.Event, first_load: boolean)
