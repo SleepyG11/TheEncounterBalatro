@@ -10,7 +10,9 @@ target = "functions/button_callbacks.lua"
 pattern = "G.STATE = G.STATES.BLIND_SELECT"
 position = 'after'
 payload = '''
-G.STATE = G.STATES.ENC_EVENT_SELECT
+if TheEncounter.should_encounter() then
+    G.STATE = G.STATES.ENC_EVENT_SELECT
+end
 '''
 match_indent = true
 
