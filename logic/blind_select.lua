@@ -65,7 +65,7 @@ TheEncounter.poll_choices = function()
 	G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args
 		or {
 			increment_usage = true,
-			using_fallback = true,
+			with_fallback = true,
 		}
 	G.GAME.TheEncounter_choices = G.GAME.TheEncounter_choices or {}
 
@@ -109,10 +109,7 @@ TheEncounter.select_choice = function(scenario, domain)
 						func = function()
 							domain = TheEncounter.Domain.resolve(domain)
 							if not scenario then
-								scenario = TheEncounter.POOL.poll_scenario(
-									domain,
-									{ increment_usage = true, with_fallback = true }
-								)
+								scenario = TheEncounter.POOL.poll_scenario(domain, G.GAME.TheEncounter_choices_args)
 							end
 							scenario = TheEncounter.Scenario.resolve(scenario)
 							G.GAME.TheEncounter_choice = {
