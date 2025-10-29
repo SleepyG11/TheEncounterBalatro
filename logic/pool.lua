@@ -63,18 +63,18 @@ TheEncounter.POOL.poll_rarity = function(args)
 	-- GAMBLING!
 	local rarity_poll = pseudorandom(args.seed or ("enc_rarity" .. G.GAME.round_resets.ante))
 
-	-- Calculate selected rarity
-	local weight_i = 0
-	for _, v in ipairs(filtered_rarities) do
-		weight_i = weight_i + v.weight
-		if rarity_poll < weight_i then
-			return vanilla_reverse_rarities[v.key] or v.key
+	if #filtered_rarities > 0 then
+		-- Calculate selected rarity
+		local weight_i = 0
+		for _, v in ipairs(filtered_rarities) do
+			weight_i = weight_i + v.weight
+			if rarity_poll < weight_i then
+				return vanilla_reverse_rarities[v.key] or v.key
+			end
 		end
 	end
-	if args.will_fallback then
-		return TheEncounter.POOL.get_fallback_rarity(), true
-	end
-	return nil, true
+
+	return (not args.without_fallback) and TheEncounter.POOL.get_fallback_rarity() or nil, true
 end
 
 -- Domains pool
@@ -180,10 +180,11 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		for _, v in ipairs(temp_pool) do
 			table.insert(items_in_pool, v.value)
 		end
-		local rarity = TheEncounter.POOL.poll_rarity({
-			domains_in_pool = items_in_pool,
-			without_fallback = args.without_fallback,
-		})
+		local rarity = args.rarity
+			or TheEncounter.POOL.poll_rarity({
+				domains_in_pool = items_in_pool,
+				without_fallback = args.without_fallback,
+			})
 		for _, item in ipairs(temp_pool) do
 			if item.opts.ignore_rarity or (rarity and item.value.rarity == rarity) then
 				table.insert(rarity_pool, item)
@@ -244,13 +245,10 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 		})
 	end
 
-	if #pullable == 0 then
-		local fallback = not args.without_fallback and TheEncounter.POOL.get_fallback_domain() or nil
-		return fallback, true
-	else
-		-- GAMBLING!
-		local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
+	-- GAMBLING!
+	local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
 
+	if #pullable > 0 then
 		local weight_i = 0
 		for _, item in ipairs(pullable) do
 			weight_i = weight_i + item.weight
@@ -262,6 +260,8 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 			end
 		end
 	end
+
+	return (not args.without_fallback) and TheEncounter.POOL.get_fallback_domain() or nil, true
 end
 TheEncounter.POOL.poll_domains = function(amount, args, duplicates_list)
 	amount = amount or 1
@@ -450,13 +450,10 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 		})
 	end
 
-	if #pullable == 0 then
-		local fallback = not args.without_fallback and TheEncounter.POOL.get_fallback_scenario(domain) or nil
-		return fallback, true
-	else
-		-- GAMBLING!
-		local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
+	-- GAMBLING!
+	local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
 
+	if #pullable > 0 then
 		local weight_i = 0
 		for _, item in ipairs(pullable) do
 			weight_i = weight_i + item.weight
@@ -468,6 +465,8 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 			end
 		end
 	end
+
+	return (not args.without_fallback) and TheEncounter.POOL.get_fallback_scenario(domain) or nil, true
 end
 TheEncounter.POOL.poll_scenarios = function(domain, amount, args, duplicates_list)
 	amount = amount or 1
