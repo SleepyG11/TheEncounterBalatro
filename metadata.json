@@ -3,12 +3,12 @@
 	"name": "TheEncounter",
 	"display_name": "TheEncounter",
 	"author": ["SleepyG11", "N'"],
-	"description": "Choices, choices, choices...",
+	"description": "Events API",
 	"prefix": "enc",
 	"main_file": "index.lua",
-	"priority": 0,
-	"badge_colour": "#f5e27a",
-	"badge_text_colour": "#ffffff",
+	"priority": -1000000,
+	"badge_colour": "B0B0B0",
+	"badge_text_colour": "292B2B",
 	"version": "0.1.0",
-	"conflicts": ["HotPot"]
+	"conflicts": ["HotPotato"]
 }
