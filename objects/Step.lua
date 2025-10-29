@@ -27,11 +27,11 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	end,
 
 	config = {
-		-- hide_hand = true,
-		-- hide_deck = false,
-		-- hide_text = false,
-		-- hide_image = false,
-		-- hide_choices = false,
+		hide_hand = nil,
+		hide_deck = nil,
+		hide_text = nil,
+		hide_image = nil,
+		hide_choices = nil,
 		extra = {},
 	},
 
@@ -51,7 +51,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	start = function(self, event, after_load) end,
 	finish = function(self, event) end,
 
-	should_save = false,
+	can_save = nil,
 	save = function(self, event, data) end,
 	load = function(self, event, save_table) end,
 

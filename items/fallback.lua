@@ -44,7 +44,7 @@ TheEncounter.Step({
 	},
 	colour = HEX("BF009D"),
 	background_colour = HEX("9A007F"),
-	should_save = true,
+	can_save = true,
 	start = function(self, event)
 		event:show_lines(1)
 		delay(1)
@@ -69,7 +69,7 @@ TheEncounter.Step({
 	},
 	colour = HEX("6900CA"),
 	background_colour = HEX("5700A9"),
-	should_save = true,
+	can_save = true,
 })
 TheEncounter.Scenario({
 	key = "nothing",

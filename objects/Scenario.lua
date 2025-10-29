@@ -45,7 +45,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		return self.weight
 	end,
 
-	should_save = false,
+	can_save = false,
 	save = function(self, event, data) end,
 	load = function(self, event, save_table) end,
 

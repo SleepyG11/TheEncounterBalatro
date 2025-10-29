@@ -11,7 +11,7 @@
 --- @field in_pool? fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): boolean, table?
 --- @field default_weight? number
 --- @field get_weight? fun(self: TheEncounter.Scenario, weight: number, domain?: TheEncounter.Domain): number
---- @field should_save? boolean
+--- @field can_save? boolean Can event state be saved during each step. `step.can_save` takes priority
 --- @field save? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, data: table): table
 --- @field load? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, save_data: table): table
 --- @field loc_vars? fun(self: TheEncounter.Scenario, info_queue: table, domain?: TheEncounter.Domain): table
