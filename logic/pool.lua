@@ -182,7 +182,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		end
 		local rarity = TheEncounter.POOL.poll_rarity({
 			domains_in_pool = items_in_pool,
-			with_fallback = args.with_fallback,
+			without_fallback = args.without_fallback,
 		})
 		for _, item in ipairs(temp_pool) do
 			if item.opts.ignore_rarity or (rarity and item.value.rarity == rarity) then
@@ -245,7 +245,7 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 	end
 
 	if #pullable == 0 then
-		local fallback = args.with_fallback and TheEncounter.POOL.get_fallback_domain() or nil
+		local fallback = not args.without_fallback and TheEncounter.POOL.get_fallback_domain() or nil
 		return fallback, true
 	else
 		-- GAMBLING!
@@ -451,7 +451,7 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 	end
 
 	if #pullable == 0 then
-		local fallback = args.with_fallback and TheEncounter.POOL.get_fallback_scenario(domain) or nil
+		local fallback = not args.without_fallback and TheEncounter.POOL.get_fallback_scenario(domain) or nil
 		return fallback, true
 	else
 		-- GAMBLING!

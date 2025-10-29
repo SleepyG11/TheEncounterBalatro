@@ -62,11 +62,9 @@ end
 
 TheEncounter.poll_choices = function()
 	G.GAME.TheEncounter_choices_amount = G.GAME.TheEncounter_choices_amount or 2
-	G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args
-		or {
-			increment_usage = true,
-			with_fallback = true,
-		}
+	G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args or {
+		increment_usage = true,
+	}
 	G.GAME.TheEncounter_choices = G.GAME.TheEncounter_choices or {}
 
 	local duplicates_list = {}
