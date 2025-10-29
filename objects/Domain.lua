@@ -29,6 +29,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	-- Shader colour
 	background_colour = G.C.MULT,
 
+	once_per_run = false,
 	can_repeat = true,
 	in_pool = function(self)
 		return true
