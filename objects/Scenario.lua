@@ -20,7 +20,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		hide_deck = false,
 		hide_text = false,
 		hide_image = false,
-		hide_buttons = false,
+		hide_choices = false,
 		extra = {},
 	},
 
@@ -44,6 +44,10 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	get_weight = function(self, weight, domain)
 		return self.weight
 	end,
+
+	should_save = false,
+	save = function(self, event, data) end,
+	load = function(self, event, save_table) end,
 
 	loc_vars = function(self, info_queue, domain)
 		return {}

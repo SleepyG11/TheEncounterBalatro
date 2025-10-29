@@ -5,7 +5,7 @@
 --- @field rarity? string|number
 --- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons
---- @field colour? table Base colur for event panel
+--- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader
 --- @field once_per_run? boolean
 --- @field can_repeat? boolean Is this object bypasses unique loop (like boss blinds loop in vanilla)

@@ -13,9 +13,10 @@
 
 --- @alias TheEncounter.RewardDisplay string | number | TheEncounter.RewardDisplayObject
 
+--- Table similar to `card.ability`, which stores various values during event.<br/>**Must be serializeable.**
 --- @class TheEncounter.EventAbility: table
---- @field hide_hand? boolean
---- @field hide_deck? boolean
---- @field hide_text? boolean
---- @field hide_image? boolean
---- @field hide_buttons? boolean
+--- @field hide_hand? boolean Should `G.hand` be hidden
+--- @field hide_deck? boolean Should `G.deck` be hidden
+--- @field hide_text? boolean Should event text `event.ui.text` be hidden (this will free space it uses)
+--- @field hide_image? boolean Should event image `event.ui.image` be hidden (this will free space it uses, updates only during step change)
+--- @field hide_choices? boolean Should event choices `event.ui.choices` be hidden (this will free space it uses)

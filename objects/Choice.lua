@@ -14,7 +14,9 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 		SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower(), self.loc_txt)
 	end,
 
-	config = {},
+	config = {
+		extra = {},
+	},
 
 	button = function(self, event, ability)
 		event:finish_scenario()

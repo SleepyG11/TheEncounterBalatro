@@ -126,10 +126,11 @@ function TheEncounter.Event:start(func)
 	local after_load = false
 	TheEncounter.em.after_callback(function()
 		if save_table then
-			if self.current_step.should_save then
-				self.data = self.current_step:load(self, save_table.data or {}) or save_table.data or {}
-				after_load = true
-			end
+			local data_object = save_table.data or {}
+			data_object = self.scenario:load(self, data_object) or data_object
+			data_object = self.current_step:load(self, data_object) or data_object
+			self.data = data_object
+			after_load = true
 		else
 			self:move_forward()
 		end
@@ -194,9 +195,16 @@ function TheEncounter.Event:finish(func)
 end
 
 function TheEncounter.Event:save()
-	if not self.current_step or not self.current_step.should_save then
+	if
+		not self.current_step
+		or not TheEncounter.table.first_not_nil(self.current_step.should_save, self.scenario.should_save)
+	then
 		return G.GAME.TheEncounter_save_table or nil
 	end
+
+	local data_object = self.current_step:save(self, self.data) or self.data or {}
+	data_object = self.scenario:save(self, data_object) or data_object
+
 	local save_table = {
 		domain = self.domain.key,
 		scenario = self.scenario.key,
@@ -207,7 +215,7 @@ function TheEncounter.Event:save()
 
 		ability = self.ability,
 
-		data = self.current_step:save(self, self.data) or {},
+		data = data_object,
 
 		replaced_state = self.replaced_state,
 	}

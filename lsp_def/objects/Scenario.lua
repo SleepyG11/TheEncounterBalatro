@@ -4,13 +4,16 @@
 --- @field config? TheEncounter.EventAbility
 --- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons
---- @field colour? table Base colur for event panel
+--- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader
 --- @field once_per_run? boolean
 --- @field can_repeat? boolean Is this object bypasses unique loop (like boss blinds loop in vanilla)
 --- @field in_pool? fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): boolean, table?
 --- @field default_weight? number
 --- @field get_weight? fun(self: TheEncounter.Scenario, weight: number, domain?: TheEncounter.Domain): number
+--- @field should_save? boolean
+--- @field save? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, data: table): table
+--- @field load? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, save_data: table): table
 --- @field loc_vars? fun(self: TheEncounter.Scenario, info_queue: table, domain?: TheEncounter.Domain): table
 --- @field collection_loc_vars? fun(self: TheEncounter.Scenario, info_queue: table, domain?: TheEncounter.Domain): table
 --- @field atlas? string
