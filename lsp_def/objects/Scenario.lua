@@ -6,6 +6,7 @@
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colur for event panel
 --- @field background_colour? table Colour for background shader
+--- @field once_per_run? boolean
 --- @field can_repeat? boolean Is this object bypasses unique loop (like boss blinds loop in vanilla)
 --- @field in_pool? fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): boolean, table?
 --- @field default_weight? number
