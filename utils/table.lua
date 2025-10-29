@@ -136,3 +136,13 @@ function TheEncounter.table.merge(target, source, ...)
 
 	return target
 end
+
+function TheEncounter.table.first_not_nil(...)
+	local args = { ... }
+	for _, value in pairs(args) do
+		if value ~= nil then
+			return value
+		end
+	end
+	return nil
+end

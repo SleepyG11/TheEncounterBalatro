@@ -127,16 +127,15 @@ TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 
 	-- Once per run check + bypass
 	if
-		domain.once_per_run
-		and not args.ignore_once_per_run
-		and not pool_opts.ignore_once_per_run
+		not args.ignore_once_per_run
+		and TheEncounter.table.first_not_nil(pool_opts.once_per_run, domain.once_per_run)
 		and TheEncounter.POOL.get_domains_usage()[domain.key] > 0
 	then
 		return false, pool_opts
 	end
 
 	-- Check is this domain in duplicate_list + bypass
-	if not (domain.ignore_unique or args.ignore_unique or pool_opts.ignore_unique) then
+	if not (args.ignore_unique or TheEncounter.table.first_not_nil(pool_opts.ignore_unique, domain.ignore_unique)) then
 		if duplicates_list[domain.key] then
 			return false, pool_opts
 		end
@@ -200,7 +199,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
 		for _, item in ipairs(rarity_pool) do
-			if not (item.value.can_repeat or item.opts.can_repeat) then
+			if not (TheEncounter.table.first_not_nil(item.opts.can_repeat, item.value.can_repeat)) then
 				max_value = math.max(max_value, item.count)
 				min_value = math.min(min_value, item.count)
 			end
@@ -209,7 +208,10 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		if max_value > min_value then
 			-- Add only which are less than minimal value
 			for _, item in ipairs(rarity_pool) do
-				if item.value.can_repeat or item.opts.can_repeat or item.count < max_value then
+				if
+					item.count < max_value
+					or TheEncounter.table.first_not_nil(item.opts.can_repeat, item.value.can_repeat)
+				then
 					table.insert(result_pool, item.value)
 				end
 			end
@@ -330,16 +332,17 @@ TheEncounter.POOL.is_scenario_in_pool = function(scenario, domain, args, duplica
 
 	-- Once per run check + bypass
 	if
-		scenario.once_per_run
-		and not args.ignore_once_per_run
-		and not pool_opts.ignore_once_per_run
+		not args.ignore_once_per_run
+		and TheEncounter.table.first_not_nil(pool_opts.once_per_run, scenario.once_per_run)
 		and TheEncounter.POOL.get_scenarios_usage(domain)[scenario.key] > 0
 	then
 		return false, pool_opts
 	end
 
 	-- Check is this scenario in duplicate_list + bypass
-	if not (scenario.ignore_unique or args.ignore_unique or pool_opts.ignore_unique) then
+	if
+		not (args.ignore_unique or TheEncounter.table.first_not_nil(pool_opts.ignore_unique, scenario.ignore_unique))
+	then
 		if duplicates_list[scenario.key] then
 			return false, pool_opts
 		end
@@ -401,7 +404,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		-- Count minimal encounters amount
 		local min_value, max_value = math.huge, 0
 		for _, item in ipairs(temp_pool) do
-			if not (item.value.allow_repeats or item.opts.can_repeat or item.opts.allow_repeats) then
+			if not (TheEncounter.table.first_not_nil(item.opts.can_repeat, item.value.can_repeat)) then
 				max_value = math.max(max_value, item.count)
 				min_value = math.min(min_value, item.count)
 			end
@@ -410,7 +413,10 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		if max_value > min_value then
 			-- Add only which are less than minimal value
 			for _, item in ipairs(temp_pool) do
-				if item.value.allow_repeats or item.opts.can_repeat or item.count < max_value then
+				if
+					item.count < max_value
+					or TheEncounter.table.first_not_nil(item.opts.can_repeat, item.value.can_repeat)
+				then
 					table.insert(result_pool, item.value)
 				end
 			end
