@@ -21,3 +21,7 @@
 --- @field set_badges? fun(self: TheEncounter.Domain, badges: table)
 --- @overload fun(self: TheEncounter.Domain): TheEncounter.Domain
 TheEncounter.Domain = {}
+
+--- @param domain? string | TheEncounter.Domain
+--- @return TheEncounter.Domain | nil
+function TheEncounter.Domain.resolve(domain) end

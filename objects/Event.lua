@@ -246,6 +246,9 @@ function TheEncounter.Event:update(dt)
 	if self.REMOVED or self.NO_UPDATE_STATES[self.STATE] then
 		return
 	end
+	self.scenario:update(self, dt)
+	self.current_step:update(self, dt)
+
 	local containers = {
 		{
 			c = self.ui.text_container,

@@ -17,3 +17,7 @@
 --- @field loc_vars? fun(self: TheEncounter.Step, info_queue: table, event: TheEncounter.Event): table
 --- @overload fun(self: TheEncounter.Step): TheEncounter.Step
 TheEncounter.Step = {}
+
+--- @param step? string | TheEncounter.Step
+--- @return TheEncounter.Step | nil
+function TheEncounter.Step.resolve(step) end

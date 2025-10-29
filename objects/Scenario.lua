@@ -74,6 +74,8 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		return atlas, self.pos or domain_pos
 	end,
 	set_badges = function(self, badges, domain) end,
+
+	update = function(self, event, dt) end,
 })
 
 TheEncounter.Scenario.resolve = function(scenario)

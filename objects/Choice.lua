@@ -18,6 +18,8 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 		extra = {},
 	},
 
+	inactive_colour = nil,
+
 	button = function(self, event, ability)
 		event:finish_scenario()
 	end,

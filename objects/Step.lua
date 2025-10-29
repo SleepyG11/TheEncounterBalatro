@@ -59,6 +59,8 @@ TheEncounter.Step = SMODS.GameObject:extend({
 		return {}
 	end,
 	inject = function() end,
+
+	update = function(self, event, dt) end,
 })
 
 TheEncounter.Step.resolve = function(step)
