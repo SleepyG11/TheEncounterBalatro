@@ -67,7 +67,7 @@ TheEncounter.poll_choices = function()
 	}
 
 	local duplicates_list = {}
-	for _, item in ipairs(G.GAME.TheEncounter_choices) do
+	for _, item in ipairs(G.GAME.TheEncounter_choices or {}) do
 		if item.scenario_key then
 			duplicates_list[item.scenario_key] = true
 		end
