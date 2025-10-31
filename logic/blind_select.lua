@@ -14,7 +14,7 @@ function Game:update_enc_event_select(dt)
 		stop_use()
 		ease_background_colour_blind(G.STATES.BLIND_SELECT)
 		if not G.GAME.TheEncounter_choices then
-			TheEncounter.poll_choices()
+			G.GAME.TheEncounter_choices = TheEncounter.poll_choices()
 		end
 		G.E_MANAGER:add_event(Event({
 			func = function()
@@ -65,7 +65,6 @@ TheEncounter.poll_choices = function()
 	G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args or {
 		increment_usage = true,
 	}
-	G.GAME.TheEncounter_choices = G.GAME.TheEncounter_choices or {}
 
 	local duplicates_list = {}
 	for _, item in ipairs(G.GAME.TheEncounter_choices) do
@@ -87,44 +86,19 @@ TheEncounter.poll_choices = function()
 		})
 	end
 
-	G.GAME.TheEncounter_choices = result
+	return result
 end
 TheEncounter.select_choice = function(scenario, domain)
-	play_sound("timpani", 0.8)
-	play_sound("generic1")
+	domain = TheEncounter.Domain.resolve(domain)
+	if not scenario then
+		scenario = TheEncounter.POOL.poll_scenario(domain, G.GAME.TheEncounter_choices_args)
+	end
+	scenario = TheEncounter.Scenario.resolve(scenario)
 
-	TheEncounter.UI.remove_blind_choices()
-	TheEncounter.UI.remove_prompt_box()
-	G.E_MANAGER:add_event(Event({
-		trigger = "immediate",
-		func = function()
-			G.RESET_JIGGLES = nil
-			G.E_MANAGER:add_event(Event({
-				trigger = "immediate",
-				func = function()
-					G.E_MANAGER:add_event(Event({
-						trigger = "immediate",
-						func = function()
-							domain = TheEncounter.Domain.resolve(domain)
-							if not scenario then
-								scenario = TheEncounter.POOL.poll_scenario(domain, G.GAME.TheEncounter_choices_args)
-							end
-							scenario = TheEncounter.Scenario.resolve(scenario)
-							G.GAME.TheEncounter_choice = {
-								domain_key = domain.key,
-								scenario_key = scenario.key,
-							}
-							G.STATE = G.STATES.ENC_EVENT
-							G.STATE_COMPLETE = false
-							return true
-						end,
-					}))
-					return true
-				end,
-			}))
-			return true
-		end,
-	}))
+	return {
+		domain_key = domain.key,
+		scenario_key = scenario.key,
+	}
 end
 TheEncounter.should_encounter = function()
 	return true

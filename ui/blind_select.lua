@@ -489,5 +489,34 @@ function TheEncounter.UI.remove_prompt_box()
 end
 
 function G.FUNCS.enc_start_event(e)
-	TheEncounter.select_choice(e.config.enc_scenario, e.config.enc_domain)
+	G.GAME.TheEncounter_choice = TheEncounter.select_choice(
+		TheEncounter.Scenario.resolve(e.config.enc_scenario),
+		TheEncounter.Domain.resolve(e.config.enc_domain)
+	)
+	play_sound("timpani", 0.8)
+	play_sound("generic1")
+
+	TheEncounter.UI.remove_blind_choices()
+	TheEncounter.UI.remove_prompt_box()
+	G.E_MANAGER:add_event(Event({
+		trigger = "immediate",
+		func = function()
+			G.RESET_JIGGLES = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = "immediate",
+				func = function()
+					G.E_MANAGER:add_event(Event({
+						trigger = "immediate",
+						func = function()
+							G.STATE = G.STATES.ENC_EVENT
+							G.STATE_COMPLETE = false
+							return true
+						end,
+					}))
+					return true
+				end,
+			}))
+			return true
+		end,
+	}))
 end
