@@ -31,8 +31,8 @@ function Game:update_enc_event_select(dt)
 					func = function()
 						play_sound("cancel")
 						G.TheEncounter_blind_choices =
-							UIBox(TheEncounter.UI.blind_choices_render(G.GAME.TheEncounter_choices))
-						TheEncounter.UI.set_blind_choices()
+							UIBox(TheEncounter.UI.event_choices_render(G.GAME.TheEncounter_choices))
+						TheEncounter.UI.set_event_choices()
 
 						G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box_render())
 						TheEncounter.UI.set_prompt_box()

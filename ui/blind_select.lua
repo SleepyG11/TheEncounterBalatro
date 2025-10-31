@@ -1,5 +1,5 @@
 -- Blind select
-function TheEncounter.UI.blind_choice_UIBox(index, total, scenario, domain)
+function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 	local disabled = false
 	local run_info = false
 
@@ -319,45 +319,35 @@ function TheEncounter.UI.blind_choice_UIBox(index, total, scenario, domain)
 			},
 		},
 	}
-	return t
-end
-function TheEncounter.UI.blind_choice_UIBox_container(index, total, scenario, domain)
-	local blind_col = (scenario and scenario.colour) or domain.colour or G.C.MULT
 	return {
-		n = G.UIT.O,
-		config = {
-			align = "cm",
-			object = UIBox({
-				definition = {
-					n = G.UIT.ROOT,
-					config = { align = "cm", colour = G.C.CLEAR },
-					nodes = {
-						UIBox_dyn_container(
-							{ TheEncounter.UI.blind_choice_UIBox(index, total, scenario, domain) },
-							false,
-							blind_col,
-							mix_colours(G.C.BLACK, blind_col, 0.8)
-						),
-					},
-				},
-				config = { align = "bmi", offset = { x = 0, y = 0 } },
-			}),
+		definition = {
+			n = G.UIT.ROOT,
+			config = { align = "cm", colour = G.C.CLEAR },
+			nodes = {
+				UIBox_dyn_container({ t }, false, blind_col, mix_colours(G.C.BLACK, blind_col, 0.8)),
+			},
 		},
+		config = { align = "bmi", offset = { x = 0, y = 0 } },
 	}
 end
-function TheEncounter.UI.blind_choices_render(choices)
+function TheEncounter.UI.event_choices_render(choices)
 	local choice_nodes = {}
 	local total_items = #choices
 	for i, choice in ipairs(choices) do
-		table.insert(
-			choice_nodes,
-			TheEncounter.UI.blind_choice_UIBox_container(
-				i,
-				total_items,
-				TheEncounter.Scenarios[choice.scenario_key] or nil,
-				TheEncounter.Domains[choice.domain_key]
-			)
-		)
+		table.insert(choice_nodes, {
+			n = G.UIT.O,
+			config = {
+				align = "cm",
+				object = UIBox(
+					TheEncounter.UI.event_choice_render(
+						i,
+						total_items,
+						TheEncounter.Scenarios[choice.scenario_key] or nil,
+						TheEncounter.Domains[choice.domain_key]
+					)
+				),
+			},
+		})
 	end
 	return {
 		definition = {
@@ -379,7 +369,8 @@ function TheEncounter.UI.blind_choices_render(choices)
 		},
 	}
 end
-function TheEncounter.UI.set_blind_choices()
+
+function TheEncounter.UI.set_event_choices()
 	if G.TheEncounter_blind_choices then
 		G.TheEncounter_blind_choices.alignment.offset.y = 0
 			- (G.hand.T.y - G.jokers.T.y)
@@ -388,7 +379,7 @@ function TheEncounter.UI.set_blind_choices()
 		G.TheEncounter_blind_choices.alignment.offset.x = 0
 	end
 end
-function TheEncounter.UI.remove_blind_choices()
+function TheEncounter.UI.remove_event_choices()
 	if G.TheEncounter_blind_choices then
 		G.TheEncounter_blind_choices.alignment.offset.y = 40
 		G.TheEncounter_blind_choices.alignment.offset.x = 0
@@ -496,7 +487,7 @@ function G.FUNCS.enc_start_event(e)
 	play_sound("timpani", 0.8)
 	play_sound("generic1")
 
-	TheEncounter.UI.remove_blind_choices()
+	TheEncounter.UI.remove_event_choices()
 	TheEncounter.UI.remove_prompt_box()
 	G.E_MANAGER:add_event(Event({
 		trigger = "immediate",
