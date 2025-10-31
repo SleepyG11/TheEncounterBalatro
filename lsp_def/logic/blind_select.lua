@@ -1,3 +1,5 @@
+--- @meta
+
 --- Main function to poll and set choices for current encounter.<br/>
 --- Result saved in `G.GAME.TheEncounter_choices` and game can transitions to `G.STATES.ENC_EVENT_SELECT`
 --- @return { scenario_key?: string, domain_key: string }[]

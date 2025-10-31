@@ -47,16 +47,18 @@ function TheEncounter.before_event_start()
 	G.TheEncounter_event = event
 	return event
 end
-
-function TheEncounter.after_event_finish(event)
-	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
-		or {}
-	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][event.scenario.key] = true
+function TheEncounter.after_event_finish()
+	local event = G.TheEncounter_event
+	if event then
+		G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
+			or {}
+		G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][event.scenario.key] = true
+		G.TheEncounter_event:remove()
+		G.TheEncounter_event = nil
+	end
 	G.GAME.TheEncounter_save_table = nil
 	G.GAME.TheEncounter_choices = nil
 	G.GAME.TheEncounter_choice = nil
-	G.TheEncounter_event:remove()
-	G.TheEncounter_event = nil
 end
 
 local old_game_delete_run = Game.delete_run
