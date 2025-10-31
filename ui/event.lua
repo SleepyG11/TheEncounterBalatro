@@ -645,6 +645,9 @@ function G.FUNCS.enc_can_execute_choice(e)
 	local event = e.config.enc_event
 	if
 		(G.CONTROLLER.locked or G.CONTROLLER.locks.frame or (G.GAME and (G.GAME.STOP_USE or 0) > 0))
+		or G.STATE ~= G.STATES.ENC_EVENT
+		or not event
+		or not choice
 		or event.STATE ~= event.STATES.STEP_IDLE
 		or (choice.func and not choice:func(event, e.config.enc_choice_ability))
 	then

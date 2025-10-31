@@ -218,6 +218,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 									shadow = true,
 									hover = true,
 									one_press = true,
+									func = "enc_can_start_event",
 									button = "enc_start_event",
 									enc_domain = domain,
 									enc_scenario = scenario,
@@ -479,6 +480,23 @@ function TheEncounter.UI.remove_prompt_box()
 	end
 end
 
+function G.FUNCS.enc_can_start_event(e)
+	if not e.config.old_colour then
+		e.config.old_colour = e.config.colour
+	end
+	if
+		G.CONTROLLER.locked
+		or G.CONTROLLER.locks.frame
+		or (G.GAME and (G.GAME.STOP_USE or 0) > 0)
+		or G.STATE ~= G.STATES.ENC_EVENT_SELECT
+	then
+		e.config.button = nil
+		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+	else
+		e.config.button = "enc_start_event"
+		e.config.colour = e.config.old_colour
+	end
+end
 function G.FUNCS.enc_start_event(e)
 	G.GAME.TheEncounter_choice = TheEncounter.select_choice(
 		TheEncounter.Scenario.resolve(e.config.enc_scenario),
