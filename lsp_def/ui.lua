@@ -27,3 +27,54 @@ function TheEncounter.UI.set_prompt_box() end
 
 --- Hide prompt box amd remove
 function TheEncounter.UI.remove_prompt_box() end
+
+--- Get various sizes for event UI
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_panel_sizes(event) end
+
+--- Main event UI UIBox definition and config
+--- @param event TheEncounter.Event
+--- @return table
+function TheEncounter.UI.event_panel_render(event) end
+
+--- Main event UI image area (black area on right) UIBox definition and config
+--- @param event TheEncounter.Event
+--- @return table
+function TheEncounter.UI.image_area_render(event) end
+
+--- Even choice button definition
+--- @param event TheEncounter.Event
+--- @param choice TheEncounter.Choice
+--- @param ability table
+--- @return table
+function TheEncounter.UI.choice_button_UIBox(event, choice, ability) end
+
+--- Creating event main panel, assigning other UI elements and moving result in visible area
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_panel(event) end
+
+--- Preparing all text lines to display in event text area
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_text_lines(event) end
+
+--- Add displaying specified amount of lines to event queue
+--- @param event TheEncounter.Event
+--- @param amount number Amount of lines to display
+--- @param instant? boolean Should added events be with no delay
+function TheEncounter.UI.event_show_lines(event, amount, instant) end
+
+--- Add all remaining non-displayed lines to event queue
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_show_all_text_lines(event) end
+
+--- Prepare all buttons for choices
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_choices(event) end
+
+--- With animation remove text and choices before next step
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_cleanup(event) end
+
+--- Hide event panel UI and remove it
+--- @param event TheEncounter.Event
+function TheEncounter.UI.event_finish(event) end

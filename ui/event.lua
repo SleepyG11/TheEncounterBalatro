@@ -373,7 +373,7 @@ end
 
 --
 
-TheEncounter.UI.event_panel = function(event)
+function TheEncounter.UI.event_panel(event)
 	local event_ui = UIBox(TheEncounter.UI.event_panel_render(event))
 
 	event.ui.panel = event_ui
@@ -401,7 +401,7 @@ TheEncounter.UI.event_panel = function(event)
 
 	return event
 end
-TheEncounter.UI.event_text_lines = function(event)
+function TheEncounter.UI.event_text_lines(event)
 	local sizes = TheEncounter.UI.event_panel_sizes(event)
 	local step = event.current_step
 
@@ -488,7 +488,7 @@ TheEncounter.UI.event_text_lines = function(event)
 	event.ui.text_objects = text_objects
 	event.ui.next_text_object = 1
 end
-TheEncounter.UI.event_show_lines = function(event, amount, instant)
+function TheEncounter.UI.event_show_lines(event, amount, instant)
 	amount = amount or 1
 	local text_objects = event.ui.text_objects
 	if text_objects and event.ui.next_text_object then
@@ -511,7 +511,7 @@ TheEncounter.UI.event_show_lines = function(event, amount, instant)
 	end
 	event.ui.next_text_object = event.ui.next_text_object + amount
 end
-TheEncounter.UI.event_show_all_text_lines = function(event)
+function TheEncounter.UI.event_show_all_text_lines(event)
 	local text_objects = event.ui.text_objects
 	for i = event.ui.next_text_object, #text_objects do
 		local object = text_objects[i]
@@ -530,7 +530,7 @@ TheEncounter.UI.event_show_all_text_lines = function(event)
 		end
 	end
 end
-TheEncounter.UI.event_choices = function(event)
+function TheEncounter.UI.event_choices(event)
 	local step = event.current_step
 	-- Step buttons
 	local event_buttons_content = {}
@@ -601,7 +601,7 @@ TheEncounter.UI.event_choices = function(event)
 		end,
 	}))
 end
-TheEncounter.UI.event_cleanup = function(event)
+function TheEncounter.UI.event_cleanup(event)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			TheEncounter.UI.set_element_object(event.ui.text, Moveable())
@@ -616,7 +616,7 @@ TheEncounter.UI.event_cleanup = function(event)
 		end,
 	}))
 end
-TheEncounter.UI.event_finish = function(event)
+function TheEncounter.UI.event_finish(event)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			event.ui.panel.alignment.offset.y = G.ROOM.T.y + 21
