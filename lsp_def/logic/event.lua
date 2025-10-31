@@ -4,5 +4,5 @@
 --- @return TheEncounter.Event
 function TheEncounter.before_event_start() end
 
---- Main function to discover encountered scenario, cleanup event and other data such as current choices and seleted choice
+--- Main function to discover finished scenario, cleanup event and other data such as current choices and seleted choice
 function TheEncounter.after_event_finish() end

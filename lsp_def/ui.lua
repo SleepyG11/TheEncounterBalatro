@@ -18,3 +18,12 @@ function TheEncounter.UI.set_event_choices() end
 
 --- Hide event choices and remove
 function TheEncounter.UI.remove_event_choices() end
+
+--- UIBox definition for prompt box (in vanilla, it's "Select your next blind" text on top left during blind select)
+function TheEncounter.UI.prompt_box_render() end
+
+--- Move prompt box in visible area
+function TheEncounter.UI.set_prompt_box() end
+
+--- Hide prompt box amd remove
+function TheEncounter.UI.remove_prompt_box() end
