@@ -9,6 +9,8 @@
 --- @overload fun(self: TheEncounter.Choice): TheEncounter.Choice
 TheEncounter.Choice = {}
 
---- @param choice? string | TheEncounter.Choice
+--- @alias TheEncounter.ChoiceResolvable TheEncounter.Choice | string
+
+--- @param choice? TheEncounter.ChoiceResolvable
 --- @return TheEncounter.Choice | nil
 function TheEncounter.Choice.resolve(choice) end

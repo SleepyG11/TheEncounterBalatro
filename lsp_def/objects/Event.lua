@@ -49,5 +49,5 @@
 --- @field finish_scenario fun(self: TheEncounter.Event, transition_func?: fun()) Finish current step and scenario, and call `transition_func` on end, or set `G.STATE = replaced_state`
 --- @field private update fun(self: TheEncounter.Event, dt: number)
 --- @field private remove fun(self: TheEncounter.Event)
---- @overload fun(scenario: TheEncounter.Scenario, domain: TheEncounter.Domain, save_table?: table): TheEncounter.Event
+--- @overload fun(scenario: TheEncounter.ScenarioResolvable, domain: TheEncounter.DomainResolvable, save_table?: table): TheEncounter.Event
 TheEncounter.Event = {}

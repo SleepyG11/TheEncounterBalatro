@@ -25,7 +25,10 @@ TheEncounter.POOL.poll_rarity = function(args)
 	-- Collect all rarities
 	local all_domains = args.domains_in_pool or TheEncounter.Domains
 	for _, domain in pairs(all_domains) do
-		possible_rarities[vanilla_rarities[domain.rarity] or domain.rarity] = true
+		domain = TheEncounter.Domain.resolve(domain)
+		if domain then
+			possible_rarities[vanilla_rarities[domain.rarity] or domain.rarity] = true
+		end
 	end
 
 	local available_rarities = {}
@@ -111,7 +114,7 @@ TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 	-- Execute domain:in_pool()
 	local add, pool_opts = true, {}
 	if type(domain.in_pool) == "function" then
-		add, pool_opts = domain:in_pool(args)
+		add, pool_opts = domain:in_pool()
 		pool_opts = pool_opts or {}
 	end
 
@@ -153,21 +156,24 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	local encounters_table = TheEncounter.POOL.get_domains_usage()
 
 	for _, domain in pairs(options) do
-		-- So, we check is domain is already present in initial_pool
-		-- Then, we add domain which passed a check to both result_pool and pool which we use for deduping
-		local in_pool, pool_opts = args.ignore_everything, nil
-		if not in_pool then
-			in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
-		end
-		if in_pool then
-			local d = TheEncounter.Domain.resolve(domain)
-			duplicates_pool[d.key] = true
-			table.insert(temp_pool, {
-				key = d.key,
-				value = d,
-				opts = pool_opts or {},
-				count = encounters_table[d.key] or 0,
-			})
+		domain = TheEncounter.Domain.resolve(domain)
+		if domain then
+			-- So, we check is domain is already present in initial_pool
+			-- Then, we add domain which passed a check to both result_pool and pool which we use for deduping
+			local in_pool, pool_opts = args.ignore_everything, nil
+			if not in_pool then
+				in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
+			end
+			if in_pool then
+				local d = TheEncounter.Domain.resolve(domain)
+				duplicates_pool[d.key] = true
+				table.insert(temp_pool, {
+					key = d.key,
+					value = d,
+					opts = pool_opts or {},
+					count = encounters_table[d.key] or 0,
+				})
+			end
 		end
 	end
 
@@ -180,7 +186,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		for _, v in ipairs(temp_pool) do
 			table.insert(items_in_pool, v.value)
 		end
-		local rarity = args.rarity
+		local rarity = (args.rarity and args.rarity.key or args.rarity)
 			or TheEncounter.POOL.poll_rarity({
 				domains_in_pool = items_in_pool,
 				without_fallback = args.without_fallback,
@@ -316,7 +322,7 @@ TheEncounter.POOL.is_scenario_in_pool = function(scenario, domain, args, duplica
 	-- Execute scenario:in_pool()
 	local add, pool_opts = true, {}
 	if type(scenario.in_pool) == "function" then
-		add, pool_opts = scenario:in_pool(args, domain)
+		add, pool_opts = scenario:in_pool(domain)
 		pool_opts = pool_opts or {}
 	end
 
@@ -365,7 +371,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	else
 		for _, scenario in pairs(all_options) do
 			scenario = TheEncounter.Scenario.resolve(scenario)
-			if scenario.domains[domain.key] then
+			if scenario and scenario.domains[domain.key] then
 				table.insert(options, scenario)
 			end
 		end
@@ -434,34 +440,37 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 end
 TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 	args = args or {}
+	domain = TheEncounter.Domain.resolve(domain)
 
-	local options = TheEncounter.POOL.get_scenarios_pool(domain, args, duplicates_list)
+	if domain then
+		local options = TheEncounter.POOL.get_scenarios_pool(domain, args, duplicates_list)
 
-	local pullable = {}
-	local total_weight = 0
-	for _, scenario in ipairs(options) do
-		local weight = type(scenario.get_weight) == "function"
-				and scenario:get_weight(scenario.default_weight or 5, domain)
-			or (scenario.default_weight or 5)
-		total_weight = total_weight + weight
-		table.insert(pullable, {
-			weight = weight,
-			key = scenario.key,
-		})
-	end
+		local pullable = {}
+		local total_weight = 0
+		for _, scenario in ipairs(options) do
+			local weight = type(scenario.get_weight) == "function"
+					and scenario:get_weight(scenario.default_weight or 5, domain)
+				or (scenario.default_weight or 5)
+			total_weight = total_weight + weight
+			table.insert(pullable, {
+				weight = weight,
+				key = scenario.key,
+			})
+		end
 
-	-- GAMBLING!
-	local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
+		-- GAMBLING!
+		local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
 
-	if #pullable > 0 then
-		local weight_i = 0
-		for _, item in ipairs(pullable) do
-			weight_i = weight_i + item.weight
-			if scenario_poll > 1 - (weight_i / total_weight) then
-				if args.increment_usage then
-					TheEncounter.POOL.increment_scenario_usage(item.key, domain)
+		if #pullable > 0 then
+			local weight_i = 0
+			for _, item in ipairs(pullable) do
+				weight_i = weight_i + item.weight
+				if scenario_poll > 1 - (weight_i / total_weight) then
+					if args.increment_usage then
+						TheEncounter.POOL.increment_scenario_usage(item.key, domain)
+					end
+					return item.key
 				end
-				return item.key
 			end
 		end
 	end

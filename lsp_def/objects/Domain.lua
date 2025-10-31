@@ -22,6 +22,8 @@
 --- @overload fun(self: TheEncounter.Domain): TheEncounter.Domain
 TheEncounter.Domain = {}
 
---- @param domain? string | TheEncounter.Domain
+--- @alias TheEncounter.DomainResolvable TheEncounter.Domain | string
+
+--- @param domain? TheEncounter.DomainResolvable
 --- @return TheEncounter.Domain | nil
 function TheEncounter.Domain.resolve(domain) end

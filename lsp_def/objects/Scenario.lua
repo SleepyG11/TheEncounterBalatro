@@ -26,6 +26,8 @@
 --- @overload fun(self: TheEncounter.Scenario): TheEncounter.Scenario
 TheEncounter.Scenario = {}
 
---- @param scenario? string | TheEncounter.Scenario
+--- @alias TheEncounter.ScenarioResolvable TheEncounter.Scenario | string
+
+--- @param scenario? TheEncounter.ScenarioResolvable
 --- @return TheEncounter.Scenario | nil
 function TheEncounter.Scenario.resolve(scenario) end

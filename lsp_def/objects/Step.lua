@@ -17,6 +17,8 @@
 --- @overload fun(self: TheEncounter.Step): TheEncounter.Step
 TheEncounter.Step = {}
 
---- @param step? string | TheEncounter.Step
+--- @alias TheEncounter.StepResolvable TheEncounter.Step | string
+
+--- @param step? TheEncounter.StepResolvable
 --- @return TheEncounter.Step | nil
 function TheEncounter.Step.resolve(step) end
