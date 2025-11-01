@@ -153,6 +153,36 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 				set_sprite()
 			end
 
+			card.update_alert = function(self)
+				if scenario.alerted and self.children.alert then
+					self.children.alert:remove()
+					self.children.alert = nil
+				elseif not scenario.alerted and not self.children.alert and scenario.discovered then
+					self.children.alert = UIBox({
+						definition = create_UIBox_card_alert(),
+						config = {
+							align = "tri",
+							offset = {
+								x = 0,
+								y = 0,
+							},
+							parent = self,
+						},
+					})
+				end
+			end
+
+			card.hover = function(self, ...)
+				if not scenario.alerted then
+					G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"]
+						or {}
+					G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"][scenario.key] = true
+					scenario.alerted = true
+					G:save_progress()
+				end
+				return Card.hover(self, ...)
+			end
+
 			set_sprite()
 
 			card.enc_domain_collection = domain.key
@@ -180,10 +210,19 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 	if e.enc_collection_domain_tooltip then
 		return
 	end
+	local domain = e.config.ref_table
 	e.config.func = nil
 	e.enc_collection_domain_tooltip = true
+
+	local show_popup = false
+	for _, scenario in pairs(TheEncounter.Scenarios) do
+		if scenario.domains[domain.key] and scenario.discovered and not scenario.alerted then
+			show_popup = true
+			break
+		end
+	end
+
 	local popup_hover = function(self)
-		local domain = e.config.ref_table
 		local t = { key = domain.key, set = "enc_Domain" }
 		local res = {}
 		if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
@@ -261,4 +300,33 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 	end
 
 	e.hover = popup_hover
+
+	if show_popup then
+		local alert = UIBox({
+			definition = create_UIBox_card_alert(),
+			config = {
+				align = "tri",
+				offset = {
+					x = 0.1,
+					y = -0.1,
+				},
+				parent = e,
+			},
+		})
+		e.UIBox.children.alert = alert
+		alert.states.visible = false
+		G.E_MANAGER:add_event(
+			Event({
+				blocking = false,
+				blockable = false,
+				no_delete = true,
+				func = function()
+					alert.states.visible = true
+					return true
+				end,
+			}),
+			nil,
+			"other"
+		)
+	end
 end

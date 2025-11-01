@@ -60,6 +60,13 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 
 	inject = function(self)
 		SMODS.insert_pool(G.P_CENTER_POOLS[self.set], self)
+		self.alerted = false
+		if
+			G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"]
+			and G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"][self.key]
+		then
+			self.alerted = true
+		end
 	end,
 	pre_inject_class = function(self)
 		G.P_CENTER_POOLS[self.set] = {}
@@ -108,9 +115,14 @@ function G.FUNCS.unlock_all(...)
 	local result = old_unlock_all(...)
 	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
 		or {}
+	G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"]
+		or {}
+
 	for key, scenario in pairs(TheEncounter.Scenarios) do
 		if scenario.discoverable then
 			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][key] = true
+			G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"][key] = true
+			scenario.alerted = true
 			scenario.discovered = true
 		end
 	end

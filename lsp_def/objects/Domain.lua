@@ -16,7 +16,7 @@
 --- @field collection_loc_vars? fun(self: TheEncounter.Domain, info_queue: table): table
 --- @field atlas? string
 --- @field pos? { x: number, y: number }
---- @field no_collection boolean
+--- @field no_collection? boolean
 --- @field get_atlas? fun(self: TheEncounter.Domain): SMODS.Atlas, { x: number, y: number }
 --- @field set_badges? fun(self: TheEncounter.Domain, badges: table)
 --- @overload fun(self: TheEncounter.Domain): TheEncounter.Domain

@@ -1,7 +1,7 @@
 --- @meta
 
 --- @class TheEncounter.Choice: SMODS.GameObject
---- @field config table
+--- @field config? table
 --- @field inactive_colour? table
 --- @field button? fun(self: TheEncounter.Choice, event: TheEncounter.Event, ability: table)
 --- @field func? fun(self: TheEncounter.Choice, event: TheEncounter.Event, ability: table): boolean
