@@ -158,7 +158,7 @@ function TheEncounter.Event:enter_step(after_load, func)
 		self.current_step:start(self, after_load)
 		TheEncounter.em.after_callback(function()
 			if not after_load then
-				if self.current_step.can_save then
+				if TheEncounter.table.first_not_nil(self.current_step.can_save, self.scenario.can_save) then
 					G.GAME.TheEncounter_save_table = self:save()
 					save_run()
 				end
