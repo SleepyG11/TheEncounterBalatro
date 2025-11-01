@@ -194,7 +194,7 @@ function TheEncounter.Event:finish(func)
 				TheEncounter.UI.event_finish(self)
 				self:clear_colours()
 				TheEncounter.em.after_callback(function()
-					TheEncounter.after_event_finish(self)
+					TheEncounter.after_event_finish()
 					TheEncounter.em.after_callback(func, true)
 					self.STATE = self.STATES.END
 				end)
