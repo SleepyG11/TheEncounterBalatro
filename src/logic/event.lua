@@ -48,11 +48,12 @@ function TheEncounter.before_event_start()
 	return event
 end
 function TheEncounter.after_event_finish()
-	local event = G.TheEncounter_event
-	if event then
-		G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
-			or {}
-		G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][event.scenario.key] = true
+	if G.TheEncounter_event then
+		if not G.GAME.seeded and not G.GAME.challenge then
+			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
+				or {}
+			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][G.TheEncounter_event.scenario.key] = true
+		end
 		G.TheEncounter_event:remove()
 		G.TheEncounter_event = nil
 	end
