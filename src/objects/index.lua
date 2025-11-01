@@ -1,6 +1,6 @@
-assert(SMODS.load_file("objects/Choice.lua"))()
-assert(SMODS.load_file("objects/Domain.lua"))()
-assert(SMODS.load_file("objects/Step.lua"))()
-assert(SMODS.load_file("objects/Scenario.lua"))()
+assert(SMODS.load_file("src/objects/Choice.lua"))()
+assert(SMODS.load_file("src/objects/Domain.lua"))()
+assert(SMODS.load_file("src/objects/Step.lua"))()
+assert(SMODS.load_file("src/objects/Scenario.lua"))()
 
-assert(SMODS.load_file("objects/Event.lua"))()
+assert(SMODS.load_file("src/objects/Event.lua"))()

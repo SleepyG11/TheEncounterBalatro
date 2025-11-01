@@ -9,7 +9,7 @@ SMODS.Atlas({
 	frames = 21,
 })
 
-assert(SMODS.load_file("ui/utils.lua"))()
-assert(SMODS.load_file("ui/collection.lua"))()
-assert(SMODS.load_file("ui/blind_select.lua"))()
-assert(SMODS.load_file("ui/event.lua"))()
+assert(SMODS.load_file("src/ui/utils.lua"))()
+assert(SMODS.load_file("src/ui/collection.lua"))()
+assert(SMODS.load_file("src/ui/blind_select.lua"))()
+assert(SMODS.load_file("src/ui/event.lua"))()

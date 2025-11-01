@@ -9,15 +9,8 @@ function CardArea:align_cards(...)
 	return old_align(self, ...)
 end
 
-assert(SMODS.load_file("src/utils/table.lua"))()
-assert(SMODS.load_file("src/utils/e_manager.lua"))()
-
+assert(SMODS.load_file("src/utils/index.lua"))()
 assert(SMODS.load_file("src/objects/index.lua"))()
 assert(SMODS.load_file("src/ui/index.lua"))()
-
-assert(SMODS.load_file("src/logic/pool.lua"))()
-assert(SMODS.load_file("src/logic/blind_select.lua"))()
-assert(SMODS.load_file("src/logic/event.lua"))()
-
-assert(SMODS.load_file("src/items/fallback.lua"))()
-assert(SMODS.load_file("src/items/default.lua"))()
+assert(SMODS.load_file("src/logic/index.lua"))()
+assert(SMODS.load_file("src/items/index.lua"))()

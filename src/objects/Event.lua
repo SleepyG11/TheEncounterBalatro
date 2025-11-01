@@ -7,7 +7,16 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 	self.current_step = nil
 	self.next_step = TheEncounter.Step.resolve(self.scenario.starting_step_key)
 
-	self.ability = copy_table(self.scenario.config)
+	self.ability = TheEncounter.table.merge({
+		hide_hand = true,
+		hide_deck = false,
+		hide_text = false,
+		hide_image = false,
+		hide_choices = false,
+		can_use = true,
+		can_sell = true,
+		extra = {},
+	}, self.domain.config, self.scenario.config)
 	self.data = {}
 
 	self.ui = {}
@@ -337,4 +346,20 @@ function CardArea:draw(...)
 		end
 	end
 	return old_draw(self, ...)
+end
+
+local old_can_use = Card.can_use_consumeable
+function Card:can_use_consumeable(...)
+	if G.TheEncounter_event and not G.TheEncounter_event.ability.can_use then
+		return false
+	end
+	return old_can_use(self, ...)
+end
+
+local old_can_sell = Card.can_sell_card
+function Card:can_sell_card(...)
+	if G.TheEncounter_event and not G.TheEncounter_event.ability.can_sell then
+		return false
+	end
+	return old_can_sell(self, ...)
 end
