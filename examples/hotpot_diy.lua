@@ -81,7 +81,7 @@ TheEncounter.Choice({
 				name = { "To the casino" },
 			},
 			no_date = {
-				name = { "Nowhere, because nothing ever happens and will not ever happen in closest year" },
+				name = { "Nowhere, because nothing ever happens" },
 			},
 		},
 	},

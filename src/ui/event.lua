@@ -373,7 +373,7 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 			colour = choice_colours.colour or event.ui.light_colour,
 			inactive_colour = choice_colours.inactive_colour or event.ui.inactive_colour,
 			shadow = true,
-			func = "enc_can_execute_choice",
+			func = "enc_event_choice_tooltip",
 			button = "enc_execute_choice",
 			enc_event = event,
 			enc_choice = choice,
@@ -707,4 +707,97 @@ function G.FUNCS.enc_execute_choice(e)
 	local event = e.config.enc_event
 
 	choice:button(event, e.config.enc_choice_ability)
+end
+
+G.FUNCS.enc_event_choice_tooltip = function(e)
+	if e.enc_event_choice_tooltip then
+		return
+	end
+	local choice = e.config.enc_choice
+	local ability = e.config.enc_choice_ability
+	local event = e.config.enc_event
+	e.config.func = "enc_can_execute_choice"
+	e.enc_event_choice_tooltip = true
+
+	local popup_hover = function(self)
+		local t = { key = choice.key, set = "enc_Choice" }
+		local res = {}
+		if choice.loc_vars and type(choice.loc_vars) == "function" then
+			res = choice:loc_vars({}, event, ability) or {}
+			t.vars = res.vars or {}
+			t.key = res.key or t.key
+			t.set = res.set or t.set
+			if res.variant then
+				t.key = t.key .. "_" .. res.variant
+			end
+		end
+
+		local loc_entry = G.localization.descriptions[t.set][t.key]
+		if not (loc_entry and loc_entry.text and #loc_entry.text > 0) then
+			Node.hover(self)
+			return
+		end
+
+		local popup_content = {}
+		localize({
+			type = "descriptions",
+			set = t.set,
+			key = t.key,
+			nodes = popup_content,
+			vars = t.vars or {},
+		})
+		local desc_lines = {}
+		for _, line in ipairs(popup_content) do
+			table.insert(desc_lines, {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.01,
+				},
+				nodes = line,
+			})
+		end
+
+		self.config.h_popup_config = { align = "mt", offset = { x = 0, y = -0.1 }, major = e }
+		self.config.h_popup = {
+			n = G.UIT.ROOT,
+			config = { align = "cm", colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.C,
+					config = {
+						align = "cm",
+					},
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {
+								padding = 0.05,
+								r = 0.12,
+								colour = lighten(G.C.JOKER_GREY, 0.5),
+								emboss = 0.07,
+							},
+							nodes = {
+								{
+									n = G.UIT.R,
+									config = {
+										align = "cm",
+										padding = 0.07,
+										r = 0.1,
+										colour = adjust_alpha(darken(G.C.BLACK, 0.1), 0.8),
+									},
+									nodes = {
+										desc_from_rows({ desc_lines }),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Node.hover(self)
+	end
+
+	e.hover = popup_hover
 end

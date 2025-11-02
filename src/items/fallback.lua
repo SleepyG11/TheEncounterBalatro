@@ -1,12 +1,4 @@
 TheEncounter.Choice({
-	key = "move_on",
-	loc_txt = {
-		name = {
-			"Move on",
-		},
-	},
-})
-TheEncounter.Choice({
 	key = "look_inside",
 	loc_txt = {
 		name = {
