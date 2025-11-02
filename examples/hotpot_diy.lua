@@ -97,11 +97,9 @@ TheEncounter.Choice({
 		event:start_step("st_enc_buzzfeed_quiz_1_result")
 	end,
 	loc_vars = function(self, info_queue, event, ability)
-		if ability.extra.chosen then
-			return {
-				key = self.key .. "_" .. ability.extra.chosen,
-			}
-		end
+		return {
+			variant = ability.extra.chosen,
+		}
 	end,
 })
 TheEncounter.Step({
@@ -171,11 +169,9 @@ TheEncounter.Step({
 		}
 	end,
 	loc_vars = function(self, info_queue, event)
-		if event.ability.extra.trigger then
-			return {
-				key = self.key .. "_" .. event.ability.extra.trigger,
-			}
-		end
+		return {
+			variant = event.ability.extra.trigger,
+		}
 	end,
 })
 
@@ -217,11 +213,9 @@ TheEncounter.Choice({
 		event:start_step("st_enc_buzzfeed_quiz_2_result")
 	end,
 	loc_vars = function(self, info_queue, event, ability)
-		if ability.extra.chosen then
-			return {
-				key = self.key .. "_" .. ability.extra.chosen,
-			}
-		end
+		return {
+			variant = ability.extra.chosen,
+		}
 	end,
 })
 TheEncounter.Step({
@@ -306,11 +300,9 @@ TheEncounter.Step({
 		}
 	end,
 	loc_vars = function(self, info_queue, event)
-		if event.ability.extra.effect then
-			return {
-				key = self.key .. "_" .. event.ability.extra.effect,
-			}
-		end
+		return {
+			variant = event.ability.extra.effect,
+		}
 	end,
 })
 
@@ -328,15 +320,22 @@ TheEncounter.Step({
 		},
 	},
 	start = function(self, event, after_load)
+		event:show_lines(3)
 		if not after_load then
 			if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
-				G.GAME.hotpot_diy = {
-					trigger = event.ability.extra.trigger_value,
-					effect = event.ability.extra.effect_value,
-				}
-				print(G.GAME.hotpot_diy)
-				SMODS.add_card({ key = "j_joker" })
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.GAME.hotpot_diy = {
+							trigger = event.ability.extra.trigger_value,
+							effect = event.ability.extra.effect_value,
+						}
+						print(G.GAME.hotpot_diy)
+						SMODS.add_card({ key = "j_joker" })
+						return true
+					end,
+				}))
 			end
 		end
+		delay(1)
 	end,
 })

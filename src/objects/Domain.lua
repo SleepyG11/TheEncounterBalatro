@@ -12,8 +12,9 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 			G.localization.descriptions.enc_Domain = {}
 		end
 		SMODS.process_loc_text(G.localization.descriptions.enc_Domain, self.key:lower(), self.loc_txt)
-		if self.loc_txt and self.loc_txt.variants then
-			for key, variant in pairs(self.loc_txt.variants) do
+		local current_loc_txt = G.localization.descriptions.enc_Domain[self.key:lower()]
+		if current_loc_txt and current_loc_txt.variants then
+			for key, variant in pairs(current_loc_txt.variants) do
 				SMODS.process_loc_text(G.localization.descriptions.enc_Domain, self.key:lower() .. "_" .. key, variant)
 			end
 		end

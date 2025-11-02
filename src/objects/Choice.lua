@@ -12,8 +12,9 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 			G.localization.descriptions.enc_Choice = {}
 		end
 		SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower(), self.loc_txt)
-		if self.loc_txt and self.loc_txt.variants then
-			for key, variant in pairs(self.loc_txt.variants) do
+		local current_loc_txt = G.localization.descriptions.enc_Choice[self.key:lower()]
+		if current_loc_txt and current_loc_txt.variants then
+			for key, variant in pairs(current_loc_txt.variants) do
 				SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower() .. "_" .. key, variant)
 			end
 		end
@@ -23,7 +24,12 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 		extra = {},
 	},
 
+	-- Active button colour
+	colour = nil,
+	-- Inactive button colour
 	inactive_colour = nil,
+	-- Button text colour
+	text_colour = nil,
 
 	button = function(self, event, ability)
 		event:finish_scenario()
@@ -41,11 +47,17 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 TheEncounter.Choice.from_object = function(object)
 	return {
 		enc_is_choice_object = true,
+
 		key = object.key or nil,
 		full_key = object.full_key or nil,
+
 		loc_vars = object.loc_vars or {},
 		config = object.ability or object.config or {},
+
+		colour = object.colour or nil,
+		text_color = object.text_colour or nil,
 		inactive_colour = object.inactive_colour or nil,
+
 		button = object.button or function(self, event, ability)
 			event:finish_scenario()
 		end,

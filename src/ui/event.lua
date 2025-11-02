@@ -62,12 +62,23 @@ function TheEncounter.UI.event_panel_render(event)
 	local text_W = sizes.text_W
 
 	local event_text_name = {}
+	local t = { key = scenario.key, set = "enc_Scenario" }
+	local res = {}
+	if scenario.loc_vars and type(scenario.loc_vars) == "function" then
+		res = scenario:loc_vars({}, domain) or {}
+		t.vars = res.vars or {}
+		t.key = res.key or t.key
+		t.set = res.set or t.set
+		if res.variant then
+			t.key = t.key .. "_" .. res.variant
+		end
+	end
 	localize({
 		type = "name",
-		set = "enc_Scenario",
-		key = scenario.key,
+		set = t.set,
+		key = t.key,
 		nodes = event_text_name,
-		vars = scenario:loc_vars({}, domain),
+		vars = t.vars or {},
 		default_col = event.ui.text_colour,
 	})
 	local event_name_lines = {}
@@ -313,10 +324,16 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 		t.vars = res.vars or {}
 		t.key = res.key or t.key
 		t.set = res.set or t.set
+		if res.variant then
+			t.key = t.key .. "_" .. res.variant
+		end
 	elseif choice.loc_vars and type(choice.loc_vars) == "table" then
 		t.vars = choice.loc_vars.vars or {}
 		t.key = choice.loc_vars.key or t.key
 		t.set = choice.loc_vars.set or t.set
+		if choice.loc_vars.variant then
+			t.key = t.key .. "_" .. choice.loc_vars.variant
+		end
 	end
 
 	local button_text = {}
@@ -326,7 +343,7 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 		key = t.key,
 		nodes = button_text,
 		vars = t.vars or {},
-		default_col = event.ui.text_colour,
+		default_col = choice.text_colour or event.ui.text_colour,
 	})
 	local button_lines = {}
 	for _, line in ipairs(button_text) do
@@ -416,6 +433,9 @@ function TheEncounter.UI.event_text_lines(event)
 		t.vars = res.vars or {}
 		t.key = res.key or t.key
 		t.set = res.set or t.set
+		if res.variant then
+			t.key = t.key .. "_" .. res.variant
+		end
 	end
 
 	local text_objects = {}

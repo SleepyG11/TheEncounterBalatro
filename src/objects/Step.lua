@@ -12,8 +12,10 @@ TheEncounter.Step = SMODS.GameObject:extend({
 			G.localization.descriptions.enc_Step = {}
 		end
 		SMODS.process_loc_text(G.localization.descriptions.enc_Step, self.key:lower(), self.loc_txt)
-		if self.loc_txt and self.loc_txt.variants then
-			for key, variant in pairs(self.loc_txt.variants) do
+		local current_loc_txt = G.localization.descriptions.enc_Step[self.key:lower()]
+
+		if current_loc_txt and current_loc_txt.variants then
+			for key, variant in pairs(current_loc_txt.variants) do
 				SMODS.process_loc_text(G.localization.descriptions.enc_Step, self.key:lower() .. "_" .. key, variant)
 			end
 		end
@@ -21,13 +23,19 @@ TheEncounter.Step = SMODS.GameObject:extend({
 		if not G.localization.descriptions.enc_Choice then
 			G.localization.descriptions.enc_Choice = {}
 		end
-		if self.loc_txt and self.loc_txt.choices then
-			for key, choice in pairs(self.loc_txt.choices) do
-				SMODS.process_loc_text(
-					G.localization.descriptions.enc_Choice,
-					TheEncounter.Choice.class_prefix .. "_" .. self.key:lower() .. "_" .. key,
-					choice
-				)
+		if current_loc_txt and current_loc_txt.choices then
+			for key, choice in pairs(current_loc_txt.choices) do
+				local choice_key = TheEncounter.Choice.class_prefix .. "_" .. self.key:lower() .. "_" .. key
+				SMODS.process_loc_text(G.localization.descriptions.enc_Choice, choice_key, choice)
+				if choice.variants then
+					for vkey, vvariant in pairs(choice.variants) do
+						SMODS.process_loc_text(
+							G.localization.descriptions.enc_Choice,
+							choice_key .. "_" .. vkey,
+							vvariant
+						)
+					end
+				end
 			end
 		end
 	end,

@@ -1,5 +1,8 @@
 -- Blind select
 function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
+	domain = TheEncounter.Domain.resolve(domain)
+	scenario = TheEncounter.Scenario.resolve(scenario)
+
 	local disabled = false
 	local run_info = false
 
@@ -31,6 +34,9 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 		t.vars = res.vars or {}
 		t.key = res.key or t.key
 		t.set = res.set or t.set
+		if res.variant then
+			t.key = t.key .. "_" .. res.variant
+		end
 	end
 
 	local loc_object = G.localization.descriptions[t.set][t.key]
