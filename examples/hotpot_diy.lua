@@ -16,6 +16,10 @@ TheEncounter.Scenario({
 		-- return not next(SMODS.find_card("j_hpot_diy", true))
 	end,
 	can_save = false,
+
+	-- ha, piss colours
+	colour = HEX("D3A400"),
+	background_colour = HEX("AA8400"),
 })
 
 -- Start
