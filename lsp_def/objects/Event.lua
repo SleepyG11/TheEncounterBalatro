@@ -49,6 +49,7 @@
 --- @field finish_scenario fun(self: TheEncounter.Event, transition_func?: fun()) Finish current step and scenario, and call `transition_func` on end, or set `G.STATE = replaced_state`
 --- @field simple_character fun(self: TheEncounter.Event, args?: { center?: string, scale?: number, card_w?: number, card_h?: number, dx?: number, dy?: number, particles?: table, container_key?: string })
 --- @field remove_character fun(self: TheEncounter.Event, container_key?: string)
+--- @field get_character fun(self: TheEncounter.Event, container_key?: string): any | nil
 --- @field remove_all_characters fun(self: TheEncounter.Event)
 --- @field private update fun(self: TheEncounter.Event, dt: number)
 --- @field private remove fun(self: TheEncounter.Event)

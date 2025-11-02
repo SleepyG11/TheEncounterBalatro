@@ -381,6 +381,10 @@ function TheEncounter.Event:remove_character(container_key)
 		image_area.children[container_key] = nil
 	end
 end
+function TheEncounter.Event:get_character(container_key)
+	local image_area = self.ui.image
+	return image_area and image_area.children[container_key] or nil
+end
 function TheEncounter.Event:remove_all_characters()
 	local image_area = self.ui.image
 	if not image_area then
