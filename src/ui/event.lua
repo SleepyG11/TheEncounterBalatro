@@ -339,13 +339,18 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 
 	local button_text = {}
 	localize({
-		type = "descriptions",
+		type = "name",
 		set = t.set,
 		key = t.key,
-		nodes = button_text,
 		vars = t.vars or {},
+		nodes = button_text,
 		default_col = choice_colours.text_colour or event.ui.text_colour,
+		no_spacing = true,
+		fixed_scale = 0.32 / 0.55,
+		no_bump = true,
+		maxw = 3.5,
 	})
+
 	local button_lines = {}
 	for _, line in ipairs(button_text) do
 		table.insert(button_lines, {
@@ -374,6 +379,7 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 			enc_choice = choice,
 			enc_choice_ability = ability,
 			minh = 0.5,
+			maxw = 4,
 		},
 		nodes = {
 			{

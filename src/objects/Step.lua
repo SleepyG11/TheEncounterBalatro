@@ -27,6 +27,10 @@ TheEncounter.Step = SMODS.GameObject:extend({
 			for key, choice in pairs(current_loc_txt.choices) do
 				local choice_key = TheEncounter.Choice.class_prefix .. "_" .. self.key:lower() .. "_" .. key
 				SMODS.process_loc_text(G.localization.descriptions.enc_Choice, choice_key, choice)
+				local ccurent_loc_txt = G.localization.descriptions.enc_Choice[choice_key]
+				if not ccurent_loc_txt.text then
+					ccurent_loc_txt.text = {}
+				end
 				if choice.variants then
 					for vkey, vvariant in pairs(choice.variants) do
 						SMODS.process_loc_text(
@@ -34,6 +38,10 @@ TheEncounter.Step = SMODS.GameObject:extend({
 							choice_key .. "_" .. vkey,
 							vvariant
 						)
+						local vcurrent_loc_txt = G.localization.descriptions.enc_Choice[choice_key .. "_" .. vkey]
+						if not vcurrent_loc_txt.text then
+							vcurrent_loc_txt.text = {}
+						end
 					end
 				end
 			end

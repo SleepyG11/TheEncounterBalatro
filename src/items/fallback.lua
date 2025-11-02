@@ -1,7 +1,7 @@
 TheEncounter.Choice({
 	key = "move_on",
 	loc_txt = {
-		text = {
+		name = {
 			"Move on",
 		},
 	},
@@ -9,7 +9,7 @@ TheEncounter.Choice({
 TheEncounter.Choice({
 	key = "look_inside",
 	loc_txt = {
-		text = {
+		name = {
 			"Look {C:attention}inside{}...",
 			"{C:inactive,s:0.5}I'm feeling lucky today!{}",
 		},

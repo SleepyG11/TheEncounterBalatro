@@ -1,7 +1,7 @@
 TheEncounter.Scenario({
 	key = "buzzfeed_quiz",
 	loc_txt = {
-		name = "Personality Quiz",
+		name = { "Personality Quiz" },
 		text = {
 			"Click here and find out which Joker you are!",
 		},
@@ -44,7 +44,7 @@ TheEncounter.Step({
 		},
 		choices = {
 			take_quiz = {
-				text = {
+				name = {
 					"Take the quiz",
 				},
 			},
@@ -67,21 +67,21 @@ TheEncounter.Step({
 TheEncounter.Choice({
 	key = "buzzfeed_quiz_trigger",
 	loc_txt = {
-		text = {
+		name = {
 			"I don't know",
 		},
 		variants = {
 			park = {
-				text = { "To the park" },
+				name = { "To the park" },
 			},
 			carnival = {
-				text = { "To the town fair" },
+				name = { "To the town fair" },
 			},
 			casino = {
-				text = { "To the casino" },
+				name = { "To the casino" },
 			},
 			no_date = {
-				text = { "Nowhere, because nothing ever happens" },
+				name = { "Nowhere, because nothing ever happens and will not ever happen in closest year" },
 			},
 		},
 	},
@@ -145,7 +145,7 @@ TheEncounter.Step({
 		},
 		choices = {
 			continue = {
-				text = { "Read the next question" },
+				name = { "Read the next question" },
 			},
 		},
 		variants = {
@@ -190,21 +190,21 @@ TheEncounter.Step({
 TheEncounter.Choice({
 	key = "buzzfeed_quiz_effect",
 	loc_txt = {
-		text = {
+		name = {
 			"I don't know",
 		},
 		variants = {
 			wait = {
-				text = { "Wait patiently" },
+				name = { "Wait patiently" },
 			},
 			forgive = {
-				text = { "Forgive the debt" },
+				name = { "Forgive the debt" },
 			},
 			move = {
-				text = { "Move out" },
+				name = { "Move out" },
 			},
 			sell = {
-				text = { "Sell their possessions on the Black Market" },
+				name = { "Sell their possessions on the Black Market" },
 			},
 		},
 	},
@@ -273,7 +273,7 @@ TheEncounter.Step({
 		},
 		choices = {
 			continue = {
-				text = { "See results" },
+				name = { "See results" },
 			},
 		},
 		variants = {

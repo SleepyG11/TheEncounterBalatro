@@ -13,9 +13,16 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 		end
 		SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower(), self.loc_txt)
 		local current_loc_txt = G.localization.descriptions.enc_Choice[self.key:lower()]
+		if not current_loc_txt.text then
+			current_loc_txt.text = {}
+		end
 		if current_loc_txt and current_loc_txt.variants then
 			for key, variant in pairs(current_loc_txt.variants) do
 				SMODS.process_loc_text(G.localization.descriptions.enc_Choice, self.key:lower() .. "_" .. key, variant)
+				local vcurrent_loc_txt = G.localization.descriptions.enc_Choice[self.key:lower() .. "_" .. key]
+				if not vcurrent_loc_txt.text then
+					vcurrent_loc_txt.text = {}
+				end
 			end
 		end
 	end,
