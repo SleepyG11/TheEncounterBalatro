@@ -105,6 +105,13 @@ TheEncounter.Choice({
 			variant = ability.extra.chosen,
 		}
 	end,
+	get_colours = function(self, event, ability)
+		if ability.extra.chosen == "no_date" then
+			return {
+				colour = G.C.MULT,
+			}
+		end
+	end,
 })
 TheEncounter.Step({
 	key = "buzzfeed_quiz_1",
@@ -220,6 +227,14 @@ TheEncounter.Choice({
 		return {
 			variant = ability.extra.chosen,
 		}
+	end,
+	get_colours = function(self, event, ability)
+		if ability.extra.chosen == "sell" then
+			return {
+				colour = G.C.MULT,
+				text_colour = G.C.UI.TEXT_DARK,
+			}
+		end
 	end,
 })
 TheEncounter.Step({

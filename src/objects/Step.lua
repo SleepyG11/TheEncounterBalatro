@@ -56,6 +56,8 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	-- Shader colour
 	background_colour = nil,
 
+	get_colours = function(self, event) end,
+
 	get_choices = function(self, event)
 		return {
 			"ch_enc_move_on",

@@ -8,9 +8,12 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 
 	local target = scenario or domain
 
+	local scenario_colours = TheEncounter.UI.get_colours(scenario, domain)
+	local domain_colours = TheEncounter.UI.get_colours(domain)
+
 	-- Colour
-	local blind_col = (scenario and scenario.colour) or domain.colour or G.C.MULT
-	local text_col = (scenario and scenario.text_colour) or domain.text_colour or G.C.UI.TEXT_LIGHT
+	local blind_col = (scenario and scenario_colours.colour) or domain_colours.colour or G.C.MULT
+	local text_col = (scenario and scenario_colours.text_colour) or domain_colours.text_colour or G.C.UI.TEXT_LIGHT
 
 	-- Sprite
 	local blind_choice = {

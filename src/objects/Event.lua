@@ -65,9 +65,13 @@ end
 
 function TheEncounter.Event:set_colours(first_load)
 	local step_to_check = (first_load and not self.temp_save_table and self.next_step) or self.current_step
-	local new_colour = copy_table(
-		step_to_check and step_to_check.colour or self.ui.colour or self.scenario.colour or self.domain.colour
-	)
+
+	local step_colours = TheEncounter.UI.get_colours(step_to_check, self)
+	local scenario_colours = TheEncounter.UI.get_colours(self.scenario, self.domain, self)
+	local domain_colours = TheEncounter.UI.get_colours(self.domain, self)
+
+	local new_colour =
+		copy_table(step_colours.colour or self.ui.colour or scenario_colours.colour or domain_colours.colour)
 	if first_load or not self.ui.colour then
 		self.ui.colour = new_colour
 		self.ui.inactive_colour = mix_colours(G.C.BLACK, new_colour, 0.8)
@@ -81,10 +85,7 @@ function TheEncounter.Event:set_colours(first_load)
 	end
 
 	local new_text_colour = copy_table(
-		step_to_check and step_to_check.text_colour
-			or self.ui.text_colour
-			or self.scenario.text_colour
-			or self.domain.text_colour
+		step_colours.text_colour or self.ui.text_colour or scenario_colours.text_colour or domain_colours.text_colour
 	)
 	if first_load or not self.ui.text_colour then
 		self.ui.text_colour = new_text_colour
@@ -93,10 +94,10 @@ function TheEncounter.Event:set_colours(first_load)
 	end
 
 	local new_background_colour = copy_table(
-		step_to_check and step_to_check.background_colour
+		step_colours.background_colour
 			or self.ui.background_colour
-			or self.scenario.background_colour
-			or self.domain.background_colour
+			or scenario_colours.background_colour
+			or domain_colours.background_colour
 	)
 	if first_load or not self.ui.background_colour then
 		self.ui.background_colour = new_background_colour

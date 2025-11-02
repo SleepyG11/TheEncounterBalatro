@@ -47,6 +47,8 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	-- Shader colour
 	background_colour = nil,
 
+	get_colours = function(self, domain, event) end,
+
 	once_per_run = false,
 	can_repeat = false,
 	in_pool = function(self, domain)

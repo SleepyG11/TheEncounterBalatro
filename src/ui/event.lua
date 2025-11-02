@@ -317,6 +317,7 @@ function TheEncounter.UI.image_area_render(event)
 	}
 end
 function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
+	local choice_colours = TheEncounter.UI.get_colours(choice, event, ability)
 	local t = { key = choice.key, set = "enc_Choice" }
 	local res = {}
 	if choice.loc_vars and type(choice.loc_vars) == "function" then
@@ -343,7 +344,7 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 		key = t.key,
 		nodes = button_text,
 		vars = t.vars or {},
-		default_col = choice.text_colour or event.ui.text_colour,
+		default_col = choice_colours.text_colour or event.ui.text_colour,
 	})
 	local button_lines = {}
 	for _, line in ipairs(button_text) do
@@ -364,8 +365,8 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 			padding = 0.08,
 			r = 0.75,
 			hover = true,
-			colour = choice.colour or event.ui.light_colour,
-			inactive_colour = choice.inactive_colour or event.ui.inactive_colour,
+			colour = choice_colours.colour or event.ui.light_colour,
+			inactive_colour = choice_colours.inactive_colour or event.ui.inactive_colour,
 			shadow = true,
 			func = "enc_can_execute_choice",
 			button = "enc_execute_choice",

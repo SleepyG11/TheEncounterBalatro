@@ -19,6 +19,7 @@ function TheEncounter.UI.collection_domains_list_UIBox(e)
 	local object_tabs = {}
 	for _, domain in ipairs(G.P_CENTER_POOLS.enc_Domain) do
 		if not domain.no_collection then
+			local domain_colours = TheEncounter.UI.get_colours(domain)
 			local t = { key = domain.key, set = "enc_Domain" }
 			local res = {}
 			if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
@@ -33,6 +34,7 @@ function TheEncounter.UI.collection_domains_list_UIBox(e)
 				set = t.set,
 				vars = t.vars or {},
 				no_spacing = true,
+				default_col = domain_colours.text_colour,
 			})
 
 			local button = {
@@ -41,7 +43,7 @@ function TheEncounter.UI.collection_domains_list_UIBox(e)
 					button = "your_collection_enc_event_domain",
 					minw = 3,
 					minh = 0.9,
-					colour = domain.colour,
+					colour = domain_colours.colour,
 					ref_table = domain,
 					-- TODO: generate_card_ui with full info_queue somehow for button, no idea how to do it sorry
 					func = "enc_collection_domain_tooltip",
