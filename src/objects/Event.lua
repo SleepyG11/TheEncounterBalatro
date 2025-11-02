@@ -239,6 +239,7 @@ function TheEncounter.Event:show_lines(amount, instant)
 end
 function TheEncounter.Event:start_step(key)
 	self.next_step = TheEncounter.Step.resolve(key)
+	assert(self.next_step, "Tried to start unknown TheEncounter.Step: " .. key)
 	self:leave_step(function()
 		self:move_forward()
 		self:enter_step(false)

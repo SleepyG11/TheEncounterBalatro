@@ -313,6 +313,10 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 		t.vars = res.vars or {}
 		t.key = res.key or t.key
 		t.set = res.set or t.set
+	elseif choice.loc_vars and type(choice.loc_vars) == "table" then
+		t.vars = choice.loc_vars.vars or {}
+		t.key = choice.loc_vars.key or t.key
+		t.set = choice.loc_vars.set or t.set
 	end
 
 	local button_text = {}
@@ -546,9 +550,13 @@ function TheEncounter.UI.event_choices(event)
 			elseif type(choice) == "string" then
 				result_choice = TheEncounter.Choice.resolve(choice)
 			elseif type(choice) == "table" then
-				if choice.key or choice.choice_key then
-					result_choice = TheEncounter.Choice.resolve(choice.key or choice.choice_key)
+				if choice.value then
+					result_choice = TheEncounter.Choice.resolve(choice.value)
 					result_ability = choice.ability
+				else
+					result_choice = TheEncounter.Choice.from_object(choice)
+					result_choice.key = result_choice.full_key
+						or (TheEncounter.Choice.class_prefix .. "_" .. step.key .. "_" .. result_choice.key)
 				end
 			end
 			if result_choice then
@@ -586,17 +594,26 @@ function TheEncounter.UI.event_choices(event)
 		delay = 1,
 		func = function()
 			play_sound("paper1", math.random() * 0.2 + 0.9, 0.75)
-			TheEncounter.UI.set_element_object(
-				event.ui.choices,
-				UIBox({
-					definition = {
-						n = G.UIT.ROOT,
-						config = { colour = G.C.CLEAR },
-						nodes = event_buttons_content,
-					},
-					config = {},
-				})
-			)
+			local object = UIBox({
+				definition = {
+					n = G.UIT.ROOT,
+					config = { colour = G.C.CLEAR },
+					nodes = event_buttons_content,
+				},
+				config = {},
+			})
+			TheEncounter.UI.set_element_object(event.ui.choices, object)
+			object.states.visible = false
+			event.ui.panel:recalculate()
+			G.E_MANAGER:add_event(Event({
+				blocking = false,
+				blockable = false,
+				no_delete = true,
+				func = function()
+					object.states.visible = true
+					return true
+				end,
+			}))
 			return true
 		end,
 	}))
