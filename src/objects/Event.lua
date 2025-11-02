@@ -353,7 +353,7 @@ function TheEncounter.Event:simple_character(args)
 	character.children.card.T.scale = args.scale or character.children.card.T.scale
 	character.states.collide.can = false
 	if args.particles then
-		character.children.particles.colours = { G.C.RED, G.C.RED, G.C.RED }
+		character.children.particles.colours = args.particles
 	else
 		character.children.particles.colours = { G.C.CLEAR }
 	end
@@ -361,19 +361,33 @@ function TheEncounter.Event:simple_character(args)
 	image_area.children[key] = character
 	return character
 end
+function TheEncounter.Event:remove_character(container_key)
+	local image_area = self.ui.image
+	if not image_area or not container_key then
+		return
+	end
+	local child = image_area.children[container_key]
+	if not child then
+		return
+	end
+	if child.children and child.children.card and child.children.card.jimbo == child then
+		child.children.card:start_dissolve(nil, true)
+		image_area.children[container_key] = nil
+	elseif Card:is(child) then
+		child:start_dissolve(nil, true)
+		image_area.children[container_key] = nil
+	elseif child.remove then
+		child:remove()
+		image_area.children[container_key] = nil
+	end
+end
 function TheEncounter.Event:remove_all_characters()
 	local image_area = self.ui.image
 	if not image_area then
 		return
 	end
-	for _, child in pairs(image_area.children) do
-		if child.children and child.children.card and child.children.card.jimbo == child then
-			child.children.card:start_dissolve(nil, true)
-		elseif Card:is(child) then
-			child:start_dissolve(nil, true)
-		elseif child.remove then
-			child:remove()
-		end
+	for container_key, _ in pairs(image_area.children) do
+		self:remove_character(container_key)
 	end
 end
 

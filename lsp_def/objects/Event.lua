@@ -47,6 +47,9 @@
 --- @field show_lines fun(self: TheEncounter.Event, amount?: number, instant?: boolean) Display specified amount of lines of step text and put them in event queue. Useful when needed to do actions between text lines.
 --- @field start_step fun(self: TheEncounter.Event, key: string) Finish current step and start new one
 --- @field finish_scenario fun(self: TheEncounter.Event, transition_func?: fun()) Finish current step and scenario, and call `transition_func` on end, or set `G.STATE = replaced_state`
+--- @field simple_character fun(self: TheEncounter.Event, args?: { center?: string, scale?: number, card_w?: number, card_h?: number, dx?: number, dy?: number, particles?: table, container_key?: string })
+--- @field remove_character fun(self: TheEncounter.Event, container_key?: string)
+--- @field remove_all_characters fun(self: TheEncounter.Event)
 --- @field private update fun(self: TheEncounter.Event, dt: number)
 --- @field private remove fun(self: TheEncounter.Event)
 --- @overload fun(scenario: TheEncounter.ScenarioResolvable, domain: TheEncounter.DomainResolvable, save_table?: table): TheEncounter.Event
