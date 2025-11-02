@@ -11,6 +11,8 @@
 --- @field in_pool? fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): boolean, table?
 --- @field default_weight? number
 --- @field get_weight? fun(self: TheEncounter.Scenario, weight: number, domain?: TheEncounter.Domain): number
+--- @field start? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, after_load: boolean) Function where you can control side effets you need on scenario start
+--- @field finish? fun(self: TheEncounter.Scenario, event: TheEncounter.Event) Function where you can control side effets on scenario finish
 --- @field can_save? boolean Can event state be saved during each step. `step.can_save` takes priority
 --- @field save? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, data: table): table
 --- @field load? fun(self: TheEncounter.Scenario, event: TheEncounter.Event, save_data: table): table

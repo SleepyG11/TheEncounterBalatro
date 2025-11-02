@@ -39,7 +39,7 @@
 --- @field private init_ui fun(self: TheEncounter.Event)
 --- @field private move_forward fun(self: TheEncounter.Event)
 --- @field private start fun(self: TheEncounter.Event, func?: fun())
---- @field private enter_step fun(self: TheEncounter.Event, after_load: boolean, func?: fun())
+--- @field private enter_step fun(self: TheEncounter.Event, after_load: boolean, func?: fun(), after_scenario_start?: boolean)
 --- @field private leave_step fun(self: TheEncounter.Event, func?: fun())
 --- @field private finish fun(self: TheEncounter.Event, func?: fun())
 --- @field private save fun(self: TheEncounter.Event): table?

@@ -22,6 +22,13 @@ TheEncounter.Scenario({
 	-- ha, piss colours
 	colour = HEX("D3A400"),
 	background_colour = HEX("AA8400"),
+
+	start = function(self, event, after_load)
+		event:simple_character({
+			center = "j_joker",
+			scale = 0.75,
+		})
+	end,
 })
 
 -- Start
@@ -53,9 +60,6 @@ TheEncounter.Step({
 			},
 			"ch_enc_move_on",
 		}
-	end,
-	start = function()
-		-- TODO: character display
 	end,
 })
 

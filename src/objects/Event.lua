@@ -143,10 +143,10 @@ function TheEncounter.Event:start(func)
 		else
 			self:move_forward()
 		end
-		self:enter_step(after_load, func)
+		self:enter_step(after_load, func, true)
 	end, save_table)
 end
-function TheEncounter.Event:enter_step(after_load, func)
+function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 	self.STATE = self.STATES.STEP_START
 	if not after_load then
 		self:set_ability()
@@ -155,6 +155,9 @@ function TheEncounter.Event:enter_step(after_load, func)
 	TheEncounter.em.after_callback(function()
 		self:set_colours()
 		TheEncounter.UI.event_text_lines(self)
+		if after_scenario_start then
+			self.scenario:start(self, after_load)
+		end
 		self.current_step:start(self, after_load)
 		TheEncounter.em.after_callback(function()
 			if not after_load then
@@ -186,17 +189,21 @@ end
 function TheEncounter.Event:finish(func)
 	self:leave_step(function()
 		self.STATE = self.STATES.SCENARIO_FINISH
-		G.FUNCS.draw_from_hand_to_deck()
+		self:move_forward()
+		SMODS.calculate_context({ enc_scenario_end = true, event = self })
 		TheEncounter.em.after_callback(function()
-			self:move_forward()
-			SMODS.calculate_context({ enc_scenario_end = true, event = self })
+			self.scenario:finish(self)
 			TheEncounter.em.after_callback(function()
-				TheEncounter.UI.event_finish(self)
-				self:clear_colours()
+				G.FUNCS.draw_from_hand_to_deck()
+				self:remove_all_characters()
 				TheEncounter.em.after_callback(function()
-					TheEncounter.after_event_finish()
-					TheEncounter.em.after_callback(func, true)
-					self.STATE = self.STATES.END
+					TheEncounter.UI.event_finish(self)
+					self:clear_colours()
+					TheEncounter.em.after_callback(function()
+						TheEncounter.after_event_finish()
+						TheEncounter.em.after_callback(func, true)
+						self.STATE = self.STATES.END
+					end)
 				end)
 			end)
 		end)
@@ -316,6 +323,56 @@ function TheEncounter.Event:remove()
 				value.config.enc_original_object:remove()
 			end
 			value:remove()
+		end
+	end
+end
+
+--
+
+function TheEncounter.Event:simple_character(args)
+	args = args or {}
+	local image_area = self.ui.image
+	if not image_area then
+		return
+	end
+	local scale = args.scale or 1
+	local w = args.card_w or (G.CARD_W * 1.1 * scale)
+	local h = args.card_h or (G.CARD_H * 1.1 * scale)
+	local x = image_area.T.x + image_area.T.w / 2 - w / 2 + (args.dx or 0)
+	local y = image_area.T.y + image_area.T.h / 2 - h / 2 + (args.dy or 0)
+	local character = Card_Character({
+		w = w,
+		h = h,
+		x = x,
+		y = y,
+		center = args.center,
+	})
+	-- TODO: make shadow not full black (???)
+	character.children.card.no_shadow = true
+	character.children.card.VT.scale = args.scale or character.children.card.VT.scale
+	character.children.card.T.scale = args.scale or character.children.card.T.scale
+	character.states.collide.can = false
+	if args.particles then
+		character.children.particles.colours = { G.C.RED, G.C.RED, G.C.RED }
+	else
+		character.children.particles.colours = { G.C.CLEAR }
+	end
+	local key = args.container_key or "character"
+	image_area.children[key] = character
+	return character
+end
+function TheEncounter.Event:remove_all_characters()
+	local image_area = self.ui.image
+	if not image_area then
+		return
+	end
+	for _, child in pairs(image_area.children) do
+		if child.children and child.children.card and child.children.card.jimbo == child then
+			child.children.card:start_dissolve(nil, true)
+		elseif Card:is(child) then
+			child:start_dissolve(nil, true)
+		elseif child.remove then
+			child:remove()
 		end
 	end
 end
