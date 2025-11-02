@@ -15,7 +15,9 @@ TheEncounter.Scenario({
 		return true
 		-- return not next(SMODS.find_card("j_hpot_diy", true))
 	end,
-	can_save = false,
+
+	-- Prevent save-scumming
+	can_save = true,
 
 	-- ha, piss colours
 	colour = HEX("D3A400"),
@@ -325,14 +327,16 @@ TheEncounter.Step({
 			"I thought this was about Balatro? Boring.",
 		},
 	},
-	start = function(self, event)
-		if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
-			G.GAME.hotpot_diy = {
-				trigger = event.ability.extra.trigger_value,
-				effect = event.ability.extra.effect_value,
-			}
-			print(G.GAME.hotpot_diy)
-			-- SMODS.add_card({ key = "j_hpot_diy" })
+	start = function(self, event, after_load)
+		if not after_load then
+			if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
+				G.GAME.hotpot_diy = {
+					trigger = event.ability.extra.trigger_value,
+					effect = event.ability.extra.effect_value,
+				}
+				print(G.GAME.hotpot_diy)
+				SMODS.add_card({ key = "j_joker" })
+			end
 		end
 	end,
 })
