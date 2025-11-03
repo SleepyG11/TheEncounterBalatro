@@ -8,6 +8,13 @@ return {
 					"to see what it does",
 				},
 			},
+			enc_choose_destiny = {
+				name = {
+					"Choose your",
+					"{C:edition}Destiny{}",
+				},
+				text = {},
+			},
 		},
 	},
 }

@@ -407,53 +407,41 @@ end
 
 -- Prompt box
 function TheEncounter.UI.prompt_box_render()
+	local initial_lines = {}
+	localize({
+		type = "name",
+		set = "Other",
+		key = "enc_choose_destiny",
+		vars = {},
+		nodes = initial_lines,
+		no_spacing = true,
+		pop_in = 0.5,
+		fixed_scale = 0.4 / 0.32,
+		maxw = 4.5,
+		no_silent = true,
+	})
+
+	local desc_lines = {}
+	for _, line in ipairs(initial_lines) do
+		table.insert(desc_lines, {
+			n = G.UIT.R,
+			config = {
+				align = "cm",
+				padding = 0.01,
+			},
+			nodes = line,
+		})
+	end
+
 	return {
 		definition = {
 			n = G.UIT.ROOT,
 			config = { align = "cm", colour = G.C.CLEAR, padding = 0.2 },
 			nodes = {
 				{
-					n = G.UIT.R,
+					n = G.UIT.C,
 					config = { align = "cm" },
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								object = DynaText({
-									string = localize("ph_choose_blind_1"),
-									colours = { G.C.WHITE },
-									shadow = true,
-									bump = true,
-									scale = 0.6,
-									pop_in = 0.5,
-									maxw = 5,
-								}),
-								id = "prompt_dynatext1",
-							},
-						},
-					},
-				},
-				{
-					n = G.UIT.R,
-					config = { align = "cm" },
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								object = DynaText({
-									string = localize("ph_choose_blind_2"),
-									colours = { G.C.WHITE },
-									shadow = true,
-									bump = true,
-									scale = 0.7,
-									pop_in = 0.5,
-									maxw = 5,
-									silent = true,
-								}),
-								id = "prompt_dynatext2",
-							},
-						},
-					},
+					nodes = desc_lines,
 				},
 			},
 		},
@@ -467,20 +455,11 @@ function TheEncounter.UI.set_prompt_box()
 end
 function TheEncounter.UI.remove_prompt_box()
 	if G.TheEncounter_prompt_box then
-		local dyna1 = G.TheEncounter_prompt_box:get_UIE_by_ID("prompt_dynatext1")
-		local dyna2 = G.TheEncounter_prompt_box:get_UIE_by_ID("prompt_dynatext2")
-		if dyna1 then
-			dyna1.pop_delay = 0
-			dyna1.config.object:pop_out(5)
-		end
-		if dyna2 then
-			dyna2.pop_delay = 0
-			dyna2.config.object:pop_out(5)
-		end
 		G.TheEncounter_prompt_box.alignment.offset.y = -10
 		G.E_MANAGER:add_event(Event({
 			trigger = "before",
 			delay = 0.2,
+			blocking = false,
 			func = function()
 				G.TheEncounter_prompt_box:remove()
 				return true
