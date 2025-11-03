@@ -708,6 +708,7 @@ function G.FUNCS.enc_execute_choice(e)
 	local choice = e.config.enc_choice
 	local event = e.config.enc_event
 
+	stop_use()
 	choice:button(event, e.config.enc_choice_ability)
 end
 

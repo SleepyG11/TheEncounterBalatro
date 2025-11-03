@@ -1,6 +1,7 @@
 --- @meta
 
 --- @class TheEncounter.Scenario: SMODS.GameObject
+--- @field starting_step_key string
 --- @field config? TheEncounter.EventAbility
 --- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons

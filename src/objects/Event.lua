@@ -1,11 +1,12 @@
 TheEncounter.Event = Object:extend()
 function TheEncounter.Event:init(scenario, domain, save_table)
-	self.domain = TheEncounter.Domain.resolve(domain)
-	self.scenario = TheEncounter.Scenario.resolve(scenario)
+	self.domain = assert(TheEncounter.Domain.resolve(domain), "Cannot start event without Domain")
+	self.scenario = assert(TheEncounter.Scenario.resolve(scenario), "Cannot start event without Scenario")
 
 	self.previous_step = nil
 	self.current_step = nil
-	self.next_step = TheEncounter.Step.resolve(self.scenario.starting_step_key)
+	self.next_step =
+		assert(TheEncounter.Step.resolve(self.scenario.starting_step_key), "Cannot start event without starting Step")
 
 	self.ability = TheEncounter.table.merge({
 		hide_hand = true,
@@ -16,7 +17,7 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 		can_use = true,
 		can_sell = true,
 		extra = {},
-	}, self.domain.config, self.scenario.config)
+	}, self.domain.config or {}, self.scenario.config or {})
 	self.data = {}
 
 	self.ui = {}
@@ -130,6 +131,7 @@ function TheEncounter.Event:start(func)
 	self.STATE = self.STATES.SCENARIO_START
 	local save_table = self.temp_save_table
 	self.temp_save_table = nil
+	stop_use()
 	if not save_table then
 		SMODS.calculate_context({ enc_scenario_start = true, event = self })
 	end
@@ -149,6 +151,7 @@ function TheEncounter.Event:start(func)
 end
 function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 	self.STATE = self.STATES.STEP_START
+	stop_use()
 	if not after_load then
 		self:set_ability()
 	end
@@ -178,6 +181,7 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 end
 function TheEncounter.Event:leave_step(is_finish, func)
 	self.STATE = self.STATES.STEP_FINISH
+	stop_use()
 	SMODS.calculate_context({ enc_step_finish = true, event = self })
 	TheEncounter.em.after_callback(function()
 		self.current_step:finish(self)
@@ -191,17 +195,20 @@ function TheEncounter.Event:finish(func)
 	self:leave_step(true, function()
 		self.STATE = self.STATES.SCENARIO_FINISH
 		self:move_forward()
+		stop_use()
 		SMODS.calculate_context({ enc_scenario_end = true, event = self })
 		TheEncounter.em.after_callback(function()
 			self.scenario:finish(self)
 			TheEncounter.em.after_callback(function()
 				G.FUNCS.draw_from_hand_to_deck()
 				self:remove_all_characters()
+				stop_use()
 				TheEncounter.em.after_callback(function()
 					TheEncounter.UI.event_finish(self)
 					self:clear_colours()
 					TheEncounter.em.after_callback(function()
 						TheEncounter.after_event_finish()
+						stop_use()
 						TheEncounter.em.after_callback(func, true)
 						self.STATE = self.STATES.END
 					end)

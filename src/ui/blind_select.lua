@@ -1,6 +1,6 @@
 -- Blind select
 function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
-	domain = TheEncounter.Domain.resolve(domain)
+	domain = assert(TheEncounter.Domain.resolve(domain), "Cannot render choice without Domain")
 	scenario = TheEncounter.Scenario.resolve(scenario)
 
 	local disabled = false
@@ -341,6 +341,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 	}
 end
 function TheEncounter.UI.event_choices_render(choices)
+	choices = choices or {}
 	local choice_nodes = {}
 	local total_items = #choices
 	for i, choice in ipairs(choices) do
@@ -495,6 +496,8 @@ function G.FUNCS.enc_start_event(e)
 
 	TheEncounter.UI.remove_event_choices()
 	TheEncounter.UI.remove_prompt_box()
+
+	stop_use()
 	G.E_MANAGER:add_event(Event({
 		trigger = "immediate",
 		func = function()
