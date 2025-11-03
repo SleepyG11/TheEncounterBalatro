@@ -73,7 +73,8 @@ function TheEncounter.UI.event_choices(event) end
 
 --- With animation remove text and choices before next step
 --- @param event TheEncounter.Event
-function TheEncounter.UI.event_cleanup(event) end
+--- @param is_finish? boolean
+function TheEncounter.UI.event_cleanup(event, is_finish) end
 
 --- Hide event panel UI and remove it
 --- @param event TheEncounter.Event

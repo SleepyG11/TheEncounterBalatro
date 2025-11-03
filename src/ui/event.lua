@@ -645,14 +645,16 @@ function TheEncounter.UI.event_choices(event)
 		end,
 	}))
 end
-function TheEncounter.UI.event_cleanup(event)
+function TheEncounter.UI.event_cleanup(event, is_finish)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			TheEncounter.UI.set_element_object(event.ui.text, Moveable())
 			return true
 		end,
 	}))
-	delay(0.5)
+	if not is_finish then
+		delay(0.5)
+	end
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			TheEncounter.UI.set_element_object(event.ui.choices, Moveable())
