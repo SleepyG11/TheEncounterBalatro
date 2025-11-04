@@ -24,7 +24,7 @@ TheEncounter.Scenario({
 	background_colour = HEX("AA8400"),
 
 	start = function(self, event, after_load)
-		event:simple_character({
+		event:image_character({
 			center = "j_joker",
 			scale = 0.75,
 		})

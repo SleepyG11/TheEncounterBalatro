@@ -164,6 +164,7 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 		end
 		self.current_step:start(self, after_load)
 		TheEncounter.em.after_callback(function()
+			stop_use()
 			if not after_load then
 				if TheEncounter.table.first_not_nil(self.current_step.can_save, self.scenario.can_save) then
 					G.GAME.TheEncounter_save_table = self:save()
@@ -201,7 +202,7 @@ function TheEncounter.Event:finish(func)
 			self.scenario:finish(self)
 			TheEncounter.em.after_callback(function()
 				G.FUNCS.draw_from_hand_to_deck()
-				self:remove_all_characters()
+				self:remove_all_images()
 				stop_use()
 				TheEncounter.em.after_callback(function()
 					TheEncounter.UI.event_finish(self)
@@ -337,7 +338,7 @@ end
 
 --
 
-function TheEncounter.Event:simple_character(args)
+function TheEncounter.Event:image_character(args)
 	args = args or {}
 	local image_area = self.ui.image
 	if not image_area then
@@ -346,8 +347,8 @@ function TheEncounter.Event:simple_character(args)
 	local scale = args.scale or 1
 	local w = args.card_w or (G.CARD_W * 1.1 * scale)
 	local h = args.card_h or (G.CARD_H * 1.1 * scale)
-	local x = image_area.T.x + image_area.T.w / 2 - w / 2 + (args.dx or 0)
-	local y = image_area.T.y + image_area.T.h / 2 - h / 2 + (args.dy or 0)
+	local x = image_area.VT.x + image_area.VT.w / 2 - w / 2 + (args.dx or 0)
+	local y = image_area.VT.y + image_area.VT.h / 2 - h / 2 + (args.dy or 0)
 	local character = Card_Character({
 		w = w,
 		h = h,
@@ -367,9 +368,72 @@ function TheEncounter.Event:simple_character(args)
 	end
 	local key = args.container_key or "character"
 	image_area.children[key] = character
+	character:set_alignment({
+		major = image_area,
+		bond = "Weak",
+		type = "cm",
+		offset = {
+			x = args.dx or 0,
+			y = args.dy or 0,
+		},
+	})
 	return character
 end
-function TheEncounter.Event:remove_character(container_key)
+function TheEncounter.Event:image_sprite(args)
+	args = args or {}
+	local image_area = self.ui.image
+	local atlas = args.atlas
+	if type(atlas) == "string" then
+		atlas = args.animated and G.ANIMATION_ATLAS[atlas] or G.ASSET_ATLAS[atlas]
+	end
+	if not image_area or not atlas then
+		return
+	end
+	local maxw = image_area.VT.w - 0.2
+	local maxh = image_area.VT.h - 0.2
+	local temp_scale = math.min(1, maxw / atlas.px, maxh / atlas.py)
+	local scale = args.scale or 1
+
+	local w = args.w or atlas.px * temp_scale * scale
+	local h = args.h or atlas.py * temp_scale * scale
+	local x = image_area.VT.x + image_area.VT.w / 2 - w / 2 + (args.dx or 0)
+	local y = image_area.VT.y + image_area.VT.h / 2 - h / 2 + (args.dy or 0)
+
+	local pos = args.pos or {}
+	local sprite
+	if args.animated then
+		sprite = AnimatedSprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
+	else
+		sprite = Sprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
+	end
+	-- TODO: apply dissolve shader properly
+	-- if args.animated then
+	-- 	sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
+	-- 	sprite.dissolve_colours = { G.C.MULT }
+	-- 	sprite.dissolve = 1
+	-- 	ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
+	-- else
+	-- 	sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
+	-- 	sprite.dissolve_colours = { G.C.MULT }
+	-- 	sprite.dissolve = 1
+	-- 	ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
+	-- end
+
+	local key = args.container_key or "sprite"
+	image_area.children[key] = sprite
+	sprite:set_alignment({
+		major = image_area,
+		bond = "Weak",
+		type = "cm",
+		offset = {
+			x = args.dx or 0,
+			y = args.dy or 0,
+		},
+	})
+	return sprite
+end
+
+function TheEncounter.Event:remove_image(container_key)
 	local image_area = self.ui.image
 	if not image_area or not container_key then
 		return
@@ -381,7 +445,7 @@ function TheEncounter.Event:remove_character(container_key)
 	if child.children and child.children.card and child.children.card.jimbo == child then
 		child.children.card:start_dissolve(nil, true)
 		image_area.children[container_key] = nil
-	elseif Card:is(child) then
+	elseif Card:is(child) or Sprite:is(child) or AnimatedSprite:is(child) then
 		child:start_dissolve(nil, true)
 		image_area.children[container_key] = nil
 	elseif child.remove then
@@ -389,26 +453,26 @@ function TheEncounter.Event:remove_character(container_key)
 		image_area.children[container_key] = nil
 	end
 end
-function TheEncounter.Event:get_character(container_key)
-	local image_area = self.ui.image
-	return image_area and image_area.children[container_key] or nil
-end
-function TheEncounter.Event:remove_all_characters()
+function TheEncounter.Event:remove_all_images()
 	local image_area = self.ui.image
 	if not image_area then
 		return
 	end
 	for container_key, _ in pairs(image_area.children) do
-		self:remove_character(container_key)
+		self:remove_image(container_key)
 	end
+end
+function TheEncounter.Event:get_image(container_key)
+	local image_area = self.ui.image
+	return image_area and image_area.children[container_key] or nil
 end
 
 --
 
 local old_draw = CardArea.draw
 function CardArea:draw(...)
-	if G.STATE == G.STATES.ENC_EVENT then
-		local event = G.TheEncounter_event
+	local event = G.TheEncounter_event
+	if G.STATE == G.STATES.ENC_EVENT or event then
 		if not event or event.REMOVED or event.HIDE_AREAS_STATES[event.STATE] then
 			if self == G.hand then
 				return
