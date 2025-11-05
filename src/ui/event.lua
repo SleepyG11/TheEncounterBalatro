@@ -415,7 +415,6 @@ function TheEncounter.UI.event_panel(event)
 
 	G.E_MANAGER:add_event(Event({
 		func = function()
-			event.ui.hud.alignment.offset.y = 0
 			event_ui.alignment.offset.y = -8.5
 			return true
 		end,
@@ -424,6 +423,7 @@ function TheEncounter.UI.event_panel(event)
 		trigger = "after",
 		delay = 0.75,
 		func = function()
+			event.ui.hud.alignment.offset.y = 0
 			play_sound("cardFan2")
 			return true
 		end,
