@@ -16,12 +16,9 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 	local text_col = (scenario and scenario_colours.text_colour) or domain_colours.text_colour or G.C.UI.TEXT_LIGHT
 
 	-- Sprite
-	local blind_choice = {
-		config = G.P_BLINDS[G.GAME.round_resets.blind_choices["Big"]],
-	}
 	local atlas, pos = (scenario and scenario:get_atlas(domain)) or domain:get_atlas()
-	blind_choice.animation = AnimatedSprite(0, 0, 1.4, 1.4, atlas, pos)
-	blind_choice.animation:define_draw_steps({
+	local animation = AnimatedSprite(0, 0, 1.4, 1.4, atlas, pos)
+	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },
 		{ shader = "dissolve" },
 	})
@@ -71,120 +68,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 		})
 	end
 
-	-- Reward
-	local loc_reward
-	local target_meta = {}
-	local target_reward
-	if scenario then
-		target_meta = {}
-		target_reward = scenario.reward
-		if type(target_reward) == "function" then
-			target_meta.is_from_function = true
-			target_reward = target_reward(scenario, domain)
-		end
-	end
-	if not target_reward then
-		target_meta = {}
-		target_reward = domain.reward
-		if type(target_reward) == "function" then
-			target_meta.is_from_function = true
-			target_reward = target_reward(domain)
-		end
-	end
-
-	if type(target_reward) == "table" then
-		if target_reward.full_ui and target_meta.is_from_function then
-			target_meta.is_full_custom_ui = true
-			target_reward = target_reward.full_ui
-		elseif target_reward.value_ui and target_meta.is_from_function then
-			target_meta.is_custom_ui = true
-			target_reward = target_reward.value_ui
-		elseif target_reward.value then
-			target_meta.colour = target_reward.colour
-			target_meta.symbol = target_reward.symbol
-			target_meta.font = target_reward.font
-			target_meta.scale = target_reward.scale
-			target_meta.limit = target_reward.limit
-			target_meta.spacing = target_reward.spacing
-			target_reward = target_reward.value
-		else
-			target_reward = "???"
-		end
-	end
-
-	if target_meta.is_full_custom_ui or target_meta.is_custom_ui then
-		-- Custom UI
-		loc_reward = target_reward
-	elseif type(target_reward) == "string" then
-		loc_reward = target_reward
-		-- No work for us
-	elseif type(target_reward) == "number" then
-		local symbol = target_meta.symbol or "$"
-		local limit = target_meta.limit or 10
-		-- Convert number in amount of dollars to display
-		if to_big(target_reward) > to_big(limit) then
-			loc_reward = target_reward .. symbol
-		else
-			loc_reward = ""
-			for i = 1, target_reward do
-				loc_reward = loc_reward .. symbol
-			end
-		end
-	else
-		loc_reward = "???"
-	end
-
-	local reward_render
-	if target_meta.is_full_custom_ui then
-		reward_render = loc_reward
-	else
-		reward_render = {
-			n = G.UIT.R,
-			config = {
-				align = "cm",
-				r = 0.1,
-				padding = 0.05,
-				minw = 3.1,
-				maxw = 3.1,
-				colour = mix_colours(G.C.BLACK, blind_col, 0.75),
-				emboss = 0.05,
-			},
-			nodes = {
-				{
-					n = G.UIT.R,
-					config = { align = "cm", minh = 0.5, maxw = 3.1 },
-					nodes = {
-						{
-							n = G.UIT.T,
-							config = {
-								text = localize("ph_blind_reward"),
-								scale = 0.35,
-								colour = disabled and G.C.UI.TEXT_INACTIVE or text_col,
-								shadow = not disabled,
-							},
-						},
-						target_meta.is_custom_ui and loc_reward or {
-							n = G.UIT.O,
-							config = {
-								object = DynaText({
-									string = { loc_reward },
-									colours = {
-										target_meta.colour or G.C.MONEY,
-									},
-									float = true,
-									spacing = target_meta.spacing or 1.5,
-									scale = target_meta.scale or 0.35,
-									font = target_meta.font,
-									maxw = 2.5,
-								}),
-							},
-						},
-					},
-				},
-			},
-		}
-	end
-
+	local reward_render = TheEncounter.UI.get_reward(scenario, domain, blind_col, text_col)
 	local badges = TheEncounter.UI.get_badges(scenario, domain, {
 		bypass_discovery_check = true,
 	})
@@ -291,7 +175,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 												n = G.UIT.R,
 												config = { align = "cm", minh = 1.5 },
 												nodes = {
-													{ n = G.UIT.O, config = { object = blind_choice.animation } },
+													{ n = G.UIT.O, config = { object = animation } },
 												},
 											},
 											{

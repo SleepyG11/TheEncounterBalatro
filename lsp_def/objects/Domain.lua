@@ -3,7 +3,7 @@
 --- @class TheEncounter.Domain: SMODS.GameObject
 --- @field config? TheEncounter.EventAbility
 --- @field rarity? string|number
---- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain): TheEncounter.RewardDisplay
+--- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain, is_hud?: boolean): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader

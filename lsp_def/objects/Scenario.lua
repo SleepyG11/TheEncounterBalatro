@@ -3,7 +3,7 @@
 --- @class TheEncounter.Scenario: SMODS.GameObject
 --- @field starting_step_key string
 --- @field config? TheEncounter.EventAbility
---- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain): TheEncounter.RewardDisplay
+--- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Scenario, domain?: TheEncounter.Domain, is_hud?: boolean): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader

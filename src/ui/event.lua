@@ -411,9 +411,11 @@ function TheEncounter.UI.event_panel(event)
 	event.ui.text = event.ui.text_container.config.object:get_UIE_by_ID("text_area")
 	event.ui.choices_container = event_ui:get_UIE_by_ID("choices_area_container")
 	event.ui.choices = event.ui.choices_container.config.object:get_UIE_by_ID("choices_area")
+	event.ui.hud = UIBox(TheEncounter.UI.event_hud_UIBox(event))
 
 	G.E_MANAGER:add_event(Event({
 		func = function()
+			event.ui.hud.alignment.offset.y = 0
 			event_ui.alignment.offset.y = -8.5
 			return true
 		end,
@@ -666,6 +668,7 @@ function TheEncounter.UI.event_finish(event)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			event.ui.panel.alignment.offset.y = G.ROOM.T.y + 21
+			event.ui.hud.alignment.offset.y = -10
 			return true
 		end,
 	}))
@@ -674,11 +677,135 @@ function TheEncounter.UI.event_finish(event)
 		delay = 0.75,
 		func = function()
 			event.ui.panel:remove()
+			event.ui.hud:remove()
 			play_sound("cardFan2")
 			return true
 		end,
 	}))
 	delay(0.5)
+end
+
+--
+
+function TheEncounter.UI.event_hud_UIBox(event)
+	local scenario = event.scenario
+	local domain = event.domain
+	local reward = TheEncounter.UI.get_reward(scenario, domain, event.ui.colour, event.ui.text_colour, true)
+
+	local atlas, pos = (scenario and scenario:get_atlas(domain)) or domain:get_atlas()
+	local animation = AnimatedSprite(0, 0, 1.2, 1.2, atlas, pos)
+	animation:define_draw_steps({
+		{ shader = "dissolve", shadow_height = 0.05 },
+		{ shader = "dissolve" },
+	})
+	-- TODO: make it draggable like vanilla blind chip, rn it's glued
+	animation.states.collide.can = true
+	animation.states.drag.can = true
+
+	local t = { key = scenario.key, set = "enc_Scenario" }
+	local res = {}
+	if scenario.loc_vars and type(scenario.loc_vars) == "function" then
+		res = scenario:loc_vars({}, domain) or {}
+		t.vars = res.vars or {}
+		t.key = res.key or t.key
+		t.set = res.set or t.set
+		if res.variant then
+			t.key = t.key .. "_" .. res.variant
+		end
+	end
+
+	local blind_name = {}
+	blind_name = localize({
+		type = "name",
+		set = t.set,
+		key = t.key,
+		nodes = blind_name,
+		vars = t.vars or {},
+		fixed_scale = 0.5 / 0.32,
+		maxw = 4.5,
+	})
+
+	local loc_object = G.localization.descriptions[t.set][t.key]
+
+	local blind_text = {}
+	local raw_blind_text = loc_object.blind_text or loc_object.text
+	for _, line in ipairs(raw_blind_text) do
+		table.insert(blind_text, {
+			n = G.UIT.R,
+			config = { align = "cm", minh = 0.1, maxw = 4.5 },
+			nodes = SMODS.localize_box(loc_parse_string(line), {
+				colour = event.ui.text_colour,
+				default_colour = event.ui.text_colour,
+				default_col = event.ui.text_colour,
+				vars = t.vars or {},
+				scale = 0.24 / 0.2,
+			}),
+		})
+	end
+
+	return {
+		definition = {
+			n = G.UIT.ROOT,
+			config = {
+				align = "cm",
+				minw = 4.5,
+				r = 0.1,
+				colour = G.C.BLACK,
+				emboss = 0.05,
+				padding = 0.05,
+			},
+			nodes = {
+				{
+					n = G.UIT.R,
+					config = { align = "cm", minh = 0.7, r = 0.1, emboss = 0.05, colour = G.C.DYN_UI.MAIN },
+					nodes = {
+						{
+							n = G.UIT.C,
+							config = { align = "cm", minw = 3 },
+							nodes = blind_name,
+						},
+					},
+				},
+				{
+					n = G.UIT.R,
+					config = { align = "cm", minh = 2.74, r = 0.1, colour = G.C.DYN_UI.DARK },
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = { align = "cm", padding = 0.05, minh = 0.75 },
+							nodes = blind_text,
+						},
+						{
+							n = G.UIT.R,
+							config = { align = "cm", padding = 0.15 },
+							nodes = {
+								{ n = G.UIT.O, config = { object = animation, draw_layer = 1 } },
+								{
+									n = G.UIT.C,
+									config = {
+										align = "cm",
+										r = 0.1,
+										padding = 0.05,
+										minw = 2.9,
+									},
+									nodes = {
+										{
+											n = G.UIT.R,
+											config = { align = "cm", minh = 0.45, maxw = 2.8 },
+											nodes = {
+												reward,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		config = { major = G.HUD:get_UIE_by_ID("row_blind"), align = "cm", offset = { x = 0, y = -10 }, bond = "Weak" },
+	}
 end
 
 --

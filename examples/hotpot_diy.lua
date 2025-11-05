@@ -3,7 +3,8 @@ TheEncounter.Scenario({
 	loc_txt = {
 		name = { "Personality Quiz" },
 		text = {
-			"Click here and find out which Joker you are!",
+			"Click here and find out",
+			"which Joker you are!",
 		},
 	},
 	domains = { do_enc_occurrence = true },
