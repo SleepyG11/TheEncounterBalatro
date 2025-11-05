@@ -2,6 +2,7 @@
 
 --- @class TheEncounter.EventUI: table
 --- @field panel? Node Main event ui, were image, text and choices are placed
+--- @field hud? Node Panel on top left with blind sprite, name, description and reward display
 --- @field private image_container? Node
 --- @field image? Node Image area (a box on right side of panel)
 --- @field private text_container? Node

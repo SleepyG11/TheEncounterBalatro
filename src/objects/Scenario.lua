@@ -31,6 +31,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 		hide_text = false,
 		hide_image = false,
 		hide_choices = false,
+		hide_hud = false,
 		can_use = true,
 		can_sell = true,
 		extra = {},

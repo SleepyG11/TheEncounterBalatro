@@ -316,6 +316,9 @@ function TheEncounter.Event:update(dt)
 			end
 		end
 	end
+	if self.ui.hud then
+		self.ui.hud.states.visible = not self.ability.hide_hud
+	end
 	if needs_recalculate then
 		self.ui.panel:recalculate()
 	end
