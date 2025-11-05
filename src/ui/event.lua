@@ -668,7 +668,7 @@ function TheEncounter.UI.event_finish(event)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			event.ui.panel.alignment.offset.y = G.ROOM.T.y + 21
-			event.ui.hud.alignment.offset.y = -10
+			event.ui.hud.alignment.offset.y = -15
 			return true
 		end,
 	}))
@@ -804,7 +804,7 @@ function TheEncounter.UI.event_hud_UIBox(event)
 				},
 			},
 		},
-		config = { major = G.HUD:get_UIE_by_ID("row_blind"), align = "cm", offset = { x = 0, y = -10 }, bond = "Weak" },
+		config = { major = G.HUD:get_UIE_by_ID("row_blind"), align = "cm", offset = { x = 0, y = -15 }, bond = "Weak" },
 	}
 end
 
