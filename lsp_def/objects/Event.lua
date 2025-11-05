@@ -14,7 +14,8 @@
 --- @field colour? table Main UI colour
 --- @field inactive_colour? table UI colour for inactive buttons
 --- @field dark_colour? table Main UI colour, dark variant
---- @field light_colour? table Main UI colour, slightly variant
+--- @field medium_colour? table Main UI colour, medium variant
+--- @field light_colour? table Main UI colour, light variant
 --- @field text_colour? table Main UI text colour (for lines and buttons)
 --- @field background_colour? table UI for background shader
 

@@ -73,6 +73,10 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 		bypass_discovery_check = true,
 	})
 
+	local colours = TheEncounter.UI.get_colours_palette({
+		colour = blind_col,
+	})
+
 	-- Render
 	local t = {
 		n = G.UIT.R,
@@ -87,10 +91,10 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 				n = G.UIT.R,
 				config = {
 					align = "cm",
-					colour = mix_colours(G.C.BLACK, blind_col, 0.55),
+					colour = colours.medium_colour,
 					r = 0.1,
 					outline = 1,
-					outline_colour = mix_colours(G.C.BLACK, blind_col, 0.25),
+					outline_colour = colours.light_colour,
 					minw = 3.3,
 					maxw = 3.3,
 				},
@@ -140,8 +144,8 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 									align = "cm",
 									r = 0.1,
 									outline = 1,
-									outline_colour = blind_col,
-									colour = darken(blind_col, 0.3),
+									outline_colour = colours.colour,
+									colour = colours.light_colour,
 									minw = 2.9,
 									maxw = 2.9,
 									minh = 0.6,
@@ -218,7 +222,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 			n = G.UIT.ROOT,
 			config = { align = "cm", colour = G.C.CLEAR },
 			nodes = {
-				UIBox_dyn_container({ t }, false, blind_col, mix_colours(G.C.BLACK, blind_col, 0.8)),
+				UIBox_dyn_container({ t }, false, colours.colour, colours.dark_colour),
 			},
 		},
 		config = { align = "bmi", offset = { x = 0, y = 0 } },

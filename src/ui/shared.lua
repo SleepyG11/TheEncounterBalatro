@@ -120,6 +120,10 @@ TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_
 		loc_reward = "???"
 	end
 
+	local colours = TheEncounter.UI.get_colours_palette({
+		colour = blind_col,
+	})
+
 	local reward_render
 	if target_meta.is_full_custom_ui then
 		reward_render = loc_reward
@@ -132,7 +136,7 @@ TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_
 				padding = 0.05,
 				minw = 3.1,
 				maxw = 3.1,
-				colour = mix_colours(G.C.BLACK, blind_col, 0.75),
+				colour = colours.dark_colour,
 				emboss = 0.05,
 			},
 			nodes = {
@@ -173,4 +177,14 @@ TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_
 	end
 
 	return reward_render
+end
+
+TheEncounter.UI.get_colours_palette = function(colours)
+	return {
+		colour = colours.colour,
+		inactive_colour = mix_colours(G.C.BLACK, colours.colour, 0.8),
+		dark_colour = mix_colours(G.C.BLACK, colours.colour, 0.7),
+		medium_colour = mix_colours(G.C.BLACK, colours.colour, 0.5),
+		light_colour = mix_colours(G.C.BLACK, colours.colour, 0.3),
+	}
 end

@@ -1,7 +1,7 @@
 function TheEncounter.UI.event_panel_sizes(event)
 	local container_H = 5.6
-	local container_W = G.hand.T.w + 0.15
-	local container_padding = 0.1
+	local container_W = G.hand.T.w + 0.225
+	local container_padding = 0.2
 
 	local header_H = 0.6
 	local header_W = container_W - container_padding * 2
@@ -9,7 +9,7 @@ function TheEncounter.UI.event_panel_sizes(event)
 
 	local content_H = container_H - container_padding * 2 - header_H
 	local content_W = container_W - container_padding * 2
-	local content_padding = 0.1
+	local content_padding = 0.2
 
 	local image_area_size = (container_H - container_padding * 2 - header_H - content_padding * 2) / 1.25
 	local choices_H = 2.4
@@ -92,6 +92,7 @@ function TheEncounter.UI.event_panel_render(event)
 
 	local blind_col = event.ui.colour
 	local blind_dark_col = event.ui.dark_colour
+	local blind_medium_col = event.ui.medium_colour
 	local blind_light_col = event.ui.light_colour
 
 	local text_container = UIBox({
@@ -234,40 +235,57 @@ function TheEncounter.UI.event_panel_render(event)
 		nodes = {
 			UIBox_dyn_container(
 				{
+					-- {
+					-- 	n = G.UIT.R,
+					-- 	config = {
+					-- 		padding = 0.025,
+					-- 	},
+					-- 	nodes = {
+					-- 		{
+					-- 			n = G.UIT.R,
+					-- 			config = {
+					-- 				minw = header_W,
+					-- 				maxw = header_W,
+					-- 				colour = blind_light_col,
+					-- 				outline = 1,
+					-- 				outline_colour = blind_col,
+					-- 				r = 0.1,
+					-- 				emboss = 0.05,
+					-- 				minh = header_H,
+					-- 				padding = header_padding,
+					-- 				align = "cm",
+					-- 			},
+					-- 			nodes = {
+					-- 				{
+					-- 					n = G.UIT.C,
+					-- 					config = { align = "cm" },
+					-- 					nodes = event_name_lines,
+					-- 				},
+					-- 			},
+					-- 		},
+					-- 	},
+					-- },
 					{
 						n = G.UIT.R,
 						config = {
-							padding = 0.025,
+							padding = 0.05,
 						},
 						nodes = {
 							{
 								n = G.UIT.R,
 								config = {
-									minw = header_W,
-									maxw = header_W,
-									colour = blind_light_col,
+									maxw = content_W,
+									minw = content_W,
+									padding = 0.15,
+									colour = blind_medium_col,
 									outline = 1,
-									outline_colour = blind_col,
+									outline_colour = blind_light_col,
 									r = 0.1,
-									emboss = 0.05,
-									minh = header_H,
-									padding = header_padding,
-									align = "cm",
+									minh = 8.3,
 								},
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { align = "cm" },
-										nodes = event_name_lines,
-									},
-								},
+								nodes = main_nodes,
 							},
 						},
-					},
-					{
-						n = G.UIT.R,
-						config = { maxw = content_W, minw = content_W },
-						nodes = main_nodes,
 					},
 				},
 				nil,
@@ -285,7 +303,7 @@ function TheEncounter.UI.event_panel_render(event)
 			major = G.ROOM_ATTACH,
 			bond = "Weak",
 			offset = {
-				x = -15.3,
+				x = -15.39,
 				y = G.ROOM.T.y + 21,
 			},
 		},
@@ -612,6 +630,12 @@ function TheEncounter.UI.event_choices(event)
 		{
 			n = G.UIT.R,
 			config = {
+				minh = 0.15,
+			},
+		},
+		{
+			n = G.UIT.R,
+			config = {
 				padding = 0.075,
 			},
 			nodes = event_buttons_content,
@@ -757,7 +781,7 @@ function TheEncounter.UI.event_hud_UIBox(event)
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = { align = "cm", minh = 0.7, r = 0.1, emboss = 0.05, colour = G.C.DYN_UI.MAIN },
+					config = { align = "cm", minh = 0.7, r = 0.1, emboss = 0.05, colour = event.ui.colour },
 					nodes = {
 						{
 							n = G.UIT.C,
@@ -768,7 +792,7 @@ function TheEncounter.UI.event_hud_UIBox(event)
 				},
 				{
 					n = G.UIT.R,
-					config = { align = "cm", minh = 2.74, r = 0.1, colour = G.C.DYN_UI.DARK },
+					config = { align = "cm", minh = 2.74, r = 0.1, colour = event.ui.medium_colour },
 					nodes = {
 						{
 							n = G.UIT.R,

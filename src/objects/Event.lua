@@ -73,16 +73,21 @@ function TheEncounter.Event:set_colours(first_load)
 
 	local new_colour =
 		copy_table(step_colours.colour or self.ui.colour or scenario_colours.colour or domain_colours.colour)
+	local new_colour_palette = TheEncounter.UI.get_colours_palette({
+		colour = new_colour,
+	})
 	if first_load or not self.ui.colour then
-		self.ui.colour = new_colour
-		self.ui.inactive_colour = mix_colours(G.C.BLACK, new_colour, 0.8)
-		self.ui.dark_colour = mix_colours(G.C.BLACK, new_colour, 0.6)
-		self.ui.light_colour = mix_colours(G.C.BLACK, new_colour, 0.4)
+		self.ui.colour = new_colour_palette.colour
+		self.ui.inactive_colour = new_colour_palette.inactive_colour
+		self.ui.dark_colour = new_colour_palette.dark_colour
+		self.ui.light_colour = new_colour_palette.light_colour
+		self.ui.medium_colour = new_colour_palette.medium_colour
 	else
-		ease_colour(self.ui.colour, new_colour, 0.2)
-		ease_colour(self.ui.inactive_colour, mix_colours(G.C.BLACK, new_colour, 0.8), 0.2)
-		ease_colour(self.ui.dark_colour, mix_colours(G.C.BLACK, new_colour, 0.6), 0.2)
-		ease_colour(self.ui.light_colour, mix_colours(G.C.BLACK, new_colour, 0.4), 0.2)
+		ease_colour(self.ui.colour, new_colour_palette.colour, 0.2)
+		ease_colour(self.ui.inactive_colour, new_colour_palette.inactive_colour, 0.2)
+		ease_colour(self.ui.dark_colour, new_colour_palette.dark_colour, 0.2)
+		ease_colour(self.ui.light_colour, new_colour_palette.light_colour, 0.2)
+		ease_colour(self.ui.medium_colour, new_colour_palette.medium_colour, 0.2)
 	end
 
 	local new_text_colour = copy_table(

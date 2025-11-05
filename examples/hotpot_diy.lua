@@ -21,8 +21,8 @@ TheEncounter.Scenario({
 	can_save = true,
 
 	-- ha, piss colours
-	colour = HEX("D3A400"),
-	background_colour = HEX("AA8400"),
+	colour = HEX("D60000"),
+	background_colour = HEX("A50000"),
 
 	start = function(self, event, after_load)
 		event:image_character({
