@@ -888,7 +888,7 @@ function G.FUNCS.enc_execute_choice(e)
 	choice:button(event, e.config.enc_choice_ability)
 end
 
-G.FUNCS.enc_event_choice_tooltip = function(e)
+function G.FUNCS.enc_event_choice_tooltip(e)
 	if e.enc_event_choice_tooltip then
 		return
 	end
