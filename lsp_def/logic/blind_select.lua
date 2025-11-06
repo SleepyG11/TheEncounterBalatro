@@ -1,8 +1,10 @@
 --- @meta
 
+--- @alias TheEncounter.ChoiceObject { scenario_key?: string, domain_key: string }
+
 --- Main function to poll and set choices for current encounter.<br/>
 --- Result saved in `G.GAME.TheEncounter_choices` and game can transitions to `G.STATES.ENC_EVENT_SELECT`
---- @return { scenario_key?: string, domain_key: string }[]
+--- @return TheEncounter.ChoiceObject[]
 function TheEncounter.poll_choices() end
 
 --- Main function which called on clicking "Select".<br/>
@@ -10,7 +12,7 @@ function TheEncounter.poll_choices() end
 --- Result saved in `G.GAME.TheEncounter_choice` and game can transition to `G.STATES.ENC_EVENT`
 --- @param scenario? TheEncounter.ScenarioResolvable
 --- @param domain TheEncounter.DomainResolvable
---- @return { scenario_key: string, domain_key: string }
+--- @return TheEncounter.ChoiceObject
 function TheEncounter.select_choice(scenario, domain) end
 
 --- Function which determines should start encounter sequence and transition to `G.STATES.ENC_EVENT_SELECT`.<br/>
@@ -19,3 +21,13 @@ function TheEncounter.select_choice(scenario, domain) end
 --- - after Shop
 --- @return boolean
 function TheEncounter.should_encounter() end
+
+--- Create, replace or remove choice by index. Update value in `G.GAME.TheEncounter_choices` and rerendering UI if present
+--- @param index number
+--- @param choice TheEncounter.ChoiceObject | nil
+function TheEncounter.replace_choice(index, choice) end
+
+--- Replace choices. Update value in `G.GAME.TheEncounter_choices` and rerendering UI if present
+--- @param choices TheEncounter.ChoiceObject[]
+--- @param with_prompt boolean? Should rerender prompt box
+function TheEncounter.replace_all_choices(choices, with_prompt) end
