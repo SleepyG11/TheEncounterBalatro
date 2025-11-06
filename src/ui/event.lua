@@ -37,6 +37,7 @@ function TheEncounter.UI.event_panel_sizes(event)
 	}
 end
 
+-- TODO: cleanup this
 function TheEncounter.UI.event_panel_render(event)
 	local scenario = event.scenario
 	local domain = event.domain
@@ -722,9 +723,33 @@ function TheEncounter.UI.event_hud_UIBox(event)
 		{ shader = "dissolve", shadow_height = 0.05 },
 		{ shader = "dissolve" },
 	})
-	-- TODO: make it draggable like vanilla blind chip, rn it's glued
 	animation.states.collide.can = true
 	animation.states.drag.can = true
+
+	local old_update = animation.update
+	function animation:update(...)
+		if self.role.role_type == "Minor" then
+			animation:set_role({ role_type = "Major" })
+		end
+		old_update(self, ...)
+		if not self.states.drag.is and self.parent then
+			self.T.r = 0.02 * math.sin(2 * G.TIMERS.REAL + self.parent.T.x)
+			self.T.y = self.parent.T.y + 0.03 * math.sin(0.666 * G.TIMERS.REAL + self.parent.T.x)
+			self.shadow_height = 0.1 - (0.04 + 0.03 * math.sin(0.666 * G.TIMERS.REAL + self.parent.T.x))
+			self.T.x = self.parent.T.x + 0.03 * math.sin(0.436 * G.TIMERS.REAL + self.parent.T.x)
+		end
+		if self.states.hover.is then
+			if not self.hovering then
+				self.hovering = true
+				self.hover_tilt = 2
+				animation:juice_up(0.05, 0.02)
+				play_sound("chips1", math.random() * 0.1 + 0.55, 0.12)
+			end
+		else
+			self.hovering = false
+			self.hover_tilt = 0
+		end
+	end
 
 	local t = { key = scenario.key, set = "enc_Scenario" }
 	local res = {}
