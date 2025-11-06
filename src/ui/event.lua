@@ -430,7 +430,7 @@ function TheEncounter.UI.event_panel(event)
 	event.ui.text = event.ui.text_container.config.object:get_UIE_by_ID("text_area")
 	event.ui.choices_container = event_ui:get_UIE_by_ID("choices_area_container")
 	event.ui.choices = event.ui.choices_container.config.object:get_UIE_by_ID("choices_area")
-	event.ui.hud = UIBox(TheEncounter.UI.event_hud_UIBox(event))
+	event.ui.hud = UIBox(TheEncounter.UI.event_hud_render(event))
 
 	G.E_MANAGER:add_event(Event({
 		func = function()
@@ -712,7 +712,7 @@ end
 
 --
 
-function TheEncounter.UI.event_hud_UIBox(event)
+function TheEncounter.UI.event_hud_render(event)
 	local scenario = event.scenario
 	local domain = event.domain
 	local reward = TheEncounter.UI.get_reward(scenario, domain, event.ui.colour, event.ui.text_colour, true)

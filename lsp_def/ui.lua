@@ -42,6 +42,11 @@ function TheEncounter.UI.event_panel_render(event) end
 --- @return table
 function TheEncounter.UI.image_area_render(event) end
 
+--- Main event UI hud (blind chip, name, text and reward on top left in main HUD) UIBox definition and config
+--- @param event TheEncounter.Event
+--- @return table
+function TheEncounter.UI.event_hud_render(event) end
+
 --- Even choice button definition
 --- @param event TheEncounter.Event
 --- @param choice TheEncounter.Choice
