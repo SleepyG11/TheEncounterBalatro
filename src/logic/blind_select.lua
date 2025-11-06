@@ -112,3 +112,7 @@ TheEncounter.replace_choice = function(index, choice)
 		-- TODO: decide what to do in this case
 	end
 end
+TheEncounter.replace_all_choices = function(choices, with_prompt)
+	G.GAME.TheEncounter_choices = choices
+	TheEncounter.UI.event_replace_all_choices(with_prompt)
+end

@@ -341,6 +341,27 @@ function TheEncounter.UI.event_replace_choice(index, choice)
 		}))
 	end
 end
+function TheEncounter.UI.event_replace_all_choices(with_prompt)
+	TheEncounter.UI.remove_event_choices()
+	if with_prompt then
+		TheEncounter.UI.remove_prompt_box()
+	end
+	G.E_MANAGER:add_event(Event({
+		trigger = "after",
+		delay = 0.3,
+		func = function()
+			G.TheEncounter_blind_choices = UIBox(TheEncounter.UI.event_choices_render(G.GAME.TheEncounter_choices))
+			if with_prompt then
+				G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box_render())
+			end
+			TheEncounter.UI.set_event_choices()
+			if with_prompt then
+				TheEncounter.UI.set_prompt_box()
+			end
+			return true
+		end,
+	}))
+end
 
 function TheEncounter.UI.set_event_choices()
 	if G.TheEncounter_blind_choices then
@@ -420,7 +441,7 @@ function TheEncounter.UI.remove_prompt_box()
 		G.TheEncounter_prompt_box.alignment.offset.y = -10
 		G.E_MANAGER:add_event(Event({
 			trigger = "before",
-			delay = 0.2,
+			delay = 0.5,
 			blocking = false,
 			func = function()
 				G.TheEncounter_prompt_box:remove()
