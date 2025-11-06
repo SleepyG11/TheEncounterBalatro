@@ -364,11 +364,8 @@ function TheEncounter.Event:image_character(args)
 		y = y,
 		center = args.center,
 	})
-	-- TODO: make shadow not full black (???)
-	character.children.card.no_shadow = true
 	character.children.card.VT.scale = args.scale or character.children.card.VT.scale
 	character.children.card.T.scale = args.scale or character.children.card.T.scale
-	character.states.collide.can = false
 	if args.particles then
 		character.children.particles.colours = args.particles
 	else
@@ -385,6 +382,13 @@ function TheEncounter.Event:image_character(args)
 			y = args.dy or 0,
 		},
 	})
+	local old_draw = character.draw
+	function character:draw(...)
+		local card = self.children.card
+		self.children.card = nil
+		old_draw(self, ...)
+		self.children.card = card
+	end
 	return character
 end
 function TheEncounter.Event:image_sprite(args)
