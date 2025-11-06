@@ -716,7 +716,7 @@ function TheEncounter.UI.event_hud_UIBox(event)
 	local domain = event.domain
 	local reward = TheEncounter.UI.get_reward(scenario, domain, event.ui.colour, event.ui.text_colour, true)
 
-	local atlas, pos = (scenario and scenario:get_atlas(domain)) or domain:get_atlas()
+	local atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
 	local animation = AnimatedSprite(0, 0, 1.2, 1.2, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },

@@ -123,7 +123,7 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 			local set_sprite = function()
 				local atlas, pos
 				if not scenario.discoverable or scenario.discovered then
-					atlas, pos = scenario:get_atlas(domain)
+					atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
 				else
 					atlas, pos = G.ANIMATION_ATLAS["blind_chips"], G.b_undiscovered.pos
 				end

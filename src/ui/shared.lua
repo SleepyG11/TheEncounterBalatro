@@ -188,3 +188,35 @@ TheEncounter.UI.get_colours_palette = function(colours)
 		light_colour = mix_colours(G.C.BLACK, colours.colour, 0.3),
 	}
 end
+
+TheEncounter.UI.get_atlas = function(scenario, domain)
+	domain = TheEncounter.Domain.resolve(domain)
+	scenario = TheEncounter.Scenario.resolve(scenario)
+
+	if not domain then
+		return nil
+	end
+
+	local function resolve_first_atlas(...)
+		local list = { ... }
+		for _, key in pairs(list) do
+			if type(key) == "table" then
+				return key
+			elseif type(key) == "string" and G.ANIMATION_ATLAS[key] then
+				return G.ANIMATION_ATLAS[key]
+			end
+		end
+		return nil
+	end
+
+	local scenario_atlas, scenario_pos
+	if scenario then
+		scenario_atlas, scenario_pos = scenario:get_atlas(domain)
+	end
+	local domain_atlas, domain_pos = domain:get_atlas()
+
+	local atlas = resolve_first_atlas(scenario_atlas, scenario and scenario.atlas, domain_atlas, domain.atlas)
+	local pos = TheEncounter.table.first_not_nil(scenario_pos, scenario and scenario.pos, domain_pos, domain.pos)
+
+	return atlas, pos
+end

@@ -93,11 +93,7 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	discoverable = true,
 	discovered = false,
 
-	get_atlas = function(self, domain)
-		local domain_atlas, domain_pos = domain:get_atlas()
-		local atlas = (self.atlas and G.ANIMATION_ATLAS[self.atlas]) or domain_atlas
-		return atlas, self.pos or domain_pos
-	end,
+	get_atlas = function(self, domain) end,
 	set_badges = function(self, badges, domain) end,
 
 	update = function(self, event, dt) end,

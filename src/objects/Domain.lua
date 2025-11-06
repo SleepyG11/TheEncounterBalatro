@@ -66,9 +66,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	atlas = "enc_event_default",
 	pos = { x = 0, y = 0 },
 
-	get_atlas = function(self)
-		return G.ANIMATION_ATLAS[self.atlas], self.pos
-	end,
+	get_atlas = function(self) end,
 	set_badges = function(self, badges) end,
 })
 

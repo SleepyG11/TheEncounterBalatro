@@ -16,7 +16,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 	local text_col = (scenario and scenario_colours.text_colour) or domain_colours.text_colour or G.C.UI.TEXT_LIGHT
 
 	-- Sprite
-	local atlas, pos = (scenario and scenario:get_atlas(domain)) or domain:get_atlas()
+	local atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
 	local animation = AnimatedSprite(0, 0, 1.4, 1.4, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },
