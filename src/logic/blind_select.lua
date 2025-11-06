@@ -100,3 +100,15 @@ end
 TheEncounter.should_encounter = function()
 	return true
 end
+TheEncounter.replace_choice = function(index, choice)
+	if G.GAME.TheEncounter_choices then
+		if not choice then
+			table.remove(G.GAME.TheEncounter_choices, index)
+		else
+			G.GAME.TheEncounter_choices[index] = choice
+		end
+		TheEncounter.UI.event_replace_choice(index, choice)
+	else
+		-- TODO: decide what to do in this case
+	end
+end

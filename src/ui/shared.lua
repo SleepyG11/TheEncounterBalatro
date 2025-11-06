@@ -33,7 +33,7 @@ TheEncounter.UI.set_element_object = function(container, object, no_remove)
 		else
 			container.config.object = Moveable()
 		end
-		container.UIBox:recalculate()
+		(container.UIBox or container):recalculate()
 	end
 end
 

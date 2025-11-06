@@ -1,5 +1,5 @@
 -- Blind select
-function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
+function TheEncounter.UI.event_choice_render(index, total, scenario, domain, start_from_bottom)
 	domain = assert(TheEncounter.Domain.resolve(domain), "Cannot render choice without Domain")
 	scenario = TheEncounter.Scenario.resolve(scenario)
 
@@ -8,8 +8,8 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 
 	local target = scenario or domain
 
-	local scenario_colours = TheEncounter.UI.get_colours(scenario, domain)
 	local domain_colours = TheEncounter.UI.get_colours(domain)
+	local scenario_colours = TheEncounter.UI.get_colours(scenario, domain)
 
 	-- Colour
 	local blind_col = (scenario and scenario_colours.colour) or domain_colours.colour or G.C.MULT
@@ -225,28 +225,32 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain)
 				UIBox_dyn_container({ t }, false, colours.colour, colours.dark_colour),
 			},
 		},
-		config = { align = "bmi", offset = { x = 0, y = 0 } },
+		config = { align = "bmi", offset = { x = 0, y = start_from_bottom and 20 or 0 }, xy_bond = "Weak" },
 	}
 end
 function TheEncounter.UI.event_choices_render(choices)
 	choices = choices or {}
 	local choice_nodes = {}
+	local choice_elements = {}
 	local total_items = #choices
 	for i, choice in ipairs(choices) do
+		local element = UIBox(
+			TheEncounter.UI.event_choice_render(
+				i,
+				total_items,
+				TheEncounter.Scenarios[choice.scenario_key] or nil,
+				TheEncounter.Domains[choice.domain_key]
+			)
+		)
 		table.insert(choice_nodes, {
 			n = G.UIT.O,
 			config = {
 				align = "cm",
-				object = UIBox(
-					TheEncounter.UI.event_choice_render(
-						i,
-						total_items,
-						TheEncounter.Scenarios[choice.scenario_key] or nil,
-						TheEncounter.Domains[choice.domain_key]
-					)
-				),
+				id = "enc_event_choice_" .. i,
+				object = element,
 			},
 		})
+		table.insert(choice_elements, element)
 	end
 	return {
 		definition = {
@@ -264,9 +268,78 @@ function TheEncounter.UI.event_choices_render(choices)
 			align = "bmi",
 			offset = { x = 0, y = G.ROOM.T.y + 29 },
 			major = G.hand,
-			bond = "Weak",
+			xy_bond = "Weak",
+			enc_choice_elements = choice_elements,
 		},
 	}
+end
+function TheEncounter.UI.event_replace_choice(index, choice)
+	local choices_el = G.TheEncounter_blind_choices
+	if not choices_el then
+		return
+	end
+
+	local choice_el = choices_el.config.enc_choice_elements[index]
+	if not choice_el and choice then
+		local new_object = UIBox(
+			TheEncounter.UI.event_choice_render(
+				index,
+				#choices_el.config.enc_choice_elements + 1,
+				choice.scenario_key,
+				choice.domain_key,
+				true
+			)
+		)
+		new_object.states.visible = false
+		local new_container = {
+			n = G.UIT.O,
+			config = {
+				align = "cm",
+				id = "enc_event_choice_" .. index,
+				object = new_object,
+			},
+		}
+		choices_el.UIRoot.children[1].UIBox:add_child(new_container, choices_el.UIRoot.children[1])
+		choices_el:recalculate()
+		choices_el.config.enc_choice_elements[index] = new_object
+		new_object:set_role({ xy_bond = "Weak" })
+		new_object.alignment.offset.y = 0
+		new_object.states.visible = true
+	else
+		table.remove(choices_el.config.enc_choice_elements, index)
+		choice_el:set_role({ xy_bond = "Weak" })
+		choice_el.alignment.offset.y = 20
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0.5,
+			func = function()
+				if choice then
+					local new_object = UIBox(
+						TheEncounter.UI.event_choice_render(
+							index,
+							#choices_el.config.enc_choice_elements + 1,
+							choice.scenario_key,
+							choice.domain_key,
+							true
+						)
+					)
+					new_object.parent = choice_el.parent
+					new_object.states.visible = false
+					TheEncounter.UI.set_element_object(choice_el.parent, new_object)
+					choice_el:remove()
+					choices_el.config.enc_choice_elements[index] = new_object
+					new_object.states.visible = true
+					new_object:set_role({ xy_bond = "Weak" })
+					new_object.alignment.offset.y = 0
+				else
+					choices_el.UIRoot.children[1].children[index]:remove()
+					table.remove(choices_el.UIRoot.children[1].children, index)
+					choices_el:recalculate()
+				end
+				return true
+			end,
+		}))
+	end
 end
 
 function TheEncounter.UI.set_event_choices()
