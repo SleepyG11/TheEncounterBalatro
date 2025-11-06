@@ -5,8 +5,9 @@
 --- @param total number
 --- @param scenario? TheEncounter.ScenarioResolvable
 --- @param domain TheEncounter.DomainResolvable
+--- @param start_from_bottom boolean? Should initial position be out of screen (used when event choice is replaced)
 --- @return table
-function TheEncounter.UI.event_choice_render(index, total, scenario, domain) end
+function TheEncounter.UI.event_choice_render(index, total, scenario, domain, start_from_bottom) end
 
 --- UIBox definition for Domain or Scenario in blind choices list
 --- @param choices { scenario_key?: string, domain_key: string }[]
