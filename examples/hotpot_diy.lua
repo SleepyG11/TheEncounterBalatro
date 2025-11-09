@@ -133,6 +133,7 @@ TheEncounter.Step({
 				},
 			})
 		end
+		result.columns = { 2, 2 }
 		return result
 	end,
 })

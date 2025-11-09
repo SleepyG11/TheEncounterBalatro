@@ -587,44 +587,53 @@ function TheEncounter.UI.event_choices(event)
 	-- Step buttons
 	local event_buttons_content = {}
 	local choices = step:get_choices(event)
-	for i = 1, math.ceil(#choices / 4) do
+	local column_data = choices.columns or { 4, 4, 4 }
+	local current_index = 1
+	for i = 1, #column_data do
+		local items_in_column = column_data[i]
 		local buttons_in_column = {}
-		local j = i - 1
-		for k = j * 4 + 1, i * 4 do
-			local choice = choices[k]
-			local result_choice, result_ability
-			if TheEncounter.Choice:is(choice) then
-				result_choice = choice
-			elseif type(choice) == "string" then
-				result_choice = TheEncounter.Choice.resolve(choice)
-			elseif type(choice) == "table" then
-				if choice.value then
-					result_choice = TheEncounter.Choice.resolve(choice.value)
-					result_ability = choice.ability
-				else
-					result_choice = TheEncounter.Choice.from_object(choice)
-					result_choice.key = result_choice.full_key
-						or (TheEncounter.Choice.class_prefix .. "_" .. step.key .. "_" .. result_choice.key)
+		if items_in_column > 0 then
+			for k = current_index, current_index + items_in_column - 1 do
+				local choice = choices[k]
+				if choice then
+					local result_choice, result_ability
+					if TheEncounter.Choice:is(choice) then
+						result_choice = choice
+					elseif type(choice) == "string" then
+						result_choice = TheEncounter.Choice.resolve(choice)
+					elseif type(choice) == "table" then
+						if choice.value then
+							result_choice = TheEncounter.Choice.resolve(choice.value)
+							result_ability = choice.ability
+						else
+							result_choice = TheEncounter.Choice.from_object(choice)
+							result_choice.key = result_choice.full_key
+								or (TheEncounter.Choice.class_prefix .. "_" .. step.key .. "_" .. result_choice.key)
+						end
+					end
+					if result_choice then
+						table.insert(
+							buttons_in_column,
+							TheEncounter.UI.choice_button_UIBox(
+								event,
+								result_choice,
+								TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
+							)
+						)
+					end
 				end
 			end
-			if result_choice then
-				table.insert(
-					buttons_in_column,
-					TheEncounter.UI.choice_button_UIBox(
-						event,
-						result_choice,
-						TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
-					)
-				)
-			end
 		end
-		table.insert(event_buttons_content, {
-			n = G.UIT.C,
-			config = {
-				padding = 0.075,
-			},
-			nodes = buttons_in_column,
-		})
+		current_index = current_index + items_in_column
+		if #buttons_in_column > 0 then
+			table.insert(event_buttons_content, {
+				n = G.UIT.C,
+				config = {
+					padding = 0.075,
+				},
+				nodes = buttons_in_column,
+			})
+		end
 	end
 
 	event_buttons_content = {
