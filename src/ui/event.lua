@@ -1,9 +1,9 @@
 function TheEncounter.UI.event_panel_sizes(event)
-	local container_H = 8.35
+	local container_H = 8.34
 	local container_W = G.hand.T.w + 0.05
 
 	local image_area_size = 3.5
-	local image_area_padding = 0.25
+	local image_area_padding = 0.3
 
 	local text_padding = 0.15
 	local text_W = container_W
@@ -37,7 +37,6 @@ function TheEncounter.UI.event_panel_sizes(event)
 	}
 end
 
--- TODO: cleanup this
 function TheEncounter.UI.event_panel_render(event)
 	local scenario = event.scenario
 	local domain = event.domain
@@ -188,15 +187,21 @@ function TheEncounter.UI.event_panel_render(event)
 			UIBox_dyn_container({
 				{
 					n = G.UIT.R,
-					config = {
-						colour = blind_medium_col,
-						outline = 1,
-						outline_colour = blind_light_col,
-						r = 0.1,
-						minh = sizes.container_H,
-						minw = sizes.container_W,
+					config = { padding = 0.025 },
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {
+								colour = blind_medium_col,
+								outline = 1,
+								outline_colour = blind_light_col,
+								r = 0.1,
+								minh = sizes.container_H,
+								minw = sizes.container_W,
+							},
+							nodes = main_nodes,
+						},
 					},
-					nodes = main_nodes,
 				},
 			}, nil, blind_col, blind_dark_col, nil),
 		},
@@ -208,7 +213,7 @@ function TheEncounter.UI.event_panel_render(event)
 			major = G.ROOM_ATTACH,
 			bond = "Weak",
 			offset = {
-				x = -15.325,
+				x = -15.35,
 				y = G.ROOM.T.y + 21,
 			},
 		},
