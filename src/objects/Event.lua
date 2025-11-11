@@ -291,6 +291,11 @@ function TheEncounter.Event:update(dt)
 			o = self.ui.choices,
 			v = not self.ability.hide_choices,
 		},
+		{
+			c = self.ui.fullw_choices_container,
+			o = self.ui.fullw_choices,
+			v = not self.ability.hide_choices,
+		},
 	}
 	if self.STATE == self.STATES.STEP_START then
 		table.insert(containers, {
@@ -349,6 +354,7 @@ end
 function TheEncounter.Event:image_character(args)
 	args = args or {}
 	local image_area = self.ui.image
+	local image_area_container = self.ui.image_container
 	if not image_area then
 		return
 	end
@@ -385,6 +391,9 @@ function TheEncounter.Event:image_character(args)
 	local old_draw = character.draw
 	function character:draw(...)
 		local card = self.children.card
+		if not image_area_container.states.visible then
+			card.states.visible = false
+		end
 		self.children.card = nil
 		old_draw(self, ...)
 		self.children.card = card

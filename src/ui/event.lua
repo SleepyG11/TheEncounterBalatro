@@ -176,12 +176,10 @@ function TheEncounter.UI.event_panel_render(event)
 	})
 	choices_area_container.enc_original_object = true
 
-	local main_nodes = {
-		{
-			n = G.UIT.C,
-			config = {
-				minw = choices_W + 0.2,
-			},
+	local fullw_choices_area_container = UIBox({
+		definition = {
+			n = G.UIT.ROOT,
+			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
 					n = G.UIT.R,
@@ -190,20 +188,64 @@ function TheEncounter.UI.event_panel_render(event)
 						{
 							n = G.UIT.O,
 							config = {
-								id = "text_area_container",
-								object = text_container,
+								id = "fullw_choices_area",
+								object = Moveable(),
+							},
+						},
+					},
+				},
+			},
+		},
+		config = {},
+	})
+	fullw_choices_area_container.enc_original_object = true
+
+	local main_nodes = {
+		{
+			n = G.UIT.R,
+			config = { padding = 0.15 },
+			nodes = {
+				{
+					n = G.UIT.C,
+					config = {
+						minw = choices_W + 0.2,
+					},
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {},
+							nodes = {
+								{
+									n = G.UIT.O,
+									config = {
+										id = "text_area_container",
+										object = text_container,
+									},
+								},
+							},
+						},
+						{
+							n = G.UIT.R,
+							nodes = {
+								{
+									n = G.UIT.O,
+									config = {
+										id = "choices_area_container",
+										object = choices_area_container,
+									},
+								},
 							},
 						},
 					},
 				},
 				{
-					n = G.UIT.R,
+					n = G.UIT.C,
 					nodes = {
 						{
 							n = G.UIT.O,
 							config = {
-								id = "choices_area_container",
-								object = choices_area_container,
+								id = "image_area_container",
+								object = image_area_container,
 							},
 						},
 					},
@@ -211,13 +253,14 @@ function TheEncounter.UI.event_panel_render(event)
 			},
 		},
 		{
-			n = G.UIT.C,
+			n = G.UIT.R,
+			config = { padding = 0.15 },
 			nodes = {
 				{
 					n = G.UIT.O,
 					config = {
-						id = "image_area_container",
-						object = image_area_container,
+						id = "fullw_choices_area_container",
+						object = fullw_choices_area_container,
 					},
 				},
 			},
@@ -234,67 +277,29 @@ function TheEncounter.UI.event_panel_render(event)
 			maxh = container_H,
 		},
 		nodes = {
-			UIBox_dyn_container(
+			UIBox_dyn_container({
 				{
-					-- {
-					-- 	n = G.UIT.R,
-					-- 	config = {
-					-- 		padding = 0.025,
-					-- 	},
-					-- 	nodes = {
-					-- 		{
-					-- 			n = G.UIT.R,
-					-- 			config = {
-					-- 				minw = header_W,
-					-- 				maxw = header_W,
-					-- 				colour = blind_light_col,
-					-- 				outline = 1,
-					-- 				outline_colour = blind_col,
-					-- 				r = 0.1,
-					-- 				emboss = 0.05,
-					-- 				minh = header_H,
-					-- 				padding = header_padding,
-					-- 				align = "cm",
-					-- 			},
-					-- 			nodes = {
-					-- 				{
-					-- 					n = G.UIT.C,
-					-- 					config = { align = "cm" },
-					-- 					nodes = event_name_lines,
-					-- 				},
-					-- 			},
-					-- 		},
-					-- 	},
-					-- },
-					{
-						n = G.UIT.R,
-						config = {
-							padding = 0.05,
-						},
-						nodes = {
-							{
-								n = G.UIT.R,
-								config = {
-									maxw = content_W,
-									minw = content_W,
-									padding = 0.15,
-									colour = blind_medium_col,
-									outline = 1,
-									outline_colour = blind_light_col,
-									r = 0.1,
-									minh = 8.3,
-								},
-								nodes = main_nodes,
+					n = G.UIT.R,
+					config = {
+						padding = 0.05,
+					},
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {
+								maxw = content_W,
+								minw = content_W,
+								colour = blind_medium_col,
+								outline = 1,
+								outline_colour = blind_light_col,
+								r = 0.1,
+								minh = 8.3,
 							},
+							nodes = main_nodes,
 						},
 					},
 				},
-				nil,
-				blind_col,
-				blind_dark_col,
-				--blind_col and mix_colours(G.C.BLACK, blind_col, 0.8) or nil
-				nil
-			),
+			}, nil, blind_col, blind_dark_col, nil),
 		},
 	}
 	return {
@@ -430,6 +435,8 @@ function TheEncounter.UI.event_panel(event)
 	event.ui.text = event.ui.text_container.config.object:get_UIE_by_ID("text_area")
 	event.ui.choices_container = event_ui:get_UIE_by_ID("choices_area_container")
 	event.ui.choices = event.ui.choices_container.config.object:get_UIE_by_ID("choices_area")
+	event.ui.fullw_choices_container = event_ui:get_UIE_by_ID("fullw_choices_area_container")
+	event.ui.fullw_choices = event.ui.fullw_choices_container.config.object:get_UIE_by_ID("fullw_choices_area")
 	event.ui.hud = UIBox(TheEncounter.UI.event_hud_render(event))
 
 	G.E_MANAGER:add_event(Event({
@@ -665,7 +672,10 @@ function TheEncounter.UI.event_choices(event)
 				},
 				config = {},
 			})
-			TheEncounter.UI.set_element_object(event.ui.choices, object)
+			TheEncounter.UI.set_element_object(
+				event.ability.full_width_choices and event.ui.fullw_choices or event.ui.choices,
+				object
+			)
 			object.states.visible = false
 			event.ui.panel:recalculate()
 			G.E_MANAGER:add_event(Event({
@@ -694,6 +704,7 @@ function TheEncounter.UI.event_cleanup(event, is_finish)
 	G.E_MANAGER:add_event(Event({
 		func = function()
 			TheEncounter.UI.set_element_object(event.ui.choices, Moveable())
+			TheEncounter.UI.set_element_object(event.ui.fullw_choices, Moveable())
 			return true
 		end,
 	}))
@@ -908,6 +919,9 @@ function G.FUNCS.enc_event_choice_tooltip(e)
 	e.enc_event_choice_tooltip = true
 
 	local popup_hover = function(self)
+		if not self.config.button then
+			return Node.hover(self)
+		end
 		local t = { key = choice.key, set = "enc_Choice" }
 		local res = {}
 		if choice.loc_vars and type(choice.loc_vars) == "function" then

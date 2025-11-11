@@ -54,6 +54,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 		hide_text = nil,
 		hide_image = nil,
 		hide_choices = nil,
+		full_width_choices = false,
 		extra = {},
 	},
 

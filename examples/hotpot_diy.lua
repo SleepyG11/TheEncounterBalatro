@@ -121,6 +121,9 @@ TheEncounter.Step({
 			'"Where would you like to go on a first date?"',
 		},
 	},
+	config = {
+		full_width_choices = true,
+	},
 	get_choices = function(self, event)
 		local result = {}
 		for _, variant in ipairs({ "park", "carnival", "casino", "no_date" }) do
@@ -262,6 +265,7 @@ TheEncounter.Step({
 				},
 			})
 		end
+		result.columns = { 2, 2 }
 		return result
 	end,
 })
