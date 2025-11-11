@@ -7,6 +7,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	required_params = {
 		"key",
 	},
+	legendaries = {},
 	process_loc_text = function(self)
 		if not G.localization.descriptions.enc_Domain then
 			G.localization.descriptions.enc_Domain = {}
@@ -37,6 +38,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 
 	get_colours = function(self, event) end,
 
+	hidden = false,
 	once_per_run = false,
 	can_repeat = true,
 	in_pool = function(self)
@@ -56,6 +58,10 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 
 	inject = function(self)
 		SMODS.insert_pool(G.P_CENTER_POOLS[self.set], self)
+		if self.hidden then
+			self.soul_rate = self.soul_rate or 0.003
+			table.insert(self.legendaries, self)
+		end
 	end,
 	pre_inject_class = function(self)
 		G.P_CENTER_POOLS[self.set] = {}

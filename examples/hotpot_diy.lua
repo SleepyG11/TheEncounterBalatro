@@ -20,7 +20,6 @@ TheEncounter.Scenario({
 	-- Prevent save-scumming
 	can_save = true,
 
-	-- ha, piss colours
 	colour = HEX("D60000"),
 	background_colour = HEX("A50000"),
 

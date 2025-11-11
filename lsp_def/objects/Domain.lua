@@ -7,6 +7,8 @@
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader
+--- @field hidden? boolean Sets if this domain is considered "legendary" (e.x. behaves like "The Soul")
+--- @field soul_rate? number Chance this domain replaces. Requires `hidden` to be true
 --- @field once_per_run? boolean
 --- @field can_repeat? boolean Is this object bypasses unique loop (like boss blinds loop in vanilla)
 --- @field in_pool? fun(self: TheEncounter.Domain): boolean, table?

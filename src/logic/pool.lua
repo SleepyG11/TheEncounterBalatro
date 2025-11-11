@@ -152,6 +152,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	-- Make a blacklist dictionary
 	local duplicates_pool = TheEncounter.table.to_keys_dictionary(duplicates_list or {})
 	local temp_pool = {}
+	local temp_legendary_pool = {}
 
 	local encounters_table = TheEncounter.POOL.get_domains_usage()
 
@@ -164,15 +165,27 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 			if not in_pool then
 				in_pool, pool_opts = TheEncounter.POOL.is_domain_in_pool(domain, args, duplicates_pool)
 			end
+			pool_opts = pool_opts or {}
 			if in_pool then
 				local d = TheEncounter.Domain.resolve(domain)
 				duplicates_pool[d.key] = true
-				table.insert(temp_pool, {
-					key = d.key,
-					value = d,
-					opts = pool_opts or {},
-					count = encounters_table[d.key] or 0,
-				})
+				if d.hidden then
+					if args.soulable then
+						table.insert(temp_legendary_pool, {
+							key = d.key,
+							value = d,
+							opts = pool_opts,
+							count = encounters_table[d.key] or 0,
+						})
+					end
+				else
+					table.insert(temp_pool, {
+						key = d.key,
+						value = d,
+						opts = pool_opts,
+						count = encounters_table[d.key] or 0,
+					})
+				end
 			end
 		end
 	end
@@ -232,12 +245,28 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 		end
 	end
 
-	return result_pool
+	local result_legendary_pool = {}
+	for _, item in ipairs(temp_legendary_pool) do
+		table.insert(temp_legendary_pool, item.value)
+	end
+
+	return result_pool, result_legendary_pool
 end
 TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 	args = args or {}
 
-	local options = TheEncounter.POOL.get_domains_pool(args, duplicates_list)
+	local options, legendary_options = TheEncounter.POOL.get_domains_pool(args, duplicates_list)
+
+	-- Are we lucky enough today to encounter a soulable domain?
+	for _, item in ipairs(legendary_options) do
+		-- GAMBLING!
+		if pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante) > (1 - item.soul_rate) then
+			if args.increment_usage then
+				TheEncounter.POOL.increment_domain_usage(item.key)
+			end
+			return item.key
+		end
+	end
 
 	local pullable = {}
 	local total_weight = 0
@@ -360,7 +389,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	domain = TheEncounter.Domain.resolve(domain)
 	args = args or {}
 	if not domain then
-		return {}
+		return {}, {}
 	end
 
 	-- Filter scenarios by domain passed
@@ -380,6 +409,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 	-- Make a blacklist dictionary
 	local duplicates_pool = TheEncounter.table.to_keys_dictionary(duplicates_list or {})
 	local temp_pool = {}
+	local temp_legendary_pool = {}
 
 	local encounters_table = TheEncounter.POOL.get_scenarios_usage(domain)
 
@@ -390,15 +420,27 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		if not in_pool then
 			in_pool, pool_opts = TheEncounter.POOL.is_scenario_in_pool(scenario, domain, args, duplicates_pool)
 		end
+		pool_opts = pool_opts or {}
 		if in_pool then
 			local s = TheEncounter.Scenario.resolve(scenario)
 			duplicates_pool[s.key] = true
-			table.insert(temp_pool, {
-				key = s.key,
-				value = s,
-				opts = pool_opts or {},
-				count = encounters_table[s.key] or 0,
-			})
+			if s.hidden then
+				if args.soulable then
+					table.insert(temp_legendary_pool, {
+						key = s.key,
+						value = s,
+						opts = pool_opts,
+						count = encounters_table[s.key] or 0,
+					})
+				end
+			else
+				table.insert(temp_pool, {
+					key = s.key,
+					value = s,
+					opts = pool_opts,
+					count = encounters_table[s.key] or 0,
+				})
+			end
 		end
 	end
 
@@ -436,14 +478,30 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		end
 	end
 
-	return result_pool
+	local result_legendary_pool = {}
+	for _, item in ipairs(temp_legendary_pool) do
+		table.insert(result_legendary_pool, item.value)
+	end
+
+	return result_pool, result_legendary_pool
 end
 TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 	args = args or {}
 	domain = TheEncounter.Domain.resolve(domain)
 
 	if domain then
-		local options = TheEncounter.POOL.get_scenarios_pool(domain, args, duplicates_list)
+		local options, legendary_options = TheEncounter.POOL.get_scenarios_pool(domain, args, duplicates_list)
+
+		-- Are we lucky enough today to encounter a soulable scenario?
+		for _, item in ipairs(legendary_options) do
+			-- GAMBLING!
+			if pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante) > (1 - item.soul_rate) then
+				if args.increment_usage then
+					TheEncounter.POOL.increment_scenario_usage(item.key, domain)
+				end
+				return item.key
+			end
+		end
 
 		local pullable = {}
 		local total_weight = 0

@@ -14,9 +14,11 @@ function Game:update_enc_event_select(dt)
 		stop_use()
 		ease_background_colour_blind(G.STATES.BLIND_SELECT)
 		G.GAME.TheEncounter_choices_amount = G.GAME.TheEncounter_choices_amount or 2
-		G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args or {
-			increment_usage = true,
-		}
+		G.GAME.TheEncounter_choices_args = G.GAME.TheEncounter_choices_args
+			or {
+				increment_usage = true,
+				soulable = true,
+			}
 		G.GAME.TheEncounter_choices = G.GAME.TheEncounter_choices or TheEncounter.poll_choices()
 		G.E_MANAGER:add_event(Event({
 			func = function()
