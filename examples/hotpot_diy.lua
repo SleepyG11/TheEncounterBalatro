@@ -9,7 +9,7 @@ TheEncounter.Scenario({
 	},
 	domains = { do_enc_occurrence = true },
 	config = {
-		hide_hand = false,
+		hide_hand = true,
 	},
 	starting_step_key = "st_enc_buzzfeed_quiz_start",
 	in_pool = function(self)
@@ -37,7 +37,7 @@ TheEncounter.Step({
 	key = "buzzfeed_quiz_start",
 	loc_txt = {
 		text = {
-			"You accidentally clicked one of the ads on the screen. The page reads and reads:",
+			"You accidentally clicked one of the ads on the screen. The page reads:",
 			" ",
 			'{s:1.2}"Which {s:1.2,C:attention}Balatro{s:1.2} Joker are you?"',
 			" ",
@@ -120,9 +120,6 @@ TheEncounter.Step({
 		text = {
 			'"Where would you like to go on a first date?"',
 		},
-	},
-	config = {
-		full_width_choices = true,
 	},
 	get_choices = function(self, event)
 		local result = {}
