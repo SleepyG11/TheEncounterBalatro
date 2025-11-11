@@ -9,7 +9,7 @@ TheEncounter.Scenario({
 	},
 	domains = { do_enc_occurrence = true },
 	config = {
-		hide_hand = true,
+		hide_hand = false,
 	},
 	starting_step_key = "st_enc_buzzfeed_quiz_start",
 	in_pool = function(self)

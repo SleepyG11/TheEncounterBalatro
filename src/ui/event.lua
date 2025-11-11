@@ -103,11 +103,7 @@ function TheEncounter.UI.event_panel_render(event)
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = {
-						minh = text_H,
-						maxw = text_W,
-						padding = 0.1,
-					},
+					config = {},
 					nodes = {
 						{
 							n = G.UIT.O,
@@ -133,15 +129,10 @@ function TheEncounter.UI.event_panel_render(event)
 					n = G.UIT.R,
 					nodes = {
 						{
-							n = G.UIT.C,
-							nodes = {
-								{
-									n = G.UIT.O,
-									config = {
-										id = "image_area",
-										object = UIBox(TheEncounter.UI.image_area_render(event)),
-									},
-								},
+							n = G.UIT.O,
+							config = {
+								id = "image_area",
+								object = UIBox(TheEncounter.UI.image_area_render(event)),
 							},
 						},
 					},
@@ -203,13 +194,10 @@ function TheEncounter.UI.event_panel_render(event)
 	local main_nodes = {
 		{
 			n = G.UIT.R,
-			config = { padding = 0.15 },
+			config = {},
 			nodes = {
 				{
 					n = G.UIT.C,
-					config = {
-						minw = choices_W + 0.2,
-					},
 					nodes = {
 						{
 							n = G.UIT.R,
@@ -254,7 +242,7 @@ function TheEncounter.UI.event_panel_render(event)
 		},
 		{
 			n = G.UIT.R,
-			config = { padding = 0.15 },
+			config = {},
 			nodes = {
 				{
 					n = G.UIT.O,
@@ -271,29 +259,23 @@ function TheEncounter.UI.event_panel_render(event)
 		n = G.UIT.ROOT,
 		config = {
 			colour = G.C.CLEAR,
-			minw = container_W,
-			maxw = container_W,
-			minh = container_H,
-			maxh = container_H,
 		},
 		nodes = {
 			UIBox_dyn_container({
 				{
 					n = G.UIT.R,
 					config = {
-						padding = 0.05,
+						colour = blind_medium_col,
+						outline = 1,
+						outline_colour = blind_light_col,
+						r = 0.1,
+						minh = 8.35,
 					},
 					nodes = {
 						{
 							n = G.UIT.R,
 							config = {
-								maxw = content_W,
-								minw = content_W,
-								colour = blind_medium_col,
-								outline = 1,
-								outline_colour = blind_light_col,
-								r = 0.1,
-								minh = 8.3,
+								minw = G.hand.T.w + 0.05,
 							},
 							nodes = main_nodes,
 						},
@@ -309,7 +291,7 @@ function TheEncounter.UI.event_panel_render(event)
 			major = G.ROOM_ATTACH,
 			bond = "Weak",
 			offset = {
-				x = -15.39,
+				x = -15.325,
 				y = G.ROOM.T.y + 21,
 			},
 		},
