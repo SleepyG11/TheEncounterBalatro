@@ -1,39 +1,39 @@
 function TheEncounter.UI.event_panel_sizes(event)
-	local container_H = 5.6
-	local container_W = G.hand.T.w + 0.225
-	local container_padding = 0.2
+	local container_H = 8.35
+	local container_W = G.hand.T.w + 0.05
 
-	local header_H = 0.6
-	local header_W = container_W - container_padding * 2
-	local header_padding = 0.1
+	local image_area_size = 3.5
+	local image_area_padding = 0.25
 
-	local content_H = container_H - container_padding * 2 - header_H
-	local content_W = container_W - container_padding * 2
-	local content_padding = 0.2
-
-	local image_area_size = (container_H - container_padding * 2 - header_H - content_padding * 2) / 1.25
-	local choices_H = 2.4
-	local text_H = (image_area_size * 1.25 - content_padding * 2 - choices_H)
-	local text_W = content_W - content_padding * 2
+	local text_padding = 0.15
+	local text_W = container_W
+	local text_H = image_area_size / 2
 	if not event.ability.hide_image then
-		text_W = text_W - image_area_size
+		text_W = text_W - image_area_size - image_area_padding * 2
 	end
+
+	local choices_W = text_W
+	local choices_padding = text_padding
+
+	local fullw_choices_W = text_W
+	local fullw_choices_padding = text_padding
 
 	return {
 		container_H = container_H,
 		container_W = container_W,
-		container_padding = container_padding,
-		header_H = header_H,
-		header_W = header_W,
-		header_padding = header_padding,
-		content_H = content_H,
-		content_W = content_W,
-		content_padding = content_padding,
+
 		image_area_size = image_area_size,
-		choices_H = choices_H,
-		choices_W = text_W,
-		text_H = text_H,
+		image_area_padding = image_area_padding,
+
 		text_W = text_W,
+		text_H = text_H,
+		text_padding = text_padding,
+
+		choices_W = choices_W,
+		choices_padding = choices_padding,
+
+		fullw_choices_W = fullw_choices_W,
+		fullw_choices_padding = fullw_choices_padding,
 	}
 end
 
@@ -43,24 +43,6 @@ function TheEncounter.UI.event_panel_render(event)
 	local domain = event.domain
 
 	local sizes = TheEncounter.UI.event_panel_sizes(event)
-
-	local container_H = sizes.container_H
-	local container_W = sizes.container_W
-	local container_padding = sizes.container_padding
-
-	local header_H = sizes.header_H
-	local header_W = sizes.header_W
-	local header_padding = sizes.header_padding
-
-	local content_H = sizes.content_H
-	local content_W = sizes.content_W
-	local content_padding = sizes.container_padding
-
-	local image_area_size = sizes.image_area_size
-	local choices_H = sizes.choices_H
-	local choices_W = sizes.choices_W
-	local text_H = sizes.text_H
-	local text_W = sizes.text_W
 
 	local event_text_name = {}
 	local t = { key = scenario.key, set = "enc_Scenario" }
@@ -102,16 +84,10 @@ function TheEncounter.UI.event_panel_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.R,
-					config = {},
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								id = "text_area",
-								object = Moveable(),
-							},
-						},
+					n = G.UIT.O,
+					config = {
+						id = "text_area",
+						object = Moveable(),
 					},
 				},
 			},
@@ -126,16 +102,10 @@ function TheEncounter.UI.event_panel_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.R,
-					config = {},
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								id = "choices_area",
-								object = Moveable(),
-							},
-						},
+					n = G.UIT.O,
+					config = {
+						id = "choices_area",
+						object = Moveable(),
 					},
 				},
 			},
@@ -150,16 +120,10 @@ function TheEncounter.UI.event_panel_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.R,
-					config = {},
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								id = "fullw_choices_area",
-								object = Moveable(),
-							},
-						},
+					n = G.UIT.O,
+					config = {
+						id = "fullw_choices_area",
+						object = Moveable(),
 					},
 				},
 			},
@@ -171,7 +135,7 @@ function TheEncounter.UI.event_panel_render(event)
 	local main_nodes = {
 		{
 			n = G.UIT.R,
-			config = {},
+			config = { minh = sizes.image_area_size },
 			nodes = {
 				{
 					n = G.UIT.R,
@@ -229,17 +193,10 @@ function TheEncounter.UI.event_panel_render(event)
 						outline = 1,
 						outline_colour = blind_light_col,
 						r = 0.1,
-						minh = 8.35,
+						minh = sizes.container_H,
+						minw = sizes.container_W,
 					},
-					nodes = {
-						{
-							n = G.UIT.R,
-							config = {
-								minw = G.hand.T.w + 0.05,
-							},
-							nodes = main_nodes,
-						},
-					},
+					nodes = main_nodes,
 				},
 			}, nil, blind_col, blind_dark_col, nil),
 		},
@@ -297,7 +254,7 @@ function TheEncounter.UI.image_area_render(event)
 		config = {
 			major = event.ui.panel,
 			align = "tri",
-			offset = { x = -0.25, y = 0.25 },
+			offset = { x = -1 * sizes.image_area_padding, y = sizes.image_area_padding },
 		},
 	}
 end
@@ -492,7 +449,7 @@ function TheEncounter.UI.event_text_lines(event)
 		UIBox({
 			definition = {
 				n = G.UIT.ROOT,
-				config = { colour = G.C.CLEAR },
+				config = { colour = G.C.CLEAR, padding = sizes.text_padding, maxw = sizes.text_W, minh = sizes.text_H },
 				nodes = {
 					{
 						n = G.UIT.C,
@@ -557,7 +514,7 @@ function TheEncounter.UI.event_choices(event)
 	-- Step buttons
 	local event_buttons_content = {}
 	local choices = step:get_choices(event)
-	local column_data = choices.columns or { 4, 4, 4 }
+	local column_data = choices.columns or { 4, 4, 4, 4, 4 }
 	local current_index = 1
 	for i = 1, #column_data do
 		local items_in_column = column_data[i]
@@ -606,22 +563,6 @@ function TheEncounter.UI.event_choices(event)
 		end
 	end
 
-	event_buttons_content = {
-		{
-			n = G.UIT.R,
-			config = {
-				minh = 0.15,
-			},
-		},
-		{
-			n = G.UIT.R,
-			config = {
-				padding = 0.075,
-			},
-			nodes = event_buttons_content,
-		},
-	}
-
 	G.E_MANAGER:add_event(Event({
 		trigger = "after",
 		delay = 1,
@@ -630,8 +571,19 @@ function TheEncounter.UI.event_choices(event)
 			local object = UIBox({
 				definition = {
 					n = G.UIT.ROOT,
-					config = { colour = G.C.CLEAR },
-					nodes = event_buttons_content,
+					config = { colour = G.C.CLEAR, padding = 0.075 },
+					nodes = {
+						{
+							n = G.UIT.R,
+							config = {
+								minh = 0.15,
+							},
+						},
+						{
+							n = G.UIT.R,
+							nodes = event_buttons_content,
+						},
+					},
 				},
 				config = {},
 			})
@@ -883,6 +835,8 @@ function G.FUNCS.enc_event_choice_tooltip(e)
 
 	local popup_hover = function(self)
 		if not self.config.button then
+			self.config.h_popup_config = {}
+			self.config.h_popup = nil
 			return Node.hover(self)
 		end
 		local t = { key = choice.key, set = "enc_Choice" }

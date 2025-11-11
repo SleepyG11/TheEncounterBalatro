@@ -37,7 +37,7 @@ TheEncounter.Step({
 	key = "buzzfeed_quiz_start",
 	loc_txt = {
 		text = {
-			"You accidentally clicked one of the ads on the screen. The page reads:",
+			"You accidentally clicked one of the ads on the screen. The page reads and reads:",
 			" ",
 			'{s:1.2}"Which {s:1.2,C:attention}Balatro{s:1.2} Joker are you?"',
 			" ",

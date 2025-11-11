@@ -31,6 +31,7 @@ function TheEncounter.UI.remove_prompt_box() end
 
 --- Get various sizes for event UI
 --- @param event TheEncounter.Event
+--- @return table
 function TheEncounter.UI.event_panel_sizes(event) end
 
 --- Main event UI UIBox definition and config
