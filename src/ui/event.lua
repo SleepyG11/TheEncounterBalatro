@@ -120,29 +120,6 @@ function TheEncounter.UI.event_panel_render(event)
 	})
 	text_container.enc_original_object = true
 
-	local image_area_container = UIBox({
-		definition = {
-			n = G.UIT.ROOT,
-			config = { colour = G.C.CLEAR },
-			nodes = {
-				{
-					n = G.UIT.R,
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								id = "image_area",
-								object = UIBox(TheEncounter.UI.image_area_render(event)),
-							},
-						},
-					},
-				},
-			},
-		},
-		config = {},
-	})
-	image_area_container.enc_original_object = true
-
 	local choices_area_container = UIBox({
 		definition = {
 			n = G.UIT.ROOT,
@@ -197,43 +174,26 @@ function TheEncounter.UI.event_panel_render(event)
 			config = {},
 			nodes = {
 				{
-					n = G.UIT.C,
+					n = G.UIT.R,
+					config = {},
 					nodes = {
 						{
-							n = G.UIT.R,
-							config = {},
-							nodes = {
-								{
-									n = G.UIT.O,
-									config = {
-										id = "text_area_container",
-										object = text_container,
-									},
-								},
-							},
-						},
-						{
-							n = G.UIT.R,
-							nodes = {
-								{
-									n = G.UIT.O,
-									config = {
-										id = "choices_area_container",
-										object = choices_area_container,
-									},
-								},
+							n = G.UIT.O,
+							config = {
+								id = "text_area_container",
+								object = text_container,
 							},
 						},
 					},
 				},
 				{
-					n = G.UIT.C,
+					n = G.UIT.R,
 					nodes = {
 						{
 							n = G.UIT.O,
 							config = {
-								id = "image_area_container",
-								object = image_area_container,
+								id = "choices_area_container",
+								object = choices_area_container,
 							},
 						},
 					},
@@ -307,19 +267,38 @@ function TheEncounter.UI.image_area_render(event)
 			config = { colour = G.C.CLEAR },
 			nodes = {
 				{
-					n = G.UIT.C,
+					n = G.UIT.O,
 					config = {
-						minw = image_area_size,
-						maxw = image_area_size,
-						minh = image_area_size,
-						maxh = image_area_size,
-						colour = { 0, 0, 0, 0.1 },
-						r = 0.1,
+						id = "image_area",
+						object = UIBox({
+							definition = {
+								n = G.UIT.ROOT,
+								config = { colour = G.C.CLEAR },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = {
+											minw = image_area_size,
+											maxw = image_area_size,
+											minh = image_area_size,
+											maxh = image_area_size,
+											colour = { 0, 0, 0, 0.1 },
+											r = 0.1,
+										},
+									},
+								},
+							},
+							config = {},
+						}),
 					},
 				},
 			},
 		},
-		config = {},
+		config = {
+			major = event.ui.panel,
+			align = "tri",
+			offset = { x = -0.25, y = 0.25 },
+		},
 	}
 end
 function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
@@ -411,8 +390,10 @@ function TheEncounter.UI.event_panel(event)
 	local event_ui = UIBox(TheEncounter.UI.event_panel_render(event))
 
 	event.ui.panel = event_ui
-	event.ui.image_container = event_ui:get_UIE_by_ID("image_area_container")
-	event.ui.image = event.ui.image_container.config.object:get_UIE_by_ID("image_area")
+
+	event.ui.image_container = UIBox(TheEncounter.UI.image_area_render(event))
+	event.ui.image = event.ui.image_container:get_UIE_by_ID("image_area")
+
 	event.ui.text_container = event_ui:get_UIE_by_ID("text_area_container")
 	event.ui.text = event.ui.text_container.config.object:get_UIE_by_ID("text_area")
 	event.ui.choices_container = event_ui:get_UIE_by_ID("choices_area_container")

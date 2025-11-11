@@ -297,13 +297,6 @@ function TheEncounter.Event:update(dt)
 			v = not self.ability.hide_choices,
 		},
 	}
-	if self.STATE == self.STATES.STEP_START then
-		table.insert(containers, {
-			c = self.ui.image_container,
-			o = self.ui.image,
-			v = not self.ability.hide_image,
-		})
-	end
 	local needs_recalculate = false
 	for index, container in ipairs(containers) do
 		container.c.states.visible = container.v
@@ -329,6 +322,11 @@ function TheEncounter.Event:update(dt)
 	if self.ui.hud then
 		self.ui.hud.states.visible = not self.ability.hide_hud
 	end
+	if self.STATE == self.STATES.STEP_START or self.STATE == self.STATES.SCENARIO_START then
+		if self.ui.image_container then
+			self.ui.image_container.states.visible = not self.ability.hide_image
+		end
+	end
 	if needs_recalculate then
 		self.ui.panel:recalculate()
 	end
@@ -353,9 +351,9 @@ end
 
 function TheEncounter.Event:image_character(args)
 	args = args or {}
-	local image_area = self.ui.image
 	local image_area_container = self.ui.image_container
-	if not image_area then
+	local image_area = self.ui.image
+	if not image_area or not image_area_container then
 		return
 	end
 	local scale = args.scale or 1
@@ -387,11 +385,14 @@ function TheEncounter.Event:image_character(args)
 			x = args.dx or 0,
 			y = args.dy or 0,
 		},
+		draw_major = character,
 	})
 	local old_draw = character.draw
 	function character:draw(...)
 		local card = self.children.card
-		if not image_area_container.states.visible then
+		if image_area_container.states.visible then
+			card.states.visible = self.states.visible
+		else
 			card.states.visible = false
 		end
 		self.children.card = nil
