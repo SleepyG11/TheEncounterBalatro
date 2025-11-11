@@ -1,15 +1,16 @@
 function TheEncounter.UI.event_panel_sizes(event)
+	local container_padding = 0.025
 	local container_H = 8.34
-	local container_W = G.hand.T.w + 0.05
+	local container_W = G.hand.T.w + container_padding * 2
 
 	local image_area_size = 3.5
-	local image_area_padding = 0.3
+	local image_area_padding = 0.2 + container_padding * 4
 
 	local text_padding = 0.15
 	local text_W = container_W
 	local text_H = image_area_size / 2
 	if not event.ability.hide_image then
-		text_W = text_W - image_area_size - image_area_padding * 2
+		text_W = text_W - image_area_size - image_area_padding - text_padding
 	end
 
 	local choices_W = text_W
@@ -21,6 +22,7 @@ function TheEncounter.UI.event_panel_sizes(event)
 	return {
 		container_H = container_H,
 		container_W = container_W,
+		container_padding = container_padding,
 
 		image_area_size = image_area_size,
 		image_area_padding = image_area_padding,
@@ -187,7 +189,7 @@ function TheEncounter.UI.event_panel_render(event)
 			UIBox_dyn_container({
 				{
 					n = G.UIT.R,
-					config = { padding = 0.025 },
+					config = { padding = sizes.container_padding },
 					nodes = {
 						{
 							n = G.UIT.R,
@@ -213,7 +215,7 @@ function TheEncounter.UI.event_panel_render(event)
 			major = G.ROOM_ATTACH,
 			bond = "Weak",
 			offset = {
-				x = -15.35,
+				x = -(3.01 + sizes.container_W),
 				y = G.ROOM.T.y + 21,
 			},
 		},
