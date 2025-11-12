@@ -162,6 +162,10 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 	end
 	SMODS.calculate_context({ enc_step_start = true, event = self })
 	TheEncounter.em.after_callback(function()
+		if after_scenario_start then
+			self.scenario:setup(self, after_load)
+		end
+		self.current_step:setup(self, after_load)
 		self:set_colours()
 		TheEncounter.UI.event_text_lines(self)
 		if after_scenario_start then

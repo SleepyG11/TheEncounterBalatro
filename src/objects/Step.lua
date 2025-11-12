@@ -73,6 +73,7 @@ TheEncounter.Step = SMODS.GameObject:extend({
 		}
 	end,
 
+	setup = function(self, event, after_load) end,
 	start = function(self, event, after_load) end,
 	finish = function(self, event) end,
 

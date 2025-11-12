@@ -25,4 +25,5 @@ assert(SMODS.load_file("src/ui/index.lua"))()
 assert(SMODS.load_file("src/logic/index.lua"))()
 assert(SMODS.load_file("src/items/index.lua"))()
 
-assert(SMODS.load_file("examples/hotpot_diy.lua"))()
+-- assert(SMODS.load_file("examples/hotpot_diy.lua"))()
+-- assert(SMODS.load_file("examples/hotpot_combat.lua"))()
