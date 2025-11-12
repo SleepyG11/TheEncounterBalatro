@@ -24,6 +24,7 @@
 --- @field STATES table<string, number> List of possible event states
 --- @field private HIDE_AREAS_STATES table<number, boolean>
 --- @field private NO_UPDATE_STATES table<number, boolean>
+--- @field private remove_callbacks table<function>
 --- @field REMOVED boolean If event was removed and should be discarded
 --- @field replaced_state number State which was replaced by event select (by default can be `G.STATES.BLIND_SELECT` or `G.STATES.SHOP`)
 --- @field temp_save_table? table
@@ -56,5 +57,6 @@
 --- @field remove_all_images fun(self: TheEncounter.Event)
 --- @field private update fun(self: TheEncounter.Event, dt: number)
 --- @field private remove fun(self: TheEncounter.Event)
+--- @field before_remove_callback fun(self: TheEncounter.Event, callback: function) Add callback which should be called when event's UI will be hidden and about to be destroyed
 --- @overload fun(scenario: TheEncounter.ScenarioResolvable, domain: TheEncounter.DomainResolvable, save_table?: table): TheEncounter.Event
 TheEncounter.Event = {}

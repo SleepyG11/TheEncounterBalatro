@@ -61,6 +61,8 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 		self.replaced_state = save_table.replaced_state or self.replaced_state
 	end
 
+	self.remove_callbacks = {}
+
 	self:init_ui()
 end
 
@@ -217,6 +219,9 @@ function TheEncounter.Event:finish(func)
 					TheEncounter.UI.event_finish(self)
 					self:clear_colours()
 					TheEncounter.em.after_callback(function()
+						for _, callback in ipairs(self.remove_callbacks) do
+							callback()
+						end
 						TheEncounter.after_event_finish()
 						stop_use()
 						TheEncounter.em.after_callback(func, true)
@@ -348,6 +353,12 @@ function TheEncounter.Event:remove()
 			end
 			value:remove()
 		end
+	end
+end
+
+function TheEncounter.Event:before_remove_callback(callback)
+	if type(callback) == "function" then
+		table.insert(self.remove_callbacks, callback)
 	end
 end
 

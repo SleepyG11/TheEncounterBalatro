@@ -411,6 +411,7 @@ function TheEncounter.UI.event_text_lines(event)
 		default_col = event.ui.text_colour,
 	})
 	local event_text_lines = {}
+
 	for _, line in ipairs(event_text_content) do
 		local text_object = UIBox({
 			definition = {
@@ -450,13 +451,14 @@ function TheEncounter.UI.event_text_lines(event)
 			},
 		})
 	end
+	step:get_text_ui(event, event_text_lines, text_objects)
 
 	TheEncounter.UI.set_element_object(
 		event.ui.text,
 		UIBox({
 			definition = {
 				n = G.UIT.ROOT,
-				config = { colour = G.C.CLEAR, padding = sizes.text_padding, maxw = sizes.text_W, minh = sizes.text_H },
+				config = { colour = G.C.CLEAR, padding = sizes.text_padding, maxw = sizes.text_W },
 				nodes = {
 					{
 						n = G.UIT.C,

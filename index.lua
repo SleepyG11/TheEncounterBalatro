@@ -16,6 +16,7 @@ TheEncounter = setmetatable({
 local old_align = CardArea.align_cards
 function CardArea:align_cards(...)
 	self.cards = self.cards or {}
+	self.children = self.children or {}
 	return old_align(self, ...)
 end
 
@@ -27,3 +28,4 @@ assert(SMODS.load_file("src/items/index.lua"))()
 
 -- assert(SMODS.load_file("examples/hotpot_diy.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_combat.lua"))()
+-- assert(SMODS.load_file("examples/hotpot_transaction.lua"))()
