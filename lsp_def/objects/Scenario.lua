@@ -7,6 +7,7 @@
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader
+--- @field get_colours? fun(self: TheEncounter.Domain, domain: TheEncounter.Domain, event?: TheEncounter.Event): table
 --- @field hidden? boolean Sets if this scenario is considered "legendary" (e.x. behaves like "The Soul")
 --- @field soul_rate? number Chance this scenario replaces. Requires `hidden` to be true
 --- @field once_per_run? boolean

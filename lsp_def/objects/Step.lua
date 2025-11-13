@@ -7,6 +7,7 @@
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table Colour for background shader
+--- @field get_colours? fun(self: TheEncounter.Step, event?: TheEncounter.Event): table
 --- @field get_choices? fun(self: TheEncounter.Step, event: TheEncounter.Event): TheEncounter.ChoiceItem[] | { columns?: number[] }
 --- @field setup? fun(self: TheEncounter.Step, event: TheEncounter.Event, after_load: boolean) Function to setup effects and other event variables, called before text rendering
 --- @field start? fun(self: TheEncounter.Step, event: TheEncounter.Event, after_load: boolean) Function where you can control displaying text lines and side effets you need on step start
