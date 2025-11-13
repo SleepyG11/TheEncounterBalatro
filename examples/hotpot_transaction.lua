@@ -37,8 +37,8 @@ TheEncounter.Step({
 		text = {},
 	},
 
-	get_text_ui = function(self, event, children, objects)
-		table.insert(children, {
+	set_text_ui = function(self, event, nodes, objects)
+		table.insert(nodes, {
 			n = G.UIT.R,
 			nodes = {
 				{

@@ -437,7 +437,6 @@ function TheEncounter.UI.event_text_lines(event)
 		then
 			text_object.enc_line_silent = true
 		end
-		text_object.states.visible = false
 		table.insert(text_objects, text_object)
 		table.insert(event_text_lines, {
 			n = G.UIT.R,
@@ -451,7 +450,11 @@ function TheEncounter.UI.event_text_lines(event)
 			},
 		})
 	end
-	step:get_text_ui(event, event_text_lines, text_objects)
+	step:set_text_ui(event, event_text_lines, text_objects)
+
+	for _, object in ipairs(text_objects) do
+		object.states.visible = false
+	end
 
 	TheEncounter.UI.set_element_object(
 		event.ui.text,
