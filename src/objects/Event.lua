@@ -208,7 +208,7 @@ function TheEncounter.Event:finish(func)
 		self.STATE = self.STATES.SCENARIO_FINISH
 		self:move_forward()
 		stop_use()
-		SMODS.calculate_context({ enc_scenario_end = true, event = self })
+		SMODS.calculate_context({ enc_scenario_finish = true, event = self })
 		TheEncounter.em.after_callback(function()
 			self.scenario:finish(self)
 			TheEncounter.em.after_callback(function()
@@ -224,8 +224,8 @@ function TheEncounter.Event:finish(func)
 						end
 						TheEncounter.after_event_finish()
 						stop_use()
-						TheEncounter.em.after_callback(func, true)
 						self.STATE = self.STATES.END
+						TheEncounter.em.after_callback(func, true)
 					end)
 				end)
 			end)
