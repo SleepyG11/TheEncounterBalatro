@@ -36,13 +36,13 @@
 --- @field ability TheEncounter.EventAbility Similar to `card.ability`, stores information which persists between steps and save/loading.<br/>Composed by merging `domain.config`, `scenario.config`. Each new step entered applies `current_step.ability`.<br/>**Must be serializable**
 --- @field data table Similar to `ability`, but specifically for live objects like cards, areas, etc.<br/>On saving, serialized as output of `current_step:save()`.<br/>On loading, deserialized as output of `current_step:load()`
 --- @field ui TheEncounter.EventUI
---- @field private set_colours fun(self: TheEncounter.Event, first_load: boolean)
+--- @field private set_colours fun(self: TheEncounter.Event, first_load?: boolean)
 --- @field private clear_colours fun(self: TheEncounter.Event)
 --- @field private set_ability fun(self: TheEncounter.Event)
 --- @field private init_ui fun(self: TheEncounter.Event)
 --- @field private move_forward fun(self: TheEncounter.Event)
 --- @field private start fun(self: TheEncounter.Event, func?: fun())
---- @field private enter_step fun(self: TheEncounter.Event, after_load: boolean, func?: fun(), after_scenario_start?: boolean)
+--- @field private enter_step fun(self: TheEncounter.Event, after_load?: boolean, func?: fun(), after_scenario_start?: boolean)
 --- @field private leave_step fun(self: TheEncounter.Event, is_finish?: boolean, func?: fun())
 --- @field private finish fun(self: TheEncounter.Event, func?: fun())
 --- @field private save fun(self: TheEncounter.Event): table?

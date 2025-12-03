@@ -124,6 +124,8 @@ function TheEncounter.Event:set_ability()
 	self.ability = TheEncounter.table.merge(self.ability, self.current_step.config or {})
 end
 function TheEncounter.Event:init_ui()
+	local after_load = not not self.temp_save_table
+	self.scenario:setup(self, after_load)
 	self:set_colours(true)
 	TheEncounter.UI.event_panel(self)
 end
@@ -164,9 +166,6 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 	end
 	SMODS.calculate_context({ enc_step_start = true, event = self })
 	TheEncounter.em.after_callback(function()
-		if after_scenario_start then
-			self.scenario:setup(self, after_load)
-		end
 		self.current_step:setup(self, after_load)
 		self:set_colours()
 		TheEncounter.UI.event_text_lines(self)
