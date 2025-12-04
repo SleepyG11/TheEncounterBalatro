@@ -39,7 +39,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain, sta
 		end
 	end
 
-	local loc_object = G.localization.descriptions[t.set][t.key]
+	local loc_object = G.localization.descriptions[t.set][t.key] or {}
 
 	local blind_name = {}
 	blind_name = localize({
@@ -54,7 +54,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain, sta
 	})
 
 	local blind_text = {}
-	local raw_blind_text = loc_object.blind_text or loc_object.text
+	local raw_blind_text = loc_object.blind_text or loc_object.text or {}
 	for _, line in ipairs(raw_blind_text) do
 		table.insert(blind_text, {
 			n = G.UIT.R,
