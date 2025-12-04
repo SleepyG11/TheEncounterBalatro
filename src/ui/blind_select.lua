@@ -73,9 +73,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain, sta
 		bypass_discovery_check = true,
 	})
 
-	local colours = TheEncounter.UI.get_colours_palette({
-		colour = blind_col,
-	})
+	local colours = TheEncounter.UI.get_colour_palette(blind_col)
 
 	-- Render
 	local t = {

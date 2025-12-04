@@ -3,7 +3,9 @@ TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 	args = args or {}
 
-    if not domain then return badges end
+	if not domain then
+		return badges
+	end
 
 	badges = badges or {}
 	if scenario then
@@ -11,13 +13,13 @@ TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 	end
 	domain:set_badges(badges)
 	if not args.no_rarity then
-        if scenario and scenario.rarity then
-            badges[#badges + 1] =
-                create_badge(SMODS.Rarity:get_rarity_badge(scenario.rarity), G.C.RARITY[scenario.rarity], nil, 1.2)
-        else
-            badges[#badges + 1] =
-                create_badge(SMODS.Rarity:get_rarity_badge(domain.rarity), G.C.RARITY[domain.rarity], nil, 1.2)
-        end
+		if scenario and scenario.rarity then
+			badges[#badges + 1] =
+				create_badge(SMODS.Rarity:get_rarity_badge(scenario.rarity), G.C.RARITY[scenario.rarity], nil, 1.2)
+		else
+			badges[#badges + 1] =
+				create_badge(SMODS.Rarity:get_rarity_badge(domain.rarity), G.C.RARITY[domain.rarity], nil, 1.2)
+		end
 	end
 	if
 		not args.no_mod
@@ -127,9 +129,7 @@ TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_
 		loc_reward = "???"
 	end
 
-	local colours = TheEncounter.UI.get_colours_palette({
-		colour = blind_col,
-	})
+	local colours = G.TheEncounter_event and G.TheEncounter_event.ui or TheEncounter.UI.get_colour_palette(blind_col)
 
 	local reward_render
 	if target_meta.is_full_custom_ui then
@@ -186,13 +186,13 @@ TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_
 	return reward_render
 end
 
-TheEncounter.UI.get_colours_palette = function(colours)
+TheEncounter.UI.get_colour_palette = function(colour)
 	return {
-		colour = colours.colour,
-		inactive_colour = mix_colours(G.C.BLACK, colours.colour, 0.8),
-		dark_colour = mix_colours(G.C.BLACK, colours.colour, 0.7),
-		medium_colour = mix_colours(G.C.BLACK, colours.colour, 0.5),
-		light_colour = mix_colours(G.C.BLACK, colours.colour, 0.3),
+		colour = colour,
+		inactive_colour = mix_colours(G.C.BLACK, colour, 0.8),
+		dark_colour = mix_colours(G.C.BLACK, colour, 0.7),
+		medium_colour = mix_colours(G.C.BLACK, colour, 0.5),
+		light_colour = mix_colours(G.C.BLACK, colour, 0.3),
 	}
 end
 

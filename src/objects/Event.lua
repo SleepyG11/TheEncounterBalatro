@@ -62,12 +62,10 @@ function TheEncounter.Event:init(scenario, domain, save_table)
 	end
 
 	self.remove_callbacks = {}
-
-	self:init_ui()
 end
 
 function TheEncounter.Event:set_colours(first_load)
-	local step_to_check = (first_load and not self.temp_save_table and self.next_step) or self.current_step
+	local step_to_check = self.current_step or self.next_step
 
 	local step_colours = TheEncounter.UI.get_colours(step_to_check, self)
 	local scenario_colours = TheEncounter.UI.get_colours(self.scenario, self.domain, self)
@@ -75,9 +73,7 @@ function TheEncounter.Event:set_colours(first_load)
 
 	local new_colour =
 		copy_table(step_colours.colour or self.ui.colour or scenario_colours.colour or domain_colours.colour)
-	local new_colour_palette = TheEncounter.UI.get_colours_palette({
-		colour = new_colour,
-	})
+	local new_colour_palette = TheEncounter.UI.get_colour_palette(new_colour)
 	if first_load or not self.ui.colour then
 		self.ui.colour = new_colour_palette.colour
 		self.ui.inactive_colour = new_colour_palette.inactive_colour
@@ -124,8 +120,6 @@ function TheEncounter.Event:set_ability()
 	self.ability = TheEncounter.table.merge(self.ability, self.current_step.config or {})
 end
 function TheEncounter.Event:init_ui()
-	local after_load = not not self.temp_save_table
-	self.scenario:setup(self, after_load)
 	self:set_colours(true)
 	TheEncounter.UI.event_panel(self)
 end
@@ -139,20 +133,25 @@ end
 function TheEncounter.Event:start(func)
 	self.STATE = self.STATES.SCENARIO_START
 	local save_table = self.temp_save_table
+	local after_load = not not save_table
 	self.temp_save_table = nil
+
+	if save_table then
+		local data_object = save_table.data or {}
+		data_object = self.scenario:load(self, data_object) or data_object
+		data_object = self.current_step:load(self, data_object) or data_object
+		self.data = data_object
+	end
+	self.scenario:setup(self, after_load)
+	self:init_ui()
+
 	stop_use()
 	if not save_table then
 		SMODS.calculate_context({ enc_scenario_start = true, event = self })
 	end
-	local after_load = false
+
 	TheEncounter.em.after_callback(function()
-		if save_table then
-			local data_object = save_table.data or {}
-			data_object = self.scenario:load(self, data_object) or data_object
-			data_object = self.current_step:load(self, data_object) or data_object
-			self.data = data_object
-			after_load = true
-		else
+		if not save_table then
 			self:move_forward()
 		end
 		self:enter_step(after_load, func, true)
