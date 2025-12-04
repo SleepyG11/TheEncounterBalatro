@@ -21,6 +21,7 @@
 --- @field hide_image? boolean Should event image `event.ui.image` be hidden (this will free space it uses, updates only during step change)
 --- @field hide_choices? boolean Should event choices `event.ui.choices` be hidden (this will free space it uses)
 --- @field hide_hud? boolean Should event hud be hidden (a blind name, description and reward on top left)
+--- @field hide_on_tarot? boolean Should event panel slide down during consumable usage or voucher redeem
 --- @field full_width_choices? boolean Should event choices be inserted into `event.ui.fullw_choices` instead (placed under image so can utilize full width of panel)
 --- @field can_sell? boolean Should "Sell" button for cards be active
 --- @field can_use? boolean Should "Use" button for cards be active
