@@ -650,7 +650,6 @@ function TheEncounter.UI.event_finish(event)
 		func = function()
 			event.ui.panel:remove()
 			event.ui.hud:remove()
-			play_sound("cardFan2")
 			return true
 		end,
 	}))
