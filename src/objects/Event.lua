@@ -97,20 +97,28 @@ function TheEncounter.Event:set_colours(first_load)
 		ease_colour(self.ui.text_colour, new_text_colour, 0.2)
 	end
 
-	local new_background_colour = copy_table(
-		step_colours.background_colour
-			or self.ui.background_colour
-			or scenario_colours.background_colour
-			or domain_colours.background_colour
-	)
-	if first_load or not self.ui.background_colour then
-		self.ui.background_colour = new_background_colour
-	else
-		for i = 1, 4 do
-			self.ui.background_colour[i] = new_background_colour[i]
+	if type(step_to_check.background_colour) == "function" then
+		step_to_check:background_colour(self)
+	elseif step_colours.background_colour then
+		ease_background_colour({ new_colour = copy_table(step_colours.background_colour), contrast = 1 })
+	elseif first_load then
+		if type(self.scenario.background_colour) == "function" then
+			self.scenario:background_colour(self)
+		elseif type(self.domain.background_colour) == "function" then
+			self.domain:background_colour(self)
+		else
+			ease_background_colour({
+				new_colour = copy_table(
+					scenario_colours.background_colour
+						or domain_colours.background_colour
+						or scenario_colours.colour
+						or domain_colours.colour
+				),
+				contrast = 1,
+			})
 		end
 	end
-	ease_background_colour({ new_colour = new_background_colour, contrast = 1 })
+
 	G.GAME.blind:change_colour(new_colour)
 end
 function TheEncounter.Event:clear_colours()

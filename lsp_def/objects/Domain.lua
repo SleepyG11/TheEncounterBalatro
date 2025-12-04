@@ -6,7 +6,7 @@
 --- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain, is_hud?: boolean): TheEncounter.RewardDisplay
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
---- @field background_colour? table Colour for background shader
+--- @field background_colour? table | fun(self: TheEncounter.Domain, event: TheEncounter.Event) Colour for background shader, or function to adjust background colour
 --- @field get_colours? fun(self: TheEncounter.Domain, event?: TheEncounter.Event): table
 --- @field hidden? boolean Sets if this domain is considered "legendary" (e.x. behaves like "The Soul")
 --- @field soul_rate? number Chance this domain replaces. Requires `hidden` to be true

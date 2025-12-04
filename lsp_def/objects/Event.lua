@@ -17,7 +17,6 @@
 --- @field medium_colour? table Main UI colour, medium variant
 --- @field light_colour? table Main UI colour, light variant
 --- @field text_colour? table Main UI text colour (for lines and buttons)
---- @field background_colour? table UI for background shader
 
 --- @class TheEncounter.Event: Object
 --- @field STATE number State currently event in

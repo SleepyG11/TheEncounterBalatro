@@ -34,7 +34,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	-- UI colour
 	colour = G.C.MULT,
 	-- Shader colour
-	background_colour = G.C.MULT,
+	background_colour = nil,
 
 	get_colours = function(self, event) end,
 

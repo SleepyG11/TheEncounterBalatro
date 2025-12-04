@@ -132,7 +132,7 @@ TheEncounter.POOL.is_domain_in_pool = function(domain, args, duplicates_list)
 	if
 		not args.ignore_once_per_run
 		and TheEncounter.table.first_not_nil(pool_opts.once_per_run, domain.once_per_run)
-		and TheEncounter.POOL.get_domains_usage()[domain.key] > 0
+		and (TheEncounter.POOL.get_domains_usage()[domain.key] or 0) > 0
 	then
 		return false, pool_opts
 	end
@@ -369,7 +369,7 @@ TheEncounter.POOL.is_scenario_in_pool = function(scenario, domain, args, duplica
 	if
 		not args.ignore_once_per_run
 		and TheEncounter.table.first_not_nil(pool_opts.once_per_run, scenario.once_per_run)
-		and TheEncounter.POOL.get_scenarios_usage(domain)[scenario.key] > 0
+		and (TheEncounter.POOL.get_scenarios_usage(domain)[scenario.key] or 0) > 0
 	then
 		return false, pool_opts
 	end
