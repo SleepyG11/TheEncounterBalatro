@@ -43,6 +43,9 @@ TheEncounter.Scenario({
 	domains = {
 		do_enc_aroombetween = true,
 	},
+	config = {
+		hide_image = true,
+	},
 	starting_step_key = "st_enc_egg_room_start",
 })
 
