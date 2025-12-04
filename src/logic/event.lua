@@ -81,3 +81,25 @@ function Game:delete_run(...)
 	end
 	return result
 end
+
+function TheEncounter.is_in_active_event_state()
+	return (G.TAROT_INTERRUPT or G.STATE) == G.STATES.ENC_EVENT and not (G.GAME and G.GAME.PACK_INTERRUPT)
+end
+function TheEncounter.is_in_domain(key)
+	return G.TheEncounter_event
+		and not G.TheEncounter_event.REMOVED
+		and G.TheEncounter_event.domain
+		and G.TheEncounter_event.domain.key == key
+end
+function TheEncounter.is_in_scenario(key)
+	return G.TheEncounter_event
+		and not G.TheEncounter_event.REMOVED
+		and G.TheEncounter_event.scenario
+		and G.TheEncounter_event.scenario.key == key
+end
+function TheEncounter.is_in_step(key)
+	return G.TheEncounter_event
+		and not G.TheEncounter_event.REMOVED
+		and G.TheEncounter_event.current_step
+		and G.TheEncounter_event.current_step.key == key
+end
