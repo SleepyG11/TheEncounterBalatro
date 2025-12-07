@@ -410,6 +410,8 @@ function TheEncounter.Event:image_character(args)
 	})
 	character.children.card.VT.scale = args.scale or character.children.card.VT.scale
 	character.children.card.T.scale = args.scale or character.children.card.T.scale
+	character.children.particles.VT.scale = args.scale or character.children.particles.VT.scale
+	character.children.particles.T.scale = args.scale or character.children.particles.T.scale
 	if args.particles then
 		character.children.particles.colours = args.particles
 	else
@@ -425,20 +427,9 @@ function TheEncounter.Event:image_character(args)
 			x = args.dx or 0,
 			y = args.dy or 0,
 		},
-		draw_major = character,
+		parent = self.ui.image_container,
 	})
-	local old_draw = character.draw
-	function character:draw(...)
-		local card = self.children.card
-		if image_area_container.states.visible then
-			card.states.visible = self.states.visible
-		else
-			card.states.visible = false
-		end
-		self.children.card = nil
-		old_draw(self, ...)
-		self.children.card = card
-	end
+	character.children.card.parent = character
 	return character
 end
 function TheEncounter.Event:image_sprite(args)

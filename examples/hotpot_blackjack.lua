@@ -194,7 +194,7 @@ TheEncounter.Step({
 					event:start_step("st_enc_bj_check")
 				end,
 				func = function()
-					return event.ability.extra.total < 21 and #G.deck.cards
+					return event.ability.extra.total < 21 and #G.deck.cards > 0
 				end,
 			},
 			{
