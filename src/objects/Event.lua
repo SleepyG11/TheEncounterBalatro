@@ -430,6 +430,8 @@ function TheEncounter.Event:image_character(args)
 		parent = self.ui.image_container,
 	})
 	character.children.card.parent = character
+	character.config = character.config or {}
+	character.config.draw_layer = 1
 	return character
 end
 function TheEncounter.Event:image_sprite(args)
