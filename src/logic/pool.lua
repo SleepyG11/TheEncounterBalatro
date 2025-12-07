@@ -281,6 +281,7 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 	end
 
 	-- GAMBLING!
+	-- TODO: make seeds separate
 	local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
 
 	if #pullable > 0 then

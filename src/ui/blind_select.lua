@@ -362,7 +362,7 @@ function TheEncounter.UI.event_replace_all_choices(with_prompt)
 end
 
 function TheEncounter.UI.set_event_choices()
-	if G.TheEncounter_blind_choices then
+	if G.TheEncounter_blind_choices and not G.TheEncounter_blind_choices.enc_removed then
 		G.TheEncounter_blind_choices.alignment.offset.y = 0
 			- (G.hand.T.y - G.jokers.T.y)
 			+ G.TheEncounter_blind_choices.T.h
@@ -372,6 +372,7 @@ function TheEncounter.UI.set_event_choices()
 end
 function TheEncounter.UI.remove_event_choices()
 	if G.TheEncounter_blind_choices then
+		G.TheEncounter_blind_choices.enc_removed = true
 		G.TheEncounter_blind_choices.alignment.offset.y = 40
 		G.TheEncounter_blind_choices.alignment.offset.x = 0
 		G.E_MANAGER:add_event(Event({
@@ -430,12 +431,13 @@ function TheEncounter.UI.prompt_box_render()
 	}
 end
 function TheEncounter.UI.set_prompt_box()
-	if G.TheEncounter_prompt_box then
+	if G.TheEncounter_prompt_box and not G.TheEncounter_prompt_box.enc_removed then
 		G.TheEncounter_prompt_box.alignment.offset.y = 0
 	end
 end
 function TheEncounter.UI.remove_prompt_box()
 	if G.TheEncounter_prompt_box then
+		G.TheEncounter_prompt_box.enc_removed = true
 		G.TheEncounter_prompt_box.alignment.offset.y = -10
 		G.E_MANAGER:add_event(Event({
 			trigger = "before",

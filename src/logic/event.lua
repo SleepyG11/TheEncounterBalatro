@@ -60,6 +60,7 @@ function TheEncounter.after_event_finish()
 	G.GAME.TheEncounter_save_table = nil
 	G.GAME.TheEncounter_choices = nil
 	G.GAME.TheEncounter_choice = nil
+	G.GAME.TheEncounter_after = nil
 end
 
 local old_game_delete_run = Game.delete_run
