@@ -144,14 +144,14 @@ function TheEncounter.Event:start(func)
 	local after_load = not not save_table
 	self.temp_save_table = nil
 
+	self.scenario:setup(self, after_load)
+	self:init_ui()
 	if save_table then
 		local data_object = save_table.data or {}
 		data_object = self.scenario:load(self, data_object) or data_object
 		data_object = self.current_step:load(self, data_object) or data_object
 		self.data = data_object
 	end
-	self.scenario:setup(self, after_load)
-	self:init_ui()
 
 	stop_use()
 	if not save_table then
@@ -188,12 +188,19 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 					save_run()
 				end
 			end
-			TheEncounter.UI.event_show_all_text_lines(self)
-			TheEncounter.UI.event_choices(self)
-			TheEncounter.em.after_callback(function()
-				TheEncounter.em.after_callback(func, true)
+			if self.interrupt_function then
+				local c = self.interrupt_function
+				self.interrupt_function = nil
 				self.STATE = self.STATES.STEP_IDLE
-			end)
+				c()
+			else
+				TheEncounter.UI.event_show_all_text_lines(self)
+				TheEncounter.UI.event_choices(self)
+				TheEncounter.em.after_callback(function()
+					TheEncounter.em.after_callback(func, true)
+					self.STATE = self.STATES.STEP_IDLE
+				end)
+			end
 		end)
 	end, not after_load)
 end
@@ -276,16 +283,28 @@ end
 function TheEncounter.Event:start_step(key)
 	self.next_step = TheEncounter.Step.resolve(key)
 	assert(self.next_step, "Tried to start unknown TheEncounter.Step: " .. key)
-	self:leave_step(false, function()
-		self:move_forward()
-		self:enter_step(false)
-	end)
+	if self.STATE ~= self.STATES.STEP_IDLE then
+		self.interrupt_function = function()
+			return self:start_step(key)
+		end
+	else
+		self:leave_step(false, function()
+			self:move_forward()
+			self:enter_step(false)
+		end)
+	end
 end
 function TheEncounter.Event:finish_scenario(transition_func)
-	self:finish(transition_func or function()
-		G.STATE = self.replaced_state or G.STATES.BLIND_SELECT
-		G.STATE_COMPLETE = false
-	end)
+	if self.STATE ~= self.STATES.STEP_IDLE then
+		self.interrupt_function = function()
+			return self:finish_scenario(transition_func)
+		end
+	else
+		self:finish(transition_func or function()
+			G.STATE = self.replaced_state or G.STATES.BLIND_SELECT
+			G.STATE_COMPLETE = false
+		end)
+	end
 end
 
 function TheEncounter.Event:update(dt)

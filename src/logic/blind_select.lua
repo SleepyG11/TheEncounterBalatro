@@ -54,9 +54,6 @@ function Game:update_enc_event_select(dt)
 			}
 		end
 
-		G.TheEncounter_blind_choices = UIBox(TheEncounter.UI.event_choices_render(G.GAME.TheEncounter_choices))
-		G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box_render())
-
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				save_run()
@@ -70,9 +67,14 @@ function Game:update_enc_event_select(dt)
 				G.E_MANAGER:add_event(Event({
 					trigger = "immediate",
 					func = function()
-						play_sound("cancel")
-						TheEncounter.UI.set_event_choices()
-						TheEncounter.UI.set_prompt_box()
+						if G.GAME.TheEncounter_choices and #G.GAME.TheEncounter_choices > 0 then
+							G.TheEncounter_blind_choices =
+								UIBox(TheEncounter.UI.event_choices_render(G.GAME.TheEncounter_choices))
+							G.TheEncounter_prompt_box = UIBox(TheEncounter.UI.prompt_box_render())
+							play_sound("cancel")
+							TheEncounter.UI.set_event_choices()
+							TheEncounter.UI.set_prompt_box()
+						end
 						G.CONTROLLER.lock_input = false
 						return true
 					end,

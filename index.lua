@@ -30,6 +30,7 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_combat.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_transaction.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
+-- assert(SMODS.load_file("examples/hotpot_blackjack.lua"))()
 
 -- local old_calc = TheEncounter.current_mod.calculate or function() end
 -- TheEncounter.current_mod.calculate = function(self, context)
@@ -40,7 +41,12 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- 	end
 -- 	if context.enc_poll_choices then
 -- 		return {
--- 			amount = 2,
+-- 			set_choices = {
+-- 				{
+-- 					domain_key = "do_enc_occurrence",
+-- 					scenario_key = "sc_enc_bj",
+-- 				},
+-- 			},
 -- 		}
 -- 	end
 -- 	return old_calc(self, context)
