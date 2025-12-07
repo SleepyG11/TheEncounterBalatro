@@ -30,3 +30,18 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_combat.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_transaction.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
+
+-- local old_calc = TheEncounter.current_mod.calculate or function() end
+-- TheEncounter.current_mod.calculate = function(self, context)
+-- 	if context.enc_check_should_encounter then
+-- 		return {
+-- 			should_encounter = true,
+-- 		}
+-- 	end
+-- 	if context.enc_poll_choices then
+-- 		return {
+-- 			amount = 2,
+-- 		}
+-- 	end
+-- 	return old_calc(self, context)
+-- end

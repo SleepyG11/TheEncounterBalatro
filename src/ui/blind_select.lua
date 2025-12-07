@@ -257,7 +257,11 @@ function TheEncounter.UI.event_choices_render(choices)
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = { padding = 0.5 },
+					config = { minh = total_items > 3 and 0.5 or 0 },
+				},
+				{
+					n = G.UIT.R,
+					config = { padding = total_items > 3 and 0 or 0.5 },
 					nodes = choice_nodes,
 				},
 			},

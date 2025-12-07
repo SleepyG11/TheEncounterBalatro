@@ -153,7 +153,6 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 	local duplicates_pool = TheEncounter.table.to_keys_dictionary(duplicates_list or {})
 	local temp_pool = {}
 	local temp_legendary_pool = {}
-
 	local encounters_table = TheEncounter.POOL.get_domains_usage()
 
 	for _, domain in pairs(options) do
@@ -168,9 +167,9 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 			pool_opts = pool_opts or {}
 			if in_pool then
 				local d = TheEncounter.Domain.resolve(domain)
-				duplicates_pool[d.key] = true
 				if d.hidden then
 					if args.soulable then
+						duplicates_pool[d.key] = true
 						table.insert(temp_legendary_pool, {
 							key = d.key,
 							value = d,
@@ -179,6 +178,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 						})
 					end
 				else
+					duplicates_pool[d.key] = true
 					table.insert(temp_pool, {
 						key = d.key,
 						value = d,
@@ -247,7 +247,7 @@ TheEncounter.POOL.get_domains_pool = function(args, duplicates_list)
 
 	local result_legendary_pool = {}
 	for _, item in ipairs(temp_legendary_pool) do
-		table.insert(temp_legendary_pool, item.value)
+		table.insert(result_legendary_pool, item.value)
 	end
 
 	return result_pool, result_legendary_pool
@@ -259,8 +259,9 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 
 	-- Are we lucky enough today to encounter a soulable domain?
 	for _, item in ipairs(legendary_options) do
+		local roll = pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante)
 		-- GAMBLING!
-		if pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante) > (1 - item.soul_rate) then
+		if roll > (1 - item.soul_rate) then
 			if args.increment_usage then
 				TheEncounter.POOL.increment_domain_usage(item.key)
 			end

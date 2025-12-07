@@ -227,9 +227,22 @@ TheEncounter.select_choice = function(scenario, domain)
 end
 TheEncounter.should_encounter = function(args)
 	args = args or {}
-	local result = SMODS.calculate_context({ enc_check_should_encounter = true, after = args.after }) or {}
-	if result.should_encounter ~= nil then
-		return result.should_encounter or false
+	local effects = {}
+	SMODS.calculate_context({ enc_check_should_encounter = true, after = args.after }, effects)
+
+	local context_result = {}
+	for _, v in ipairs(effects) do
+		for _, effect in pairs(v) do
+			context_result.should_encounter = context_result.should_encounter or effect.should_encounter
+			if effect.blinds then
+				context_result.blinds =
+					TheEncounter.table.shallow_merge(context_result.blinds or {}, context_result.blinds)
+			end
+		end
+	end
+
+	if context_result.should_encounter ~= nil then
+		return context_result.should_encounter or false
 	else
 		-- TODO: support for modded small/big blinds? how?
 		if args.after == "shop" or args.after == "cashout" then
@@ -240,7 +253,7 @@ TheEncounter.should_encounter = function(args)
 				type = "Big"
 			end
 
-			local table_to_check = result.blinds
+			local table_to_check = context_result.blinds
 				or (args.after == "shop" and G.GAME.TheEncounter_after_shop_encounter)
 				or (args.after == "cashout" and G.GAME.TheEncounter_after_cashout_encounter)
 				or {}
