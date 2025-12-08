@@ -63,6 +63,7 @@ TheEncounter.Scenario({
 	end,
 	start = function(self, event, after_load)
 		event:image_character({
+			key = "dealer",
 			center = "j_ring_master",
 			scale = 0.75,
 			particles = { G.C.RED, G.C.ORANGE, G.C.CHIPS },

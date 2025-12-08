@@ -417,7 +417,7 @@ function TheEncounter.Event:image_character(args)
 	else
 		character.children.particles.colours = { G.C.CLEAR }
 	end
-	local key = args.container_key or "character"
+	local key = args.key or "character"
 	image_area.children[key] = character
 	character:set_alignment({
 		major = image_area,
@@ -462,19 +462,19 @@ function TheEncounter.Event:image_sprite(args)
 		sprite = Sprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
 	end
 	-- TODO: apply dissolve shader properly
-	-- if args.animated then
-	-- 	sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
-	-- 	sprite.dissolve_colours = { G.C.MULT }
-	-- 	sprite.dissolve = 1
-	-- 	ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
-	-- else
-	-- 	sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
-	-- 	sprite.dissolve_colours = { G.C.MULT }
-	-- 	sprite.dissolve = 1
-	-- 	ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
-	-- end
+	if args.animated then
+		sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
+		sprite.dissolve_colours = { G.C.MULT }
+		sprite.dissolve = 1
+		ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
+	else
+		sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
+		sprite.dissolve_colours = { G.C.MULT }
+		sprite.dissolve = 1
+		ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
+	end
 
-	local key = args.container_key or "sprite"
+	local key = args.key or "sprite"
 	image_area.children[key] = sprite
 	sprite:set_alignment({
 		major = image_area,
@@ -484,28 +484,29 @@ function TheEncounter.Event:image_sprite(args)
 			x = args.dx or 0,
 			y = args.dy or 0,
 		},
+		draw_major = sprite,
 	})
 	return sprite
 end
 
-function TheEncounter.Event:remove_image(container_key)
+function TheEncounter.Event:remove_image(key)
 	local image_area = self.ui.image
-	if not image_area or not container_key then
+	if not image_area or not key then
 		return
 	end
-	local child = image_area.children[container_key]
+	local child = image_area.children[key]
 	if not child then
 		return
 	end
 	if child.children and child.children.card and child.children.card.jimbo == child then
 		child.children.card:start_dissolve(nil, true)
-		image_area.children[container_key] = nil
+		image_area.children[key] = nil
 	elseif Card:is(child) or Sprite:is(child) or AnimatedSprite:is(child) then
 		child:start_dissolve(nil, true)
-		image_area.children[container_key] = nil
+		image_area.children[key] = nil
 	elseif child.remove then
 		child:remove()
-		image_area.children[container_key] = nil
+		image_area.children[key] = nil
 	end
 end
 function TheEncounter.Event:remove_all_images()
@@ -513,13 +514,13 @@ function TheEncounter.Event:remove_all_images()
 	if not image_area then
 		return
 	end
-	for container_key, _ in pairs(image_area.children) do
-		self:remove_image(container_key)
+	for key, _ in pairs(image_area.children) do
+		self:remove_image(key)
 	end
 end
-function TheEncounter.Event:get_image(container_key)
+function TheEncounter.Event:get_image(key)
 	local image_area = self.ui.image
-	return image_area and image_area.children[container_key] or nil
+	return image_area and image_area.children[key] or nil
 end
 
 --

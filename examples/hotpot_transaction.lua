@@ -57,7 +57,7 @@ TheEncounter.Step({
 		local chara = event:image_character({
 			center = "j_flash",
 			dy = -0.75,
-			container_key = "shopkeeper",
+			key = "shopkeeper",
 			scale = 0.75,
 		})
 
