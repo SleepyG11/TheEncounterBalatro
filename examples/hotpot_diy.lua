@@ -1,28 +1,50 @@
+-- Defining scenario aka event inself
 TheEncounter.Scenario({
+	-- Required fields
 	key = "buzzfeed_quiz",
+	starting_step_key = "st_enc_buzzfeed_quiz_start",
+
 	loc_txt = {
+		-- Both name and description supports formatting and multiline, but not multibox
 		name = { "Personality Quiz" },
+		-- This is text which displayed on collection or, if `blind_text` is not specified, on blind select
 		text = {
+			"Which Balatro joker you are?",
+		},
+		-- This is text which displayed on blind select, if not provided `text` will be used
+		blind_text = {
 			"Click here and find out",
 			"which Joker you are!",
 		},
 	},
+	-- Specify in which domains this scenario can be encountered
 	domains = { do_enc_occurrence = true },
+	-- This object is something similar to 'card.ability', here stored persistent data such as current visibility flags and, just like on cards, `extra`, where you can store any data you need
+	-- Of course, all data in here should be serializeable. For storing objects like cards or card areas, use `data` object instead. Usage example in `hotpot_blackjack.lua`
+	-- In our case here, we want just hide a hand, but if you want, you can hide deck, custom hud panel (example of it in `hotpot_transaction.lua`), text and other ui elements
 	config = {
 		hide_hand = true,
 	},
-	starting_step_key = "st_enc_buzzfeed_quiz_start",
-	in_pool = function(self)
+
+	-- As usual, function to specify is current scenario in pool under specific domain
+	in_pool = function(self, domain)
 		return true
 		-- return not next(SMODS.find_card("j_hpot_diy", true))
 	end,
 
-	-- Prevent save-scumming
+	-- By default, scenario progress between steps is not saved.
+	-- This can be enabled, but require additional work to make sure all custom logic saved properly
+	-- On out case we want prevent save-scumming, so we implement some checks, which can be found in this example below.
 	can_save = true,
 
+	-- Main colour for scenario, used for most UI elements
 	colour = HEX("D60000"),
+	-- Colour used for background vortex shader. Can pass a function for custom shader (see `hotpot_room_in_between.lua`)
 	background_colour = HEX("A50000"),
 
+	-- Start callback is called when player enters scenario, or loads in it
+	-- During entire scenario, whould be cool to display something as "image" instead of just panel of text.
+	-- So, on scenario start, we creating a Card_Character, which will be placed on black box on right side of panel
 	start = function(self, event, after_load)
 		event:image_character({
 			center = "j_joker",
@@ -31,10 +53,15 @@ TheEncounter.Scenario({
 	end,
 })
 
--- Start
+-- Starting step
 TheEncounter.Step({
 	key = "buzzfeed_quiz_start",
 	loc_txt = {
+		-- Step doesnt have name (at least for now)
+
+		-- This is main text player see during step.
+		-- It splitted on a lines and displayed line-by-line.
+		-- How this can be itilized shown in this example below.
 		text = {
 			"You accidentally clicked one of the ads on the screen. The page reads:",
 			" ",
@@ -42,22 +69,37 @@ TheEncounter.Step({
 			" ",
 			"No harm in trying it out, right?",
 		},
+
+		-- Instead of making an entire choice class for each choice, in each event, they can be "auto-generated".
 		choices = {
 			take_quiz = {
+				-- Text displayed on button
 				name = {
 					"Take the quiz",
+				},
+				-- Text displayed on button hover, here you can pass additional information such as requirements or a bit of lore, up to you!
+				text = {
+					"Require Joker slot",
 				},
 			},
 		},
 	},
+	-- List of choices user can do in this step
+	-- Each of them can do various stuff: proceed to next step, call any effects or just finish scenario and return back to regular game loop
 	get_choices = function(self, event)
 		return {
 			{
-				key = "take_quiz",
+				-- Key in this case refers to a localization entry we passed earlier, `choices.take_quiz`
+				choice = "take_quiz",
+				-- Similar to UI buttons, you can specify `func` (condition when button can be pressed) and `button` (effect)
+				-- In out case we proceed to next step, but here you can do anything: spawn jokers, give money, explode, you name it!
+				-- Moving to next step or finishing scenario is optional, so you can make multi-use buttons, (for example currency exchange)
 				button = function(self, event, ability)
 					event:start_step("st_enc_buzzfeed_quiz_1")
 				end,
 			},
+
+			-- Instead of object key can be passed aswell
 			"ch_enc_move_on",
 		}
 	end,
@@ -124,7 +166,7 @@ TheEncounter.Step({
 		local result = {}
 		for _, variant in ipairs({ "park", "carnival", "casino", "no_date" }) do
 			table.insert(result, {
-				value = "ch_enc_buzzfeed_quiz_trigger",
+				key = "ch_enc_buzzfeed_quiz_trigger",
 				ability = {
 					extra = {
 						chosen = variant,
@@ -173,7 +215,7 @@ TheEncounter.Step({
 	get_choices = function(self, event)
 		return {
 			{
-				key = "continue",
+				choice = "continue",
 				button = function()
 					event:start_step("st_enc_buzzfeed_quiz_2")
 				end,
@@ -253,7 +295,7 @@ TheEncounter.Step({
 		local result = {}
 		for _, variant in ipairs({ "wait", "forgive", "move", "sell" }) do
 			table.insert(result, {
-				value = "ch_enc_buzzfeed_quiz_effect",
+				key = "ch_enc_buzzfeed_quiz_effect",
 				ability = {
 					extra = {
 						chosen = variant,
@@ -313,7 +355,7 @@ TheEncounter.Step({
 	get_choices = function(self, event)
 		return {
 			{
-				key = "continue",
+				choice = "continue",
 				button = function()
 					event:start_step("st_enc_buzzfeed_quiz_finish")
 				end,

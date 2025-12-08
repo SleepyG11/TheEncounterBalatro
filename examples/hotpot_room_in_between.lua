@@ -67,14 +67,14 @@ TheEncounter.Step({
 	get_choices = function(self, event)
 		return {
 			{
-				key = "egg",
+				choice = "egg",
 				button = function()
 					SMODS.add_card({ key = "j_egg", edition = "e_negative" })
 					event:finish_scenario()
 				end,
 			},
 			{
-				key = "eggnt",
+				choice = "eggnt",
 			},
 		}
 	end,

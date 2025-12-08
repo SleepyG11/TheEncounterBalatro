@@ -541,13 +541,18 @@ function TheEncounter.UI.event_choices(event)
 					elseif type(choice) == "string" then
 						result_choice = TheEncounter.Choice.resolve(choice)
 					elseif type(choice) == "table" then
-						if choice.value then
-							result_choice = TheEncounter.Choice.resolve(choice.value)
+						if choice.key then
+							result_choice = TheEncounter.Choice.resolve(choice.key)
 							result_ability = choice.ability
-						else
+						elseif choice.choice then
 							result_choice = TheEncounter.Choice.from_object(choice)
-							result_choice.key = result_choice.full_key
-								or (TheEncounter.Choice.class_prefix .. "_" .. step.key .. "_" .. result_choice.key)
+							result_choice.key = (
+								TheEncounter.Choice.class_prefix
+								.. "_"
+								.. step.key
+								.. "_"
+								.. result_choice.choice
+							)
 						end
 					end
 					if result_choice then

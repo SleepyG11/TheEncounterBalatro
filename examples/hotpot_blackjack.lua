@@ -92,10 +92,6 @@ TheEncounter.Step({
 		},
 	},
 
-	config = {
-		hide_hand = false,
-	},
-
 	setup = function(self, event, after_load)
 		if not after_load then
 			event.ability.extra.total = 0
@@ -105,14 +101,14 @@ TheEncounter.Step({
 	get_choices = function(self, event)
 		return {
 			{
-				key = "start",
+				choice = "start",
 				button = function()
 					event.ability.extra.started = true
 					event:start_step("st_enc_bj_check")
 				end,
 			},
 			{
-				key = "stop",
+				choice = "stop",
 			},
 		}
 	end,
@@ -186,10 +182,13 @@ TheEncounter.Step({
 			},
 		},
 	},
+	config = {
+		hide_hand = false,
+	},
 	get_choices = function(self, event)
 		return {
 			{
-				key = "hit",
+				choice = "hit",
 				button = function()
 					draw_card(G.deck, G.hand, 1, "up", true)
 					event:start_step("st_enc_bj_check")
@@ -199,7 +198,7 @@ TheEncounter.Step({
 				end,
 			},
 			{
-				key = "stand",
+				choice = "stand",
 				button = function()
 					event:start_step("st_enc_bj_final")
 				end,
@@ -288,7 +287,7 @@ TheEncounter.Step({
 	get_choices = function(self, event)
 		return {
 			{
-				key = "cashin",
+				choice = "cashin",
 			},
 		}
 	end,

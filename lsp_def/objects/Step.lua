@@ -1,6 +1,6 @@
 --- @meta
 
---- @alias TheEncounter.ChoiceItem TheEncounter.ChoiceResolvable | { value: TheEncounter.ChoiceResolvable, ability?: table }
+--- @alias TheEncounter.ChoiceItem TheEncounter.ChoiceResolvable | { choice: string, ability?: table }
 
 --- @class TheEncounter.Step: SMODS.GameObject
 --- @field config? TheEncounter.EventAbility

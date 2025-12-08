@@ -57,8 +57,7 @@ TheEncounter.Choice.from_object = function(object)
 	return {
 		enc_is_choice_object = true,
 
-		key = object.key or nil,
-		full_key = object.full_key or nil,
+		choice = object.choice or nil,
 
 		loc_vars = object.loc_vars or {},
 		config = object.ability or object.config or {},
