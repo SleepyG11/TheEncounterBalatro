@@ -78,7 +78,7 @@ TheEncounter.Step({
 		text = {
 			"You see a shady figure with a set of cards",
 			"infront of him, a 'normal' 52 card deck.",
-			"",
+			" ",
 			'"Up for a game of Black Jack, pal?" He sounds',
 			"like he's straight out of the 'slammer'...",
 		},
@@ -236,7 +236,8 @@ TheEncounter.Step({
 	hide_hand = false,
 	loc_txt = {
 		text = {
-			"Looks like you #1#, cash in for {C:money}$#2#{}!",
+			"Looks like you #1#.",
+			"Cash in for {C:money}$#2#{}!",
 		},
 		choices = {
 			cashin = {

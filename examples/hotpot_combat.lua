@@ -846,7 +846,7 @@ TheEncounter.Step({
 		text = {
 			'"This person over here thinks they\'re so tough."',
 			" ",
-			'"Really? Let\'s see you beat this."',
+			'"Really? Let\'s see you beat this!"',
 			" ",
 			"Face {C:attention}#1#{} #2#",
 			"{C:money}Reward:{} #3#",

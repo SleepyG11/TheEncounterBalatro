@@ -18,7 +18,7 @@ TheEncounter.Domain({
 	loc_txt = {
 		name = "The Room Between",
 		text = {
-			"There is a room between...",
+			"Well, there is a room here",
 		},
 	},
 
@@ -37,7 +37,7 @@ TheEncounter.Scenario({
 	loc_txt = {
 		name = "The Room Between",
 		text = {
-			"Well, there is a man here.",
+			"Well, there is a room here",
 		},
 	},
 	domains = {
