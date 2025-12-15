@@ -110,7 +110,7 @@ TheEncounter.poll_choices = function()
 
 	local effects = {}
 	SMODS.calculate_context(
-		{ enc_poll_choices = true, duplicates_list = duplicates_list, after = G.GAME.TheEncounter_after },
+		{ enc_poll_choices = true, enc_duplicates_list = duplicates_list, enc_after = G.GAME.TheEncounter_after },
 		effects
 	)
 
@@ -183,7 +183,7 @@ TheEncounter.poll_choices = function()
 end
 TheEncounter.select_scenario = function(domain)
 	local effects = {}
-	SMODS.calculate_context({ enc_select_scenario = true, domain = domain }, effects)
+	SMODS.calculate_context({ enc_select_scenario = true, enc_domain = domain }, effects)
 
 	local context_result = {}
 
@@ -230,7 +230,7 @@ end
 TheEncounter.should_encounter = function(args)
 	args = args or {}
 	local effects = {}
-	SMODS.calculate_context({ enc_check_should_encounter = true, after = args.after }, effects)
+	SMODS.calculate_context({ enc_check_should_encounter = true, enc_after = args.after }, effects)
 
 	local context_result = {}
 	for _, v in ipairs(effects) do

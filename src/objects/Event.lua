@@ -155,7 +155,7 @@ function TheEncounter.Event:start(func)
 
 	stop_use()
 	if not save_table then
-		SMODS.calculate_context({ enc_scenario_start = true, event = self })
+		SMODS.calculate_context({ enc_scenario_start = true, enc_event = self })
 	end
 
 	TheEncounter.em.after_callback(function()
@@ -171,7 +171,7 @@ function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
 	if not after_load then
 		self:set_ability()
 	end
-	SMODS.calculate_context({ enc_step_start = true, event = self })
+	SMODS.calculate_context({ enc_step_start = true, enc_event = self })
 	TheEncounter.em.after_callback(function()
 		self.current_step:setup(self, after_load)
 		self:set_colours()
@@ -207,7 +207,7 @@ end
 function TheEncounter.Event:leave_step(is_finish, func)
 	self.STATE = self.STATES.STEP_FINISH
 	stop_use()
-	SMODS.calculate_context({ enc_step_finish = true, event = self })
+	SMODS.calculate_context({ enc_step_finish = true, enc_event = self })
 	TheEncounter.em.after_callback(function()
 		self.current_step:finish(self)
 		TheEncounter.em.after_callback(function()
@@ -221,7 +221,7 @@ function TheEncounter.Event:finish(func)
 		self.STATE = self.STATES.SCENARIO_FINISH
 		self:move_forward()
 		stop_use()
-		SMODS.calculate_context({ enc_scenario_finish = true, event = self })
+		SMODS.calculate_context({ enc_scenario_finish = true, enc_event = self })
 		TheEncounter.em.after_callback(function()
 			self.scenario:finish(self)
 			TheEncounter.em.after_callback(function()

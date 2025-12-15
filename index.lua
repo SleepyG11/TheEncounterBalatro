@@ -26,7 +26,7 @@ assert(SMODS.load_file("src/ui/index.lua"))()
 assert(SMODS.load_file("src/logic/index.lua"))()
 assert(SMODS.load_file("src/items/index.lua"))()
 
--- assert(SMODS.load_file("examples/hotpot_diy.lua"))()
+assert(SMODS.load_file("examples/hotpot_diy.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_combat.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_transaction.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
@@ -36,7 +36,7 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- TheEncounter.current_mod.calculate = function(self, context)
 -- 	if context.enc_check_should_encounter then
 -- 		return {
--- 			should_encounter = true,
+-- 			should_encounter = context.enc_after == "shop",
 -- 		}
 -- 	end
 -- 	if context.enc_poll_choices then
@@ -44,7 +44,8 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- 			set_choices = {
 -- 				{
 -- 					domain_key = "do_enc_occurrence",
--- 					scenario_key = "sc_enc_bj",
+-- 					-- scenario_key = "sc_enc_dj",
+-- 					-- scenario_key = "sc_enc_buzzfeed_quiz",
 -- 				},
 -- 			},
 -- 		}
