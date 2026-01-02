@@ -1,12 +1,20 @@
 TheEncounter.Event = Object:extend()
 function TheEncounter.Event:init(scenario, domain, save_table)
-	self.domain = assert(TheEncounter.Domain.resolve(domain), "Cannot start event without Domain")
-	self.scenario = assert(TheEncounter.Scenario.resolve(scenario), "Cannot start event without Scenario")
+	self.domain = assert(
+		TheEncounter.Domain.resolve(domain),
+		"Cannot start event: unknown starting Domain: " .. (domain and domain.key or domain)
+	)
+	self.scenario = assert(
+		TheEncounter.Scenario.resolve(scenario),
+		"Cannot start event: unknown starting Scenario: " .. (scenario and scenario.key or scenario)
+	)
 
 	self.previous_step = nil
 	self.current_step = nil
-	self.next_step =
-		assert(TheEncounter.Step.resolve(self.scenario.starting_step_key), "Cannot start event without starting Step")
+	self.next_step = assert(
+		TheEncounter.Step.resolve(self.scenario.starting_step_key),
+		"Cannot start event: unknown starting Step: " .. self.scenario.starting_step_key
+	)
 
 	self.ability = TheEncounter.table.merge({
 		hide_hand = true,
@@ -139,77 +147,95 @@ function TheEncounter.Event:move_forward()
 end
 
 function TheEncounter.Event:start(func)
+	stop_use()
 	self.STATE = self.STATES.SCENARIO_START
+
 	local save_table = self.temp_save_table
 	local after_load = not not save_table
 	self.temp_save_table = nil
 
-	self.scenario:setup(self, after_load)
-	self:init_ui()
-	if save_table then
+	if after_load then
+		self:init_ui()
+
 		local data_object = save_table.data or {}
+		data_object = self.domain:load(self, data_object) or data_object
 		data_object = self.scenario:load(self, data_object) or data_object
 		data_object = self.current_step:load(self, data_object) or data_object
 		self.data = data_object
-	end
 
-	stop_use()
-	if not save_table then
+		self:enter_step(func, true, true)
+	else
+		self.domain:setup(self)
+		self.scenario:setup(self)
+		self:init_ui()
+
 		SMODS.calculate_context({ enc_scenario_start = true, enc_event = self })
+
+		TheEncounter.em.after_callback(function()
+			self:move_forward()
+			self:enter_step(func, false, true)
+		end)
+	end
+end
+function TheEncounter.Event:enter_step(func, after_load, after_scenario_start)
+	stop_use()
+	self.STATE = self.STATES.STEP_START
+
+	if after_load then
+		self:set_colours()
+	else
+		self:set_ability()
+		self.current_step:setup(self)
+		self:set_colours()
+		if
+			TheEncounter.table.first_not_nil(self.current_step.can_save, self.scenario.can_save, self.domain.can_save)
+		then
+			G.GAME.TheEncounter_save_table = self:save()
+			save_run()
+		end
 	end
 
-	TheEncounter.em.after_callback(function()
-		if not save_table then
-			self:move_forward()
-		end
-		self:enter_step(after_load, func, true)
-	end, save_table)
-end
-function TheEncounter.Event:enter_step(after_load, func, after_scenario_start)
-	self.STATE = self.STATES.STEP_START
-	stop_use()
-	if not after_load then
-		self:set_ability()
-	end
 	SMODS.calculate_context({ enc_step_start = true, enc_event = self })
+
 	TheEncounter.em.after_callback(function()
-		self.current_step:setup(self, after_load)
-		self:set_colours()
 		TheEncounter.UI.event_text_lines(self)
 		if after_scenario_start then
+			self.domain:start(self, after_load)
 			self.scenario:start(self, after_load)
 		end
-		self.current_step:start(self, after_load)
 		TheEncounter.em.after_callback(function()
 			stop_use()
-			if not after_load then
-				if TheEncounter.table.first_not_nil(self.current_step.can_save, self.scenario.can_save) then
-					G.GAME.TheEncounter_save_table = self:save()
-					save_run()
-				end
-			end
-			if self.interrupt_function then
-				local c = self.interrupt_function
-				self.interrupt_function = nil
-				self.STATE = self.STATES.STEP_IDLE
-				c()
-			else
-				TheEncounter.UI.event_show_all_text_lines(self)
-				TheEncounter.UI.event_choices(self)
-				TheEncounter.em.after_callback(function()
-					TheEncounter.em.after_callback(func, true)
+
+			self.current_step:start(self, after_load)
+
+			TheEncounter.em.after_callback(function()
+				if self.interrupt_function then
+					local c = self.interrupt_function
+					self.interrupt_function = nil
 					self.STATE = self.STATES.STEP_IDLE
-				end)
-			end
-		end)
-	end, not after_load)
+					c()
+				else
+					TheEncounter.UI.event_show_all_text_lines(self)
+					TheEncounter.UI.event_choices(self)
+
+					TheEncounter.em.after_callback(function()
+						TheEncounter.em.after_callback(func, true)
+						self.STATE = self.STATES.STEP_IDLE
+					end)
+				end
+			end)
+		end, not after_scenario_start)
+	end)
 end
-function TheEncounter.Event:leave_step(is_finish, func)
-	self.STATE = self.STATES.STEP_FINISH
+function TheEncounter.Event:leave_step(func, is_finish)
 	stop_use()
+	self.STATE = self.STATES.STEP_FINISH
+
 	SMODS.calculate_context({ enc_step_finish = true, enc_event = self })
+
 	TheEncounter.em.after_callback(function()
 		self.current_step:finish(self)
+
 		TheEncounter.em.after_callback(function()
 			TheEncounter.UI.event_cleanup(self, is_finish)
 			TheEncounter.em.after_callback(func)
@@ -217,29 +243,35 @@ function TheEncounter.Event:leave_step(is_finish, func)
 	end)
 end
 function TheEncounter.Event:finish(func)
-	self:leave_step(true, function()
-		self.STATE = self.STATES.SCENARIO_FINISH
-		self:move_forward()
-		stop_use()
-		SMODS.calculate_context({ enc_scenario_finish = true, enc_event = self })
+	stop_use()
+	self.STATE = self.STATES.SCENARIO_FINISH
+
+	self:move_forward()
+
+	SMODS.calculate_context({ enc_scenario_finish = true, enc_event = self })
+
+	TheEncounter.em.after_callback(function()
+		self.scenario:finish(self)
+		self.domain:finish(self)
 		TheEncounter.em.after_callback(function()
-			self.scenario:finish(self)
+			stop_use()
+
+			G.FUNCS.draw_from_hand_to_deck()
+			self:remove_all_images()
+
 			TheEncounter.em.after_callback(function()
-				G.FUNCS.draw_from_hand_to_deck()
-				self:remove_all_images()
-				stop_use()
+				TheEncounter.UI.event_finish(self)
+				self:clear_colours()
+
 				TheEncounter.em.after_callback(function()
-					TheEncounter.UI.event_finish(self)
-					self:clear_colours()
-					TheEncounter.em.after_callback(function()
-						for _, callback in ipairs(self.remove_callbacks) do
-							callback()
-						end
-						TheEncounter.after_event_finish()
-						stop_use()
-						self.STATE = self.STATES.END
-						TheEncounter.em.after_callback(func, true)
-					end)
+					stop_use()
+					self.STATE = self.STATES.END
+
+					for _, callback in ipairs(self.remove_callbacks) do
+						callback()
+					end
+					TheEncounter.after_event_finish()
+					TheEncounter.em.after_callback(func, true)
 				end)
 			end)
 		end)
@@ -249,13 +281,18 @@ end
 function TheEncounter.Event:save()
 	if
 		not self.current_step
-		or not TheEncounter.table.first_not_nil(self.current_step.can_save, self.scenario.can_save)
+		or not TheEncounter.table.first_not_nil(
+			self.current_step.can_save,
+			self.scenario.can_save,
+			self.domain.can_save
+		)
 	then
 		return G.GAME.TheEncounter_save_table or nil
 	end
 
-	local data_object = self.current_step:save(self, self.data) or self.data or {}
+	local data_object = self.domain:save(self, self.data) or self.data or {}
 	data_object = self.scenario:save(self, data_object) or data_object
+	data_object = self.current_step:save(self, data_object) or data_object
 
 	local save_table = {
 		domain = self.domain.key,
@@ -281,17 +318,16 @@ function TheEncounter.Event:show_lines(amount, instant)
 	TheEncounter.UI.event_show_lines(self, amount, instant)
 end
 function TheEncounter.Event:start_step(key)
-	self.next_step = TheEncounter.Step.resolve(key)
-	assert(self.next_step, "Tried to start unknown TheEncounter.Step: " .. key)
+	self.next_step = assert(TheEncounter.Step.resolve(key), "Cannot continue event: invalid Step: " .. key)
 	if self.STATE ~= self.STATES.STEP_IDLE then
 		self.interrupt_function = function()
 			return self:start_step(key)
 		end
 	else
-		self:leave_step(false, function()
+		self:leave_step(function()
 			self:move_forward()
-			self:enter_step(false)
-		end)
+			self:enter_step(nil, false)
+		end, false)
 	end
 end
 function TheEncounter.Event:finish_scenario(transition_func)
@@ -300,10 +336,12 @@ function TheEncounter.Event:finish_scenario(transition_func)
 			return self:finish_scenario(transition_func)
 		end
 	else
-		self:finish(transition_func or function()
-			G.STATE = self.replaced_state or G.STATES.BLIND_SELECT
-			G.STATE_COMPLETE = false
-		end)
+		self:leave_step(function()
+			self:finish(transition_func or function()
+				G.STATE = self.replaced_state or G.STATES.BLIND_SELECT
+				G.STATE_COMPLETE = false
+			end)
+		end, true)
 	end
 end
 
@@ -311,6 +349,7 @@ function TheEncounter.Event:update(dt)
 	if self.REMOVED or self.NO_UPDATE_STATES[self.STATE] then
 		return
 	end
+	self.domain:update(self, dt)
 	self.scenario:update(self, dt)
 	self.current_step:update(self, dt)
 

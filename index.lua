@@ -32,23 +32,24 @@ assert(SMODS.load_file("examples/hotpot_diy.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_blackjack.lua"))()
 
--- local old_calc = TheEncounter.current_mod.calculate or function() end
--- TheEncounter.current_mod.calculate = function(self, context)
--- 	if context.enc_check_should_encounter then
--- 		return {
--- 			should_encounter = context.enc_after == "shop",
--- 		}
--- 	end
--- 	if context.enc_poll_choices then
--- 		return {
--- 			set_choices = {
--- 				{
--- 					domain_key = "do_enc_occurrence",
--- 					-- scenario_key = "sc_enc_dj",
--- 					-- scenario_key = "sc_enc_buzzfeed_quiz",
--- 				},
--- 			},
--- 		}
--- 	end
--- 	return old_calc(self, context)
--- end
+local old_calc = TheEncounter.current_mod.calculate or function() end
+TheEncounter.current_mod.calculate = function(self, context)
+	if context.enc_check_should_encounter then
+		return {
+			should_encounter = context.enc_after == "shop",
+		}
+	end
+	if context.enc_poll_choices then
+		return {
+			amount = 1,
+			-- set_choices = {
+			-- 	{
+			-- 		-- domain_key = "do_enc_occurrence",
+			-- 		-- scenario_key = "sc_enc_dj",
+			-- 		-- scenario_key = "sc_enc_buzzfeed_quiz",
+			-- 	},
+			-- },
+		}
+	end
+	return old_calc(self, context)
+end

@@ -384,20 +384,18 @@ TheEncounter.Step({
 	},
 	start = function(self, event, after_load)
 		event:show_lines(3)
-		if not after_load then
-			if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						G.GAME.hotpot_diy = {
-							trigger = event.ability.extra.trigger_value,
-							effect = event.ability.extra.effect_value,
-						}
-						print(G.GAME.hotpot_diy)
-						SMODS.add_card({ key = "j_joker" })
-						return true
-					end,
-				}))
-			end
+		if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					G.GAME.hotpot_diy = {
+						trigger = event.ability.extra.trigger_value,
+						effect = event.ability.extra.effect_value,
+					}
+					print(G.GAME.hotpot_diy)
+					SMODS.add_card({ key = "j_joker" })
+					return true
+				end,
+			}))
 		end
 		delay(1)
 	end,

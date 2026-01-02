@@ -9,7 +9,7 @@
 --- @field background_colour? table | fun(self: TheEncounter.Step, event: TheEncounter.Event) Colour for background shader, or function to adjust background colour
 --- @field get_colours? fun(self: TheEncounter.Step, event?: TheEncounter.Event): table?
 --- @field get_choices? fun(self: TheEncounter.Step, event: TheEncounter.Event): TheEncounter.ChoiceItem[] | { columns?: number[] }
---- @field setup? fun(self: TheEncounter.Step, event: TheEncounter.Event, after_load: boolean) Function to setup effects and other event variables, called before text rendering
+--- @field setup? fun(self: TheEncounter.Step, event: TheEncounter.Event) Function to setup effects and other event variables, called once when step is entered
 --- @field start? fun(self: TheEncounter.Step, event: TheEncounter.Event, after_load: boolean) Function where you can control displaying text lines and side effets you need on step start
 --- @field finish? fun(self: TheEncounter.Step, event: TheEncounter.Event) Function where you can control side effets on step finish
 --- @field can_save? boolean Can event state be saved during this step

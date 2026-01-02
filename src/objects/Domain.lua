@@ -49,6 +49,14 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 		return self.weight
 	end,
 
+	setup = function(self, event) end,
+	start = function(self, event, after_load) end,
+	finish = function(self, event) end,
+
+	can_save = false,
+	save = function(self, event, data) end,
+	load = function(self, event, save_table) end,
+
 	loc_vars = function(self, info_queue)
 		return {}
 	end,
@@ -74,6 +82,8 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 
 	get_atlas = function(self) end,
 	set_badges = function(self, badges) end,
+
+	update = function(self, event, dt) end,
 })
 
 TheEncounter.Domain.resolve = function(domain)

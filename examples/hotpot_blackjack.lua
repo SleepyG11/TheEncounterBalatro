@@ -92,10 +92,8 @@ TheEncounter.Step({
 		},
 	},
 
-	setup = function(self, event, after_load)
-		if not after_load then
-			event.ability.extra.total = 0
-		end
+	setup = function(self, event)
+		event.ability.extra.total = 0
 	end,
 	start = function(self, event) end,
 	get_choices = function(self, event)

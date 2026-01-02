@@ -857,7 +857,7 @@ TheEncounter.Step({
 		hide_hand = true,
 		hide_image = true,
 	},
-	setup = function(self, event, after_load)
+	setup = function(self, event)
 		event.ability.extra.blind = hpot_event_get_random_boss()
 		event.ability.extra.effect = hpot_event_get_random_combat_effect()
 		event.ability.extra.reward = hpot_event_get_random_combat_reward()
