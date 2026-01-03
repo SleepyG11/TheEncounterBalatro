@@ -115,24 +115,16 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 		center = "c_base",
 		h_mod = 1.18,
 		back_func = "your_collection_enc_events",
-		infotip = {
-			-- TODO: localize
-			"Events are encountered after the Boss Blind shop",
-		},
 		modify_card = function(card, scenario)
-			card.config.center = scenario
-
-			-- TODO: make debug CTRL + 2 discover event properly
-			local set_sprite = function()
+			card.set_sprites = function()
 				local atlas, pos
 				if not scenario.discoverable or scenario.discovered then
 					atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
 				else
 					atlas, pos = G.ANIMATION_ATLAS["blind_chips"], G.b_undiscovered.pos
 				end
-				card.children.center:remove()
 				local temp_blind =
-					AnimatedSprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
+					SMODS.create_sprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
 				temp_blind.states.click.can = false
 				temp_blind.states.drag.can = false
 				temp_blind.states.hover.can = true
@@ -144,18 +136,8 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 				temp_blind.float = true
 				card.T.w = 1.3
 				card.T.h = 1.3
+				remove_all(card.children)
 				card.children.center = temp_blind
-			end
-
-			card.set_sprites = function(...)
-				local args = { ... }
-				if not args[1].animation then
-					return
-				end -- fix for debug unlock
-				local c = card.children.center
-				Card.set_sprites(...)
-				card.children.center = c
-				set_sprite()
 			end
 
 			card.update_alert = function(self)
@@ -176,6 +158,8 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 								y = 0,
 							},
 							parent = self,
+							major = self,
+							instance_type = "ALERT",
 						},
 					})
 				end
@@ -192,7 +176,7 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 				return Card.hover(self, ...)
 			end
 
-			set_sprite()
+			card:set_sprites()
 
 			card.enc_domain_collection = domain.key
 			card.enc_scenario_collection = scenario.key
@@ -235,6 +219,39 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 			show_popup = true
 			break
 		end
+	end
+
+	if show_popup then
+		local alert = UIBox({
+			definition = create_UIBox_card_alert(),
+			config = {
+				align = "tri",
+				offset = {
+					x = 0.1,
+					y = -0.1,
+				},
+				parent = e,
+				major = e,
+				instance_type = "ALERT",
+			},
+		})
+		e.children.alert = alert
+		alert.states.collide.can = false
+		alert.states.visible = false
+		G.E_MANAGER:add_event(
+			Event({
+				blocking = false,
+				blockable = false,
+				no_delete = true,
+				force_pause = true,
+				func = function()
+					alert.states.visible = true
+					return true
+				end,
+			}),
+			nil,
+			"other"
+		)
 	end
 
 	local popup_hover = function(self)
@@ -315,34 +332,4 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 	end
 
 	e.hover = popup_hover
-
-	if show_popup then
-		local alert = UIBox({
-			definition = create_UIBox_card_alert(),
-			config = {
-				align = "tri",
-				offset = {
-					x = 0.1,
-					y = -0.1,
-				},
-				parent = e,
-			},
-		})
-		e.UIBox.children.alert = alert
-		alert.states.visible = false
-		G.E_MANAGER:add_event(
-			Event({
-				blocking = false,
-				blockable = false,
-				no_delete = true,
-				force_pause = true,
-				func = function()
-					alert.states.visible = true
-					return true
-				end,
-			}),
-			nil,
-			"other"
-		)
-	end
 end

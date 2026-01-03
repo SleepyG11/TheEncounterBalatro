@@ -669,7 +669,7 @@ function TheEncounter.UI.event_hud_render(event)
 	local reward = TheEncounter.UI.get_reward(domain, scenario, event.ui.colour, event.ui.text_colour, true)
 
 	local atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
-	local animation = AnimatedSprite(0, 0, 1.2, 1.2, atlas, pos)
+	local animation = SMODS.create_sprite(0, 0, 1.2, 1.2, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },
 		{ shader = "dissolve" },

@@ -478,7 +478,7 @@ function TheEncounter.Event:image_sprite(args)
 	local image_area = self.ui.image
 	local atlas = args.atlas
 	if type(atlas) == "string" then
-		atlas = args.animated and G.ANIMATION_ATLAS[atlas] or G.ASSET_ATLAS[atlas]
+		atlas = SMODS.get_atlas(args.atlas)
 	end
 	if not image_area or not atlas then
 		return
@@ -494,24 +494,12 @@ function TheEncounter.Event:image_sprite(args)
 	local y = image_area.VT.y + image_area.VT.h / 2 - h / 2 + (args.dy or 0)
 
 	local pos = args.pos or {}
-	local sprite
-	if args.animated then
-		sprite = AnimatedSprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
-	else
-		sprite = Sprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
-	end
+	local sprite = SMODS.create_sprite(x, y, w, h, atlas, { x = pos.x or 0, y = pos.y or 0 })
 	-- TODO: apply dissolve shader properly
-	if args.animated then
-		sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
-		sprite.dissolve_colours = { G.C.MULT }
-		sprite.dissolve = 1
-		ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
-	else
-		sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
-		sprite.dissolve_colours = { G.C.MULT }
-		sprite.dissolve = 1
-		ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
-	end
+	sprite:define_draw_steps({ { shader = "dissolve", shadow_height = 0.05 }, { shader = "dissolve" } })
+	sprite.dissolve_colours = { G.C.MULT }
+	sprite.dissolve = 1
+	ease_value(sprite, "dissolve", -1, nil, nil, nil, 0.5)
 
 	local key = args.key or "sprite"
 	image_area.children[key] = sprite

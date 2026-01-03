@@ -37,7 +37,7 @@ pattern = '''if _c.set == 'Other' then
         localize{type = 'other', key = _c.key, nodes = desc_nodes, vars = specific_vars or _c.vars}'''
 position = 'after'
 payload = '''
-elseif (_c.set == 'enc_Scenario' or _c.set == 'enc_Domain') and first_pass then
+elseif (_c.set == 'enc_Scenario' or _c.set == 'enc_Domain') then
     localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars or {}}
 '''
 match_indent = true
@@ -50,7 +50,36 @@ pattern = '''if AUT.badges then'''
 position = 'before'
 payload = '''
 if card.enc_scenario_collection then
-    TheEncounter.UI.get_badges(card.enc_domain_collection, card.enc_scenario_collection, { no_mod = true }, badges)
+    TheEncounter.UI.get_badges(card.enc_domain_collection, card.enc_scenario_collection, nil, badges)
+end
+'''
+match_indent = true
+
+# Ctrl + 1: unlock
+[[patches]]
+[patches.pattern]
+target = '''engine/controller.lua'''
+pattern = '''if key == "1" then'''
+position = 'after'
+payload = '''
+if _card.enc_scenario_collection then
+    local _enc_scenario_center = TheEncounter.Scenario.resolve(_card.enc_scenario_collection)
+    unlock_card(_enc_scenario_center)
+end
+'''
+match_indent = true
+
+# Ctrl + 2: unlock + discover
+[[patches]]
+[patches.pattern]
+target = '''engine/controller.lua'''
+pattern = '''if key == "2" then'''
+position = 'after'
+payload = '''
+if _card.enc_scenario_collection then
+    local _enc_scenario_center = TheEncounter.Scenario.resolve(_card.enc_scenario_collection)
+    unlock_card(_enc_scenario_center)
+    discover_card(_enc_scenario_center)
 end
 '''
 match_indent = true

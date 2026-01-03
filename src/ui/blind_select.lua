@@ -17,7 +17,7 @@ function TheEncounter.UI.event_choice_render(index, total, domain, scenario, sta
 
 	-- Sprite
 	local atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
-	local animation = AnimatedSprite(0, 0, 1.4, 1.4, atlas, pos)
+	local animation = SMODS.create_sprite(0, 0, 1.4, 1.4, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },
 		{ shader = "dissolve" },

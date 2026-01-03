@@ -210,8 +210,8 @@ TheEncounter.UI.get_atlas = function(domain, scenario)
 		for _, key in pairs(list) do
 			if type(key) == "table" then
 				return key
-			elseif type(key) == "string" and G.ANIMATION_ATLAS[key] then
-				return G.ANIMATION_ATLAS[key]
+			elseif type(key) == "string" and SMODS.get_atlas(key) then
+				return SMODS.get_atlas(key)
 			end
 		end
 		return nil
