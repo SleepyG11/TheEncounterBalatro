@@ -114,6 +114,7 @@ TheEncounter.Step({
 		if event.ability.extra.started then
 			event.ability.extra.bet = G.GAME.dollars
 			ease_dollars(-G.GAME.dollars)
+			event.ability.hide_hand = false
 
 			G.E_MANAGER:add_event(Event({
 				func = function()
@@ -183,6 +184,8 @@ TheEncounter.Step({
 	config = {
 		hide_hand = false,
 	},
+	colour = G.C.MONEY,
+	background_colour = G.C.MONEY,
 	get_choices = function(self, event)
 		return {
 			{
@@ -242,6 +245,8 @@ TheEncounter.Step({
 			},
 		},
 	},
+	colour = G.C.MONEY,
+	background_colour = G.C.MONEY,
 	setup = function(self, event)
 		event.ability.won = nil
 		event.ability.final_money = 0
