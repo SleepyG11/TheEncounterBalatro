@@ -10,10 +10,8 @@ target = "functions/button_callbacks.lua"
 pattern = "G.STATE = G.STATES.BLIND_SELECT"
 position = 'after'
 payload = '''
-if TheEncounter.should_encounter({ after = "shop", blind = G.GAME.round_resets.blind }) then
-    G.GAME.TheEncounter_replaced_state = G.STATE
-    G.GAME.TheEncounter_after = "shop"
-    G.STATE = G.STATES.ENC_EVENT_SELECT
+if TheEncounter.should_encounter({ after = "shop", blind = G.GAME.blind_on_deck or "Small" }) then
+    TheEncounter.encounter({ after = "shop" })
 end
 '''
 match_indent = true
@@ -25,10 +23,8 @@ target = "functions/button_callbacks.lua"
 pattern = "G.STATE = G.STATES.SHOP"
 position = 'after'
 payload = '''
-if TheEncounter.should_encounter({ after = "cashout", blind = G.GAME.round_resets.blind }) then
-    G.GAME.TheEncounter_replaced_state = G.STATE
-    G.GAME.TheEncounter_after = "cashout"
-    G.STATE = G.STATES.ENC_EVENT_SELECT
+if TheEncounter.should_encounter({ after = "cashout", blind = G.GAME.blind_on_deck or "Small" }) then
+    TheEncounter.encounter({ after = "cashout" })
 end
 '''
 match_indent = true

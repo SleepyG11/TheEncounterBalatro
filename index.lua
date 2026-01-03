@@ -32,11 +32,18 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_blackjack.lua"))()
 
+-- TODO: chech for empty pool?
+
 -- local old_calc = TheEncounter.current_mod.calculate or function() end
 -- TheEncounter.current_mod.calculate = function(self, context)
 -- 	if context.enc_check_should_encounter then
+-- 		if G.GAME.blind_on_deck == "Combat" and context.enc_after == "cashout" then
+-- 			return {
+-- 				cannot_encounter = true,
+-- 			}
+-- 		end
 -- 		return {
--- 			should_encounter = context.enc_after == "shop",
+-- 			should_encounter = true,
 -- 		}
 -- 	end
 -- 	if context.enc_poll_choices then

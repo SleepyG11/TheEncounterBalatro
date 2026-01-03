@@ -109,10 +109,12 @@ TheEncounter.poll_choices = function()
 	end
 
 	local effects = {}
-	SMODS.calculate_context(
-		{ enc_poll_choices = true, enc_duplicates_list = duplicates_list, enc_after = G.GAME.TheEncounter_after },
-		effects
-	)
+	SMODS.calculate_context({
+		enc_poll_choices = true,
+		enc_duplicates_list = duplicates_list,
+		enc_after = G.GAME.TheEncounter_after,
+		etc_replaced_state = G.GAME.TheEncounter_replaced_state,
+	}, effects)
 
 	local context_result = {
 		initial_choices = {},
@@ -232,10 +234,13 @@ TheEncounter.should_encounter = function(args)
 	local effects = {}
 	SMODS.calculate_context({ enc_check_should_encounter = true, enc_after = args.after }, effects)
 
-	local context_result = {}
+	local context_result = {
+		cannot_encounter = false,
+	}
 	for _, v in ipairs(effects) do
 		for _, effect in pairs(v) do
 			context_result.should_encounter = context_result.should_encounter or effect.should_encounter
+			context_result.cannot_encounter = context_result.cannot_encounter or effect.cannot_encounter
 			if effect.blinds then
 				context_result.blinds =
 					TheEncounter.table.shallow_merge(context_result.blinds or {}, context_result.blinds)
@@ -243,7 +248,9 @@ TheEncounter.should_encounter = function(args)
 		end
 	end
 
-	if context_result.should_encounter ~= nil then
+	if context_result.cannot_encounter then
+		return false
+	elseif context_result.should_encounter ~= nil then
 		return context_result.should_encounter or false
 	else
 		-- TODO: support for modded small/big blinds? how?
@@ -265,6 +272,13 @@ TheEncounter.should_encounter = function(args)
 		end
 	end
 	return false
+end
+TheEncounter.encounter = function(args)
+	args = args or {}
+	G.GAME.TheEncounter_replaced_state = args.replaced_state or G.STATE
+	G.GAME.TheEncounter_after = args.after
+	G.STATE_COMPLETE = false
+	G.STATE = G.STATES.ENC_EVENT_SELECT
 end
 TheEncounter.replace_choice = function(index, choice)
 	if G.GAME.TheEncounter_choices then

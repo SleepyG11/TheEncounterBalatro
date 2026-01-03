@@ -17,10 +17,14 @@ function TheEncounter.select_choice(domain, scenario) end
 
 --- Function which determines should start encounter sequence and transition to `G.STATES.ENC_EVENT_SELECT`.<br/>
 --- Currently event can appear:<br/>
---- - before Shop
---- - after Shop
+--- - before Shop (after cashout)
+--- - after Shop (before blind select)
 --- @return boolean
-function TheEncounter.should_encounter() end
+function TheEncounter.should_encounter(args) end
+
+--- Function which setups all values needed and proceed to `G.STATES.ENC_EVENT_SELECT`.<br/>
+--- @param args { after?: "shop" | "cashout", replaced_state?: any }
+function TheEncounter.encounter(args) end
 
 --- Create, replace or remove choice by index. Update value in `G.GAME.TheEncounter_choices` and rerendering UI if present
 --- @param index number
