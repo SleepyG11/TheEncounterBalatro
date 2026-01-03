@@ -13,7 +13,7 @@ function TheEncounter.poll_choices() end
 --- @param scenario? TheEncounter.ScenarioResolvable
 --- @param domain TheEncounter.DomainResolvable
 --- @return TheEncounter.ChoiceObject
-function TheEncounter.select_choice(scenario, domain) end
+function TheEncounter.select_choice(domain, scenario) end
 
 --- Function which determines should start encounter sequence and transition to `G.STATES.ENC_EVENT_SELECT`.<br/>
 --- Currently event can appear:<br/>

@@ -1,5 +1,5 @@
 -- Blind select
-function TheEncounter.UI.event_choice_render(index, total, scenario, domain, start_from_bottom)
+function TheEncounter.UI.event_choice_render(index, total, domain, scenario, start_from_bottom)
 	domain = assert(TheEncounter.Domain.resolve(domain), "Cannot render choice without Domain")
 	scenario = TheEncounter.Scenario.resolve(scenario)
 
@@ -16,7 +16,7 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain, sta
 	local text_col = (scenario and scenario_colours.text_colour) or domain_colours.text_colour or G.C.UI.TEXT_LIGHT
 
 	-- Sprite
-	local atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
+	local atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
 	local animation = AnimatedSprite(0, 0, 1.4, 1.4, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },
@@ -68,8 +68,8 @@ function TheEncounter.UI.event_choice_render(index, total, scenario, domain, sta
 		})
 	end
 
-	local reward_render = TheEncounter.UI.get_reward(scenario, domain, blind_col, text_col)
-	local badges = TheEncounter.UI.get_badges(scenario, domain, {
+	local reward_render = TheEncounter.UI.get_reward(domain, scenario, blind_col, text_col)
+	local badges = TheEncounter.UI.get_badges(domain, scenario, {
 		bypass_discovery_check = true,
 	})
 
@@ -236,8 +236,8 @@ function TheEncounter.UI.event_choices_render(choices)
 			TheEncounter.UI.event_choice_render(
 				i,
 				total_items,
-				TheEncounter.Scenarios[choice.scenario_key] or nil,
-				TheEncounter.Domains[choice.domain_key]
+				TheEncounter.Domains[choice.domain_key],
+				TheEncounter.Scenarios[choice.scenario_key] or nil
 			)
 		)
 		table.insert(choice_nodes, {
@@ -287,8 +287,8 @@ function TheEncounter.UI.event_replace_choice(index, choice)
 			TheEncounter.UI.event_choice_render(
 				index,
 				#choices_el.config.enc_choice_elements + 1,
-				choice.scenario_key,
 				choice.domain_key,
+				choice.scenario_key,
 				true
 			)
 		)
@@ -320,8 +320,8 @@ function TheEncounter.UI.event_replace_choice(index, choice)
 						TheEncounter.UI.event_choice_render(
 							index,
 							#choices_el.config.enc_choice_elements + 1,
-							choice.scenario_key,
 							choice.domain_key,
+							choice.scenario_key,
 							true
 						)
 					)
@@ -474,8 +474,8 @@ function G.FUNCS.enc_can_start_event(e)
 end
 function G.FUNCS.enc_start_event(e)
 	G.GAME.TheEncounter_choice = TheEncounter.select_choice(
-		TheEncounter.Scenario.resolve(e.config.enc_scenario),
-		TheEncounter.Domain.resolve(e.config.enc_domain)
+		TheEncounter.Domain.resolve(e.config.enc_domain),
+		TheEncounter.Scenario.resolve(e.config.enc_scenario)
 	)
 	play_sound("timpani", 0.8)
 	play_sound("generic1")

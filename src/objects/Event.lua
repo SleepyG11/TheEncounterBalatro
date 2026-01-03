@@ -1,5 +1,5 @@
 TheEncounter.Event = Object:extend()
-function TheEncounter.Event:init(scenario, domain, save_table)
+function TheEncounter.Event:init(domain, scenario, save_table)
 	self.domain = assert(
 		TheEncounter.Domain.resolve(domain),
 		"Cannot start event: unknown starting Domain: " .. (domain and domain.key or domain)
@@ -311,7 +311,7 @@ function TheEncounter.Event:save()
 	return save_table
 end
 function TheEncounter.Event.load(save_table)
-	return TheEncounter.Event(save_table.scenario, save_table.domain, save_table)
+	return TheEncounter.Event(save_table.domain, save_table.scenario, save_table)
 end
 
 function TheEncounter.Event:show_lines(amount, instant)

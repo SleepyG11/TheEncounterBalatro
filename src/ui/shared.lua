@@ -1,4 +1,4 @@
-TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
+TheEncounter.UI.get_badges = function(domain, scenario, args, badges)
 	domain = TheEncounter.Domain.resolve(domain)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 	args = args or {}
@@ -23,7 +23,7 @@ TheEncounter.UI.get_badges = function(scenario, domain, args, badges)
 	end
 	if
 		not args.no_mod
-		or (scenario and (args.bypass_discovery_check or not scenario.discoverable or scenario.discovered))
+		and (not scenario or (args.bypass_discovery_check or not scenario.discoverable or scenario.discovered))
 	then
 		SMODS.create_mod_badges(scenario or domain, badges)
 		badges.mod_set = nil
@@ -59,7 +59,8 @@ TheEncounter.UI.get_colours = function(object, ...)
 	}
 end
 
-TheEncounter.UI.get_reward = function(scenario, domain, blind_col, text_col, is_hud)
+-- TODO: maybe display reward in collection too?
+TheEncounter.UI.get_reward = function(domain, scenario, blind_col, text_col, is_hud)
 	domain = TheEncounter.Domain.resolve(domain)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 
@@ -196,7 +197,7 @@ TheEncounter.UI.get_colour_palette = function(colour)
 	}
 end
 
-TheEncounter.UI.get_atlas = function(scenario, domain)
+TheEncounter.UI.get_atlas = function(domain, scenario)
 	domain = TheEncounter.Domain.resolve(domain)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 

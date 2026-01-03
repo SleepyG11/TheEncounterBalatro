@@ -116,14 +116,17 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 		h_mod = 1.18,
 		back_func = "your_collection_enc_events",
 		infotip = {
+			-- TODO: localize
 			"Events are encountered after the Boss Blind shop",
 		},
 		modify_card = function(card, scenario)
+			card.config.center = scenario
+
 			-- TODO: make debug CTRL + 2 discover event properly
 			local set_sprite = function()
 				local atlas, pos
 				if not scenario.discoverable or scenario.discovered then
-					atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
+					atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
 				else
 					atlas, pos = G.ANIMATION_ATLAS["blind_chips"], G.b_undiscovered.pos
 				end
@@ -159,7 +162,11 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 				if scenario.alerted and self.children.alert then
 					self.children.alert:remove()
 					self.children.alert = nil
-				elseif not scenario.alerted and not self.children.alert and scenario.discovered then
+				elseif
+					not scenario.alerted
+					and (scenario.discoverable and scenario.discovered)
+					and not self.children.alert
+				then
 					self.children.alert = UIBox({
 						definition = create_UIBox_card_alert(),
 						config = {
@@ -175,7 +182,7 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 			end
 
 			card.hover = function(self, ...)
-				if not scenario.alerted then
+				if not scenario.alerted and scenario.discoverable and scenario.discovered then
 					G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"]
 						or {}
 					G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"][scenario.key] = true
@@ -218,7 +225,13 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 
 	local show_popup = false
 	for _, scenario in pairs(TheEncounter.Scenarios) do
-		if scenario.domains[domain.key] and scenario.discovered and not scenario.alerted then
+		if
+			not scenario.no_collection
+			and scenario.domains[domain.key]
+			and scenario.discoverable
+			and scenario.discovered
+			and not scenario.alerted
+		then
 			show_popup = true
 			break
 		end
@@ -253,7 +266,7 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 			})
 		end
 
-		local badges = TheEncounter.UI.get_badges(nil, domain)
+		local badges = TheEncounter.UI.get_badges(domain)
 
 		self.config.h_popup_config = { align = "mt", offset = { x = 0, y = -0.1 }, major = e }
 		self.config.h_popup = {
@@ -322,6 +335,7 @@ G.FUNCS.enc_collection_domain_tooltip = function(e)
 				blocking = false,
 				blockable = false,
 				no_delete = true,
+				force_pause = true,
 				func = function()
 					alert.states.visible = true
 					return true

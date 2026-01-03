@@ -215,7 +215,7 @@ TheEncounter.select_scenario = function(domain)
 		ignore_unique = context_result.ignore_unique,
 	})
 end
-TheEncounter.select_choice = function(scenario, domain)
+TheEncounter.select_choice = function(domain, scenario)
 	domain = TheEncounter.Domain.resolve(domain)
 	if not scenario then
 		scenario = TheEncounter.select_scenario(domain)

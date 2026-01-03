@@ -11,14 +11,14 @@ pattern = '''if first_pass and not (_c.set == 'Edition') and badges then'''
 position = 'before'
 payload = '''
 if first_pass and card and card.enc_scenario_collection then
-    local scenario = TheEncounter.Scenarios[card.enc_scenario_collection]
+    local scenario = TheEncounter.Scenario.resolve(card.enc_scenario_collection)
     local t = { key = card.enc_scenario_collection, set = 'enc_Scenario' }
     local res = {}
     if scenario.discoverable and not scenario.discovered then
         t = { key = "enc_undiscovered_scenario", set = "Other" }
     else
         if scenario.collection_loc_vars and type(scenario.collection_loc_vars) == 'function' then
-            res = scenario:collection_loc_vars(info_queue, TheEncounter.Domains[card.enc_domain_collection]) or {}
+            res = scenario:collection_loc_vars(info_queue, TheEncounter.Domain.resolve(card.enc_domain_collection)) or {}
             t.vars = res.vars or {}
             t.key = res.key or t.key
             t.set = res.set or t.set
@@ -37,7 +37,7 @@ pattern = '''if _c.set == 'Other' then
         localize{type = 'other', key = _c.key, nodes = desc_nodes, vars = specific_vars or _c.vars}'''
 position = 'after'
 payload = '''
-elseif _c.set == 'enc_Scenario' or _c.set == 'enc_Domain' then
+elseif (_c.set == 'enc_Scenario' or _c.set == 'enc_Domain') and first_pass then
     localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or _c.vars or {}}
 '''
 match_indent = true
@@ -50,7 +50,7 @@ pattern = '''if AUT.badges then'''
 position = 'before'
 payload = '''
 if card.enc_scenario_collection then
-    TheEncounter.UI.get_badges(card.enc_scenario_collection, card.enc_domain_collection, nil, badges)
+    TheEncounter.UI.get_badges(card.enc_domain_collection, card.enc_scenario_collection, { no_mod = true }, badges)
 end
 '''
 match_indent = true

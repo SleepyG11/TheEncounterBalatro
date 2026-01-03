@@ -666,9 +666,9 @@ end
 function TheEncounter.UI.event_hud_render(event)
 	local scenario = event.scenario
 	local domain = event.domain
-	local reward = TheEncounter.UI.get_reward(scenario, domain, event.ui.colour, event.ui.text_colour, true)
+	local reward = TheEncounter.UI.get_reward(domain, scenario, event.ui.colour, event.ui.text_colour, true)
 
-	local atlas, pos = TheEncounter.UI.get_atlas(scenario, domain)
+	local atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
 	local animation = AnimatedSprite(0, 0, 1.2, 1.2, atlas, pos)
 	animation:define_draw_steps({
 		{ shader = "dissolve", shadow_height = 0.05 },

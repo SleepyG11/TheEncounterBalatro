@@ -42,7 +42,7 @@ function TheEncounter.before_event_start()
 	if G.GAME.TheEncounter_save_table then
 		event = TheEncounter.Event.load(G.GAME.TheEncounter_save_table)
 	else
-		event = TheEncounter.Event(G.GAME.TheEncounter_choice.scenario_key, G.GAME.TheEncounter_choice.domain_key)
+		event = TheEncounter.Event(G.GAME.TheEncounter_choice.domain_key, G.GAME.TheEncounter_choice.scenario_key)
 	end
 	G.TheEncounter_event = event
 	return event
