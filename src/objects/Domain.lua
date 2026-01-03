@@ -22,6 +22,15 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 	end,
 
 	config = {
+		hide_hand = nil,
+		hide_deck = nil,
+		hide_text = nil,
+		hide_image = nil,
+		hide_choices = nil,
+		hide_hud = nil,
+		full_width_choices = nil,
+		can_use = nil,
+		can_sell = nil,
 		extra = {},
 	},
 

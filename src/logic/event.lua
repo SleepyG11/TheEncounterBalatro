@@ -90,17 +90,17 @@ function TheEncounter.is_in_domain(key)
 	return G.TheEncounter_event
 		and not G.TheEncounter_event.REMOVED
 		and G.TheEncounter_event.domain
-		and G.TheEncounter_event.domain.key == key
+		and G.TheEncounter_event.domain == TheEncounter.Domain.resolve(key)
 end
 function TheEncounter.is_in_scenario(key)
 	return G.TheEncounter_event
 		and not G.TheEncounter_event.REMOVED
 		and G.TheEncounter_event.scenario
-		and G.TheEncounter_event.scenario.key == key
+		and G.TheEncounter_event.scenario == TheEncounter.Scenario.resolve(key)
 end
 function TheEncounter.is_in_step(key)
 	return G.TheEncounter_event
 		and not G.TheEncounter_event.REMOVED
 		and G.TheEncounter_event.current_step
-		and G.TheEncounter_event.current_step.key == key
+		and G.TheEncounter_event.current_step == TheEncounter.Step.resolve(key)
 end

@@ -40,6 +40,7 @@ TheEncounter.POOL.poll_rarity = function(args)
 	end
 	local filtered_rarities = {}
 
+	-- TODO: make this part specifically not suck maybe?
 	-- Calculate total rates of rarities
 	local total_weight = 0
 	for _, v in ipairs(available_rarities) do
@@ -72,7 +73,7 @@ TheEncounter.POOL.poll_rarity = function(args)
 		for _, v in ipairs(filtered_rarities) do
 			weight_i = weight_i + v.weight
 			if rarity_poll < weight_i then
-				return vanilla_reverse_rarities[v.key] or v.key
+				return vanilla_reverse_rarities[v.key] or v.key, false
 			end
 		end
 	end
@@ -259,8 +260,8 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 
 	-- Are we lucky enough today to encounter a soulable domain?
 	for _, item in ipairs(legendary_options) do
-		local roll = pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante)
 		-- GAMBLING!
+		local roll = pseudorandom("enc_soul_" .. item.key .. G.GAME.round_resets.ante)
 		if roll > (1 - item.soul_rate) then
 			if args.increment_usage then
 				TheEncounter.POOL.increment_domain_usage(item.key)
@@ -281,8 +282,8 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 		})
 	end
 
-	-- GAMBLING!
 	-- TODO: make seeds separate
+	-- GAMBLING!
 	local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
 
 	if #pullable > 0 then
