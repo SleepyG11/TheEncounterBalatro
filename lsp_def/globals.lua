@@ -15,14 +15,11 @@ G.GAME.TheEncounter_choices = nil
 --- @type { domain_key: string, scenario_key?: string } | nil Choice currently selected for event
 G.GAME.TheEncounter_choice = nil
 
---- @type number | nil Amount of available choices per encounter.<br/> Used in `TheEncounter.POLL.poll_domains(G.GAME.TheEncounter_choices_amount, G.GAME.TheEncounter_choices_args)`
-G.GAME.TheEncounter_choices_amount = 2
-
---- @type table | nil Arguments for poll functions.<br/> Used in `TheEncounter.POLL.poll_domains(G.GAME.TheEncounter_choices_amount, G.GAME.TheEncounter_choices_args)`
-G.GAME.TheEncounter_choices_args = nil
-
 --- @type number | nil State which was replaced by `G.STATE.ENC_EVENT_SELECT`
 G.GAME.TheEncounter_replaced_state = nil
+
+--- @type "cashout" | "shop" | string | nil In which point event was replaced
+G.GAME.TheEncounter_after = nil
 
 --- @type table | nil Save table for current Event object
 G.GAME.TheEncounter_save_table = nil

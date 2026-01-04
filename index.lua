@@ -29,7 +29,9 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_blackjack.lua"))()
 
--- TODO: chech for empty pool?
+-- TODO:
+-- 1. chech for empty pool?
+-- 2. Somehow constrain text (and other elements) inside container without specifying maxw on it so it can be easier to
 
 -- local old_calc = TheEncounter.current_mod.calculate or function() end
 -- TheEncounter.current_mod.calculate = function(self, context)

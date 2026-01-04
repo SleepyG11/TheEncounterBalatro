@@ -65,7 +65,7 @@ TheEncounter.POOL.poll_rarity = function(args)
 	end
 
 	-- GAMBLING!
-	local rarity_poll = pseudorandom(args.seed or ("enc_rarity" .. G.GAME.round_resets.ante))
+	local rarity_poll = pseudorandom("enc_rarity" .. G.GAME.round_resets.ante)
 
 	if #filtered_rarities > 0 then
 		-- Calculate selected rarity
@@ -282,9 +282,8 @@ TheEncounter.POOL.poll_domain = function(args, duplicates_list)
 		})
 	end
 
-	-- TODO: make seeds separate
 	-- GAMBLING!
-	local domain_poll = pseudorandom(args.seed or ("enc_domain" .. G.GAME.round_resets.ante))
+	local domain_poll = pseudorandom("enc_domain" .. G.GAME.round_resets.ante)
 
 	if #pullable > 0 then
 		local weight_i = 0
@@ -342,7 +341,7 @@ TheEncounter.POOL.increment_scenario_usage = function(scenario, domain)
 	end
 end
 
-TheEncounter.POOL.is_scenario_in_pool = function(scenario, domain, args, duplicates_list)
+TheEncounter.POOL.is_scenario_in_pool = function(domain, scenario, args, duplicates_list)
 	args = args or {}
 	duplicates_list = duplicates_list or {}
 	domain = TheEncounter.Domain.resolve(domain)
@@ -421,7 +420,7 @@ TheEncounter.POOL.get_scenarios_pool = function(domain, args, duplicates_list)
 		-- Then, we add scenario which passed a check to both result_pool and pool which we use for deduping
 		local in_pool, pool_opts = args.ignore_everything, nil
 		if not in_pool then
-			in_pool, pool_opts = TheEncounter.POOL.is_scenario_in_pool(scenario, domain, args, duplicates_pool)
+			in_pool, pool_opts = TheEncounter.POOL.is_scenario_in_pool(domain, scenario, args, duplicates_pool)
 		end
 		pool_opts = pool_opts or {}
 		if in_pool then
@@ -520,7 +519,7 @@ TheEncounter.POOL.poll_scenario = function(domain, args, duplicates_list)
 		end
 
 		-- GAMBLING!
-		local scenario_poll = pseudorandom(args.seed or ("enc_scenario" .. G.GAME.round_resets.ante))
+		local scenario_poll = pseudorandom("enc_scenario" .. G.GAME.round_resets.ante)
 
 		if #pullable > 0 then
 			local weight_i = 0
