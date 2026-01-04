@@ -2,10 +2,14 @@
 
 --- @alias TheEncounter.ChoiceObject { scenario_key?: string, domain_key: string }
 
---- Main function to poll and set choices for current encounter.<br/>
---- Result saved in `G.GAME.TheEncounter_choices` and game can transitions to `G.STATES.ENC_EVENT_SELECT`
+--- Main function to poll choices for current encounter.<br/>
 --- @return TheEncounter.ChoiceObject[]
 function TheEncounter.poll_choices() end
+
+--- Main function to poll scenario in domain when choice was selected without predetermined one
+--- @param domain TheEncounter.DomainResolvable
+--- @return string
+function TheEncounter.select_scenario(domain) end
 
 --- Main function which called on clicking "Select".<br/>
 --- If no scenario is provided, it be polled from selected domain<br/>
