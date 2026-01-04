@@ -375,7 +375,7 @@ function TheEncounter.UI.set_event_choices()
 	end
 end
 function TheEncounter.UI.remove_event_choices()
-	if G.TheEncounter_blind_choices then
+	if G.TheEncounter_blind_choices and not G.TheEncounter_blind_choices.enc_removed then
 		G.TheEncounter_blind_choices.enc_removed = true
 		G.TheEncounter_blind_choices.alignment.offset.y = 40
 		G.TheEncounter_blind_choices.alignment.offset.x = 0
@@ -440,7 +440,7 @@ function TheEncounter.UI.set_prompt_box()
 	end
 end
 function TheEncounter.UI.remove_prompt_box()
-	if G.TheEncounter_prompt_box then
+	if G.TheEncounter_prompt_box and not G.TheEncounter_prompt_box.enc_removed then
 		G.TheEncounter_prompt_box.enc_removed = true
 		G.TheEncounter_prompt_box.alignment.offset.y = -10
 		G.E_MANAGER:add_event(Event({
@@ -449,6 +449,7 @@ function TheEncounter.UI.remove_prompt_box()
 			blocking = false,
 			func = function()
 				G.TheEncounter_prompt_box:remove()
+				G.TheEncounter_prompt_box = nil
 				return true
 			end,
 		}))
