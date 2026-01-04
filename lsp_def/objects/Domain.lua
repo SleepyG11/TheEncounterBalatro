@@ -3,7 +3,7 @@
 --- @class TheEncounter.Domain: SMODS.GameObject
 --- @field config? TheEncounter.EventAbility
 --- @field rarity? string|number
---- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain, is_hud?: boolean): TheEncounter.RewardDisplay
+--- @field reward? TheEncounter.RewardDisplay | fun(self: TheEncounter.Domain, is_hud?: boolean): TheEncounter.RewardDisplay | TheEncounter.FullRewardDisplayDefinition
 --- @field text_colour? table Default colour for text in event panel and buttons
 --- @field colour? table Base colour for event panel
 --- @field background_colour? table | fun(self: TheEncounter.Domain, event: TheEncounter.Event) Colour for background shader, or function to adjust background colour
@@ -26,7 +26,8 @@
 --- @field atlas? string
 --- @field pos? { x: number, y: number }
 --- @field no_collection? boolean
---- @field get_atlas? fun(self: TheEncounter.Domain): SMODS.Atlas, { x: number, y: number }
+--- @field get_sprite? fun(self: TheEncounter.Domain): SMODS.Atlas, { x: number, y: number }, { w: number, y: number } | nil
+--- @field get_undiscovered_sprite? fun(self: TheEncounter.Domain): SMODS.Atlas, { x: number, y: number }, { w: number, y: number } | nil
 --- @field set_badges? fun(self: TheEncounter.Domain, badges: table)
 --- @overload fun(self: TheEncounter.Domain): TheEncounter.Domain
 TheEncounter.Domain = {}

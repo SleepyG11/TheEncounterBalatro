@@ -102,7 +102,8 @@ TheEncounter.Scenario = SMODS.GameObject:extend({
 	discoverable = true,
 	discovered = false,
 
-	get_atlas = function(self, domain) end,
+	get_sprite = function(self, domain) end,
+	get_undiscovered_sprite = function(self, domain) end,
 	set_badges = function(self, badges, domain) end,
 
 	update = function(self, event, dt) end,

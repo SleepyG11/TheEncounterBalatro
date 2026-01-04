@@ -117,14 +117,14 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 		back_func = "your_collection_enc_events",
 		modify_card = function(card, scenario)
 			card.set_sprites = function()
-				local atlas, pos
+				local atlas, pos, size
 				if not scenario.discoverable or scenario.discovered then
-					atlas, pos = TheEncounter.UI.get_atlas(domain, scenario)
+					atlas, pos, size = TheEncounter.UI.get_sprite(domain, scenario)
 				else
-					atlas, pos = G.ANIMATION_ATLAS["blind_chips"], G.b_undiscovered.pos
+					atlas, pos, size = TheEncounter.UI.get_undiscovered_sprite(domain, scenario)
 				end
 				local temp_blind =
-					SMODS.create_sprite(card.children.center.T.x, card.children.center.T.y, 1.3, 1.3, atlas, pos)
+					SMODS.create_sprite(card.children.center.T.x, card.children.center.T.y, size.w, size.h, atlas, pos)
 				temp_blind.states.click.can = false
 				temp_blind.states.drag.can = false
 				temp_blind.states.hover.can = true

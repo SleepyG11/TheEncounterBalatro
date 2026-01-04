@@ -1,8 +1,8 @@
 --- @meta
 
---- @class TheEncounter.RewardDisplayObject
---- @field full_ui? table
---- @field value_ui? table
+-------------------
+
+--- @class TheEncounter.SimpleRewardDisplayDefinition
 --- @field value? string|number
 --- @field colour? table
 --- @field symbol? string
@@ -11,7 +11,13 @@
 --- @field limit? number
 --- @field spacing? number
 
---- @alias TheEncounter.RewardDisplay string | number | TheEncounter.RewardDisplayObject
+--- @class TheEncounter.FullRewardDisplayDefinition: TheEncounter.SimpleRewardDisplayDefinition
+--- @field full_ui? table
+--- @field value_ui? table
+
+--- @alias TheEncounter.RewardDisplay string | number | TheEncounter.SimpleRewardDisplayDefinition
+
+-------------------
 
 --- Table similar to `card.ability`, which stores various values during event.<br/>**Must be serializeable.**
 --- @class TheEncounter.EventAbility: table

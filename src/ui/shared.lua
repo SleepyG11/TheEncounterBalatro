@@ -197,7 +197,7 @@ TheEncounter.UI.get_colour_palette = function(colour)
 	}
 end
 
-TheEncounter.UI.get_atlas = function(domain, scenario)
+TheEncounter.UI.get_sprite = function(domain, scenario)
 	domain = TheEncounter.Domain.resolve(domain)
 	scenario = TheEncounter.Scenario.resolve(scenario)
 
@@ -217,14 +217,66 @@ TheEncounter.UI.get_atlas = function(domain, scenario)
 		return nil
 	end
 
-	local scenario_atlas, scenario_pos
+	local scenario_atlas, scenario_pos, scenario_size
 	if scenario then
-		scenario_atlas, scenario_pos = scenario:get_atlas(domain)
+		scenario_atlas, scenario_pos, scenario_size = scenario:get_sprite(domain)
 	end
-	local domain_atlas, domain_pos = domain:get_atlas()
+	local domain_atlas, domain_pos, domain_size = domain:get_sprite()
 
-	local atlas = resolve_first_atlas(scenario_atlas, scenario and scenario.atlas, domain_atlas, domain.atlas)
-	local pos = TheEncounter.table.first_not_nil(scenario_pos, scenario and scenario.pos, domain_pos, domain.pos)
+	local atlas = resolve_first_atlas(
+		scenario_atlas,
+		scenario and scenario.atlas,
+		domain_atlas,
+		domain.atlas,
+		G.ANIMATION_ATLAS["enc_event_default"]
+	)
+	local pos = TheEncounter.table.first_not_nil(
+		scenario_pos,
+		scenario and scenario.pos,
+		domain_pos,
+		domain.pos,
+		{ x = 0, y = 0 }
+	)
+	local size = TheEncounter.table.first_not_nil(
+		scenario_size,
+		scenario and scenario.size,
+		domain_size,
+		domain.size,
+		{ w = 1.4, h = 1.4 }
+	)
 
-	return atlas, pos
+	return atlas, pos, size
+end
+
+TheEncounter.UI.get_undiscovered_sprite = function(domain, scenario)
+	domain = TheEncounter.Domain.resolve(domain)
+	scenario = TheEncounter.Scenario.resolve(scenario)
+
+	if not domain then
+		return nil
+	end
+
+	local function resolve_first_atlas(...)
+		local list = { ... }
+		for _, key in pairs(list) do
+			if type(key) == "table" then
+				return key
+			elseif type(key) == "string" and SMODS.get_atlas(key) then
+				return SMODS.get_atlas(key)
+			end
+		end
+		return nil
+	end
+
+	local scenario_atlas, scenario_pos, scenario_size
+	if scenario then
+		scenario_atlas, scenario_pos, scenario_size = scenario:get_undiscovered_sprite(domain)
+	end
+	local domain_atlas, domain_pos, domain_size = domain:get_undiscovered_sprite()
+
+	local atlas = resolve_first_atlas(scenario_atlas, domain_atlas, G.ANIMATION_ATLAS["blind_chips"])
+	local pos = TheEncounter.table.first_not_nil(scenario_pos, domain_pos, G.b_undiscovered.pos)
+	local size = TheEncounter.table.first_not_nil(scenario_size, domain_size, { w = 1.4, h = 1.4 })
+
+	return atlas, pos, size
 end

@@ -29,10 +29,6 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_room_in_between.lua"))()
 -- assert(SMODS.load_file("examples/hotpot_blackjack.lua"))()
 
--- TODO:
--- 1. chech for empty pool?
--- 2. Somehow constrain text (and other elements) inside container without specifying maxw on it so it can be easier to
-
 -- local old_calc = TheEncounter.current_mod.calculate or function() end
 -- TheEncounter.current_mod.calculate = function(self, context)
 -- 	if context.enc_check_should_encounter then
@@ -59,3 +55,8 @@ assert(SMODS.load_file("src/items/index.lua"))()
 -- 	end
 -- 	return old_calc(self, context)
 -- end
+
+-- TODO:
+-- 1. chech for empty pool?
+-- 2. Somehow constrain text (and other elements) inside container without specifying maxw on it so it can be easier to
+-- 3. Add descriptions for arguments in pool's lsp def
