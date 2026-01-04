@@ -186,20 +186,20 @@ end
 
 --
 
-G.FUNCS.your_collection_enc_events = function(e)
+function G.FUNCS.your_collection_enc_events(e)
 	G.SETTINGS.paused = true
 	G.FUNCS.overlay_menu({
 		definition = TheEncounter.UI.collection_domains_list_UIBox(e),
 	})
 end
-G.FUNCS.your_collection_enc_event_domain = function(e)
+function G.FUNCS.your_collection_enc_event_domain(e)
 	G.SETTINGS.paused = true
 	G.FUNCS.overlay_menu({
 		definition = TheEncounter.UI.collection_domain_events_list_UIBox(e),
 	})
 end
 
-G.FUNCS.enc_collection_domain_tooltip = function(e)
+function G.FUNCS.enc_collection_domain_tooltip(e)
 	if e.enc_collection_domain_tooltip then
 		return
 	end
