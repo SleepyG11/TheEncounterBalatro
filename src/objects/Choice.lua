@@ -40,6 +40,8 @@ TheEncounter.Choice = SMODS.GameObject:extend({
 
 	get_colours = function(self, event, ability) end,
 
+	set_button_ui = function(self, event, ability, content) end,
+
 	button = function(self, event, ability)
 		event:finish_scenario()
 	end,

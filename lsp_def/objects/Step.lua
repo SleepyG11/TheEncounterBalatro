@@ -16,7 +16,8 @@
 --- @field save? fun(self: TheEncounter.Step, event: TheEncounter.Event, data: table): table? Function to serialize `event.data` object before saving
 --- @field load? fun(self: TheEncounter.Step, event: TheEncounter.Event, save_data: table): table? Function to deserialize `event.data` object after loading
 --- @field loc_vars? fun(self: TheEncounter.Step, info_queue: table, event: TheEncounter.Event): table?
---- @field set_text_ui? fun(self: TheEncounter.Step, event: TheEncounter.Event, nodes: table[], objects: Node[]) Function to add/update/remove nodes into text UI. New rows definition should be added to `nodes` table. If element needs to be hidden and revealed in order with other text lines, it should be inserted into `objects` table.
+--- @field set_text_ui? fun(self: TheEncounter.Step, event: TheEncounter.Event, content: table, objects: UIBox[]): table | nil Function to add/update/remove nodes into text UI. New rows definition should be added to `content.nodes` table. If element needs to be hidden and revealed in order with other text lines, it should be inserted into `objects` table.
+--- @field set_buttons_ui? fun(self: TheEncounter.Step, event: TheEncounter.Event, content: table): table | nil Function to add/update/remove nodes into choices UI. New rows definition should be added to `content.nodes` table.
 --- @overload fun(self: TheEncounter.Step): TheEncounter.Step
 TheEncounter.Step = {}
 

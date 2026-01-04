@@ -6,6 +6,7 @@
 --- @field colour? table
 --- @field inactive_colour? table
 --- @field get_colours? fun(self: TheEncounter.Choice, event?: TheEncounter.Event, ability?: table): table?
+--- @field set_button_ui? fun(self: TheEncounter.Choice, event: TheEncounter.Event, ability: table, content: table): table | nil
 --- @field button? fun(self: TheEncounter.Choice, event: TheEncounter.Event, ability: table)
 --- @field func? fun(self: TheEncounter.Choice, event: TheEncounter.Event, ability: table): boolean
 --- @field loc_vars? fun(self: TheEncounter.Choice, info_queue: table, event: TheEncounter.Event, ability: table): table?

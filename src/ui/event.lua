@@ -312,7 +312,7 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 		})
 	end
 
-	return {
+	local result_render = {
 		n = G.UIT.R,
 		config = {
 			align = "cm",
@@ -346,6 +346,13 @@ function TheEncounter.UI.choice_button_UIBox(event, choice, ability)
 			},
 		},
 	}
+
+	if type(choice.set_button_ui) == "function" then
+		result_render = choice:set_button_ui(event, ability, result_render) or result_render
+		result_render.n = G.UIT.R
+	end
+
+	return result_render
 end
 
 --
@@ -450,7 +457,14 @@ function TheEncounter.UI.event_text_lines(event)
 			},
 		})
 	end
-	step:set_text_ui(event, event_text_lines, text_objects)
+
+	local result_content = {
+		n = G.UIT.C,
+		config = {},
+		nodes = event_text_lines,
+	}
+
+	result_content = step:set_text_ui(event, result_content, text_objects) or result_content
 
 	for _, object in ipairs(text_objects) do
 		object.states.visible = false
@@ -463,13 +477,7 @@ function TheEncounter.UI.event_text_lines(event)
 				n = G.UIT.ROOT,
 				config = { colour = G.C.CLEAR, padding = sizes.text_padding, maxw = sizes.text_W },
 				nodes = {
-					{
-						n = G.UIT.C,
-						config = {
-							align = "cm",
-						},
-						nodes = event_text_lines,
-					},
+					result_content,
 				},
 			},
 			config = {},
@@ -577,6 +585,15 @@ function TheEncounter.UI.event_choices(event)
 		end
 	end
 
+	local result_content = {
+		n = G.UIT.R,
+		config = {},
+		nodes = event_buttons_content,
+	}
+
+	result_content = event.current_step:set_buttons_ui(event, result_content) or result_content
+	result_content.n = G.UIT.R
+
 	G.E_MANAGER:add_event(Event({
 		trigger = "after",
 		delay = 1,
@@ -593,10 +610,7 @@ function TheEncounter.UI.event_choices(event)
 								minh = 0.15,
 							},
 						},
-						{
-							n = G.UIT.R,
-							nodes = event_buttons_content,
-						},
+						result_content,
 					},
 				},
 				config = {},

@@ -69,7 +69,8 @@ TheEncounter.Step = SMODS.GameObject:extend({
 	background_colour = nil,
 
 	get_colours = function(self, event) end,
-	set_text_ui = function(self, event, nodes, objects) end,
+	set_text_ui = function(self, event, content, objects) end,
+	set_buttons_ui = function(self, event, content) end,
 
 	get_choices = function(self, event)
 		return {
