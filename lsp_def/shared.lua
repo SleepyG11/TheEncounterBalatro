@@ -31,3 +31,9 @@
 --- @field full_width_choices? boolean Should event choices be inserted into `event.ui.fullw_choices` instead (placed under image so can utilize full width of panel)
 --- @field can_sell? boolean Should "Sell" button for cards be active
 --- @field can_use? boolean Should "Use" button for cards be active
+
+-------------------
+
+--- @class TheEncounter.EventChoiceOption: table
+--- @field domain_key string
+--- @field scenario_key? string

@@ -9,10 +9,10 @@ G.TheEncounter_prompt_box = nil
 --- @type UIBox | nil UIBox which holds all choices UI
 G.TheEncounter_blind_choices = nil
 
---- @type { domain_key: string, scenario_key?: string }[] | nil List of choices for this specific encounter
+--- @type TheEncounter.EventChoiceOption[] | nil List of choices for this specific encounter
 G.GAME.TheEncounter_choices = nil
 
---- @type { domain_key: string, scenario_key?: string } | nil Choice currently selected for event
+--- @type TheEncounter.EventChoiceOption | nil Choice currently selected for event
 G.GAME.TheEncounter_choice = nil
 
 --- @type number | nil State which was replaced by `G.STATE.ENC_EVENT_SELECT`

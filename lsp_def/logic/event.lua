@@ -12,16 +12,16 @@ function TheEncounter.after_event_finish() end
 function TheEncounter.is_in_active_event_state() end
 
 --- Check is event object present and current domain matches key
---- @param key TheEncounter.DomainResolvable
+--- @param domain TheEncounter.DomainResolvable
 --- @return boolean
-function TheEncounter.is_in_domain(key) end
+function TheEncounter.is_in_domain(domain) end
 
 --- Check is event object present and current scenario matches key
---- @param key TheEncounter.ScenarioResolvable
+--- @param scenario TheEncounter.ScenarioResolvable
 --- @return boolean
-function TheEncounter.is_in_scenario(key) end
+function TheEncounter.is_in_scenario(scenario) end
 
 --- Check is event object present and current step matches key
---- @param key TheEncounter.StepResolvable
+--- @param step TheEncounter.StepResolvable
 --- @return boolean
-function TheEncounter.is_in_step(key) end
+function TheEncounter.is_in_step(step) end
