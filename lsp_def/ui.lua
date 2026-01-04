@@ -49,13 +49,6 @@ function TheEncounter.UI.image_area_render(event) end
 --- @return table
 function TheEncounter.UI.event_hud_render(event) end
 
---- Even choice button definition
---- @param event TheEncounter.Event
---- @param choice TheEncounter.Choice
---- @param ability table
---- @return table
-function TheEncounter.UI.choice_button_UIBox(event, choice, ability) end
-
 --- Creating event main panel, assigning other UI elements and moving result in visible area
 --- @param event TheEncounter.Event
 function TheEncounter.UI.event_panel(event) end
@@ -73,6 +66,18 @@ function TheEncounter.UI.event_show_lines(event, amount, instant) end
 --- Add all remaining non-displayed lines to event queue
 --- @param event TheEncounter.Event
 function TheEncounter.UI.event_show_all_text_lines(event) end
+
+--- Event choice button definition
+--- @param event TheEncounter.Event
+--- @param choice TheEncounter.Choice
+--- @param ability table
+--- @return table
+function TheEncounter.UI.choice_button_UIBox(event, choice, ability) end
+
+--- Prepare one button for choice
+--- @param event TheEncounter.Event
+--- @param choice TheEncounter.ChoiceItem
+function TheEncounter.UI.event_choice(event, choice) end
 
 --- Prepare all buttons for choices
 --- @param event TheEncounter.Event

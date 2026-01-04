@@ -521,50 +521,47 @@ function TheEncounter.UI.event_show_all_text_lines(event)
 		end
 	end
 end
-function TheEncounter.UI.event_choices(event)
+function TheEncounter.UI.event_choice(event, choice)
+	if not event or not choice then
+		return
+	end
 	local step = event.current_step
-	-- Step buttons
-	local event_buttons_content = {}
-	local choices = step:get_choices(event)
+	local result_choice, result_ability
+	if TheEncounter.Choice:is(choice) then
+		result_choice = choice
+	elseif type(choice) == "string" then
+		result_choice = TheEncounter.Choice.resolve(choice)
+	elseif type(choice) == "table" then
+		if choice.key then
+			result_choice = TheEncounter.Choice.resolve(choice.key)
+			result_ability = choice.ability
+		elseif choice.choice then
+			result_choice = TheEncounter.Choice.from_object(choice)
+			result_choice.key = (TheEncounter.Choice.class_prefix .. "_" .. step.key .. "_" .. result_choice.choice)
+		end
+	end
+	if result_choice then
+		return TheEncounter.UI.choice_button_UIBox(
+			event,
+			result_choice,
+			TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
+		)
+	end
+end
+function TheEncounter.UI.event_choices(event)
+	local choices = event.current_step:get_choices(event)
 	local column_data = choices.columns or { 4, 4, 4, 4, 4 }
+
+	local event_buttons_content = {}
 	local current_index = 1
 	for i = 1, #column_data do
 		local items_in_column = column_data[i]
 		local buttons_in_column = {}
 		if items_in_column > 0 then
 			for k = current_index, current_index + items_in_column - 1 do
-				local choice = choices[k]
+				local choice = TheEncounter.UI.event_choice(event, choices[k])
 				if choice then
-					local result_choice, result_ability
-					if TheEncounter.Choice:is(choice) then
-						result_choice = choice
-					elseif type(choice) == "string" then
-						result_choice = TheEncounter.Choice.resolve(choice)
-					elseif type(choice) == "table" then
-						if choice.key then
-							result_choice = TheEncounter.Choice.resolve(choice.key)
-							result_ability = choice.ability
-						elseif choice.choice then
-							result_choice = TheEncounter.Choice.from_object(choice)
-							result_choice.key = (
-								TheEncounter.Choice.class_prefix
-								.. "_"
-								.. step.key
-								.. "_"
-								.. result_choice.choice
-							)
-						end
-					end
-					if result_choice then
-						table.insert(
-							buttons_in_column,
-							TheEncounter.UI.choice_button_UIBox(
-								event,
-								result_choice,
-								TheEncounter.table.merge({}, result_choice.config or {}, result_ability or {})
-							)
-						)
-					end
+					table.insert(buttons_in_column, choice)
 				end
 			end
 		end
