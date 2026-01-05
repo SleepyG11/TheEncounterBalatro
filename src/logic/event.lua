@@ -53,6 +53,7 @@ function TheEncounter.after_event_finish()
 			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
 				or {}
 			G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][G.TheEncounter_event.scenario.key] = true
+			discover_card(G.TheEncounter_event.scenario)
 		end
 		G.TheEncounter_event:remove()
 		G.TheEncounter_event = nil

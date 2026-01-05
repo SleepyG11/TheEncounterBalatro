@@ -124,9 +124,16 @@ function set_profile_progress(...)
 	local result = set_profile_progress_ref(...)
 	G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"]
 		or {}
+	G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"] = G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"]
+		or {}
 	for key, scenario in pairs(TheEncounter.Scenarios) do
+		scenario.discovered = false
+		scenario.alerted = false
 		if scenario.discoverable and G.PROFILES[G.SETTINGS.profile]["enc_discovered_scenarios"][key] then
 			scenario.discovered = true
+		end
+		if scenario.discoverable and G.PROFILES[G.SETTINGS.profile]["enc_alerted_scenarios"][key] then
+			scenario.alerted = true
 		end
 	end
 	return result
