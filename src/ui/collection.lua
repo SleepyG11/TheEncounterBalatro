@@ -138,7 +138,7 @@ function TheEncounter.UI.collection_domains_list_UIBox(e)
 					},
 				},
 			},
-			max_page > 0 and {
+			max_page > 1 and {
 				n = G.UIT.R,
 				config = { align = "cm" },
 				nodes = {
