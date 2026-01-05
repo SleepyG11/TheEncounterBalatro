@@ -28,6 +28,7 @@ TheEncounter.Domain = SMODS.GameObject:extend({
 		hide_image = nil,
 		hide_choices = nil,
 		hide_hud = nil,
+		hide_panel = nil,
 		hide_on_tarot = nil,
 		full_width_choices = nil,
 		can_use = nil,

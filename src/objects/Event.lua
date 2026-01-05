@@ -22,6 +22,9 @@ function TheEncounter.Event:init(domain, scenario, save_table)
 		hide_text = false,
 		hide_image = false,
 		hide_choices = false,
+		hide_hud = false,
+		hide_on_tarot = true,
+		full_width_choices = false,
 		can_use = true,
 		can_sell = true,
 		extra = {},
@@ -70,6 +73,7 @@ function TheEncounter.Event:init(domain, scenario, save_table)
 	end
 
 	self.remove_callbacks = {}
+	self.hide_locks = {}
 end
 
 function TheEncounter.Event:set_colours(first_load)
@@ -345,6 +349,29 @@ function TheEncounter.Event:finish_scenario(transition_func)
 	end
 end
 
+function TheEncounter.Event:show_panel(lock)
+	self.hide_locks[lock] = nil
+	self:update_panel()
+end
+function TheEncounter.Event:hide_panel(lock)
+	self.hide_locks[lock] = true
+	self:update_panel()
+end
+function TheEncounter.Event:update_panel()
+	if self.ui.panel then
+		local should_hide = false
+		for _, _ in pairs(self.hide_locks) do
+			should_hide = true
+			break
+		end
+		if should_hide then
+			self.ui.panel.alignment.offset.y = G.ROOM.T.y + 20
+		else
+			self.ui.panel.alignment.offset.y = -8.5
+		end
+	end
+end
+
 function TheEncounter.Event:update(dt)
 	if self.REMOVED or self.NO_UPDATE_STATES[self.STATE] then
 		return
@@ -400,6 +427,13 @@ function TheEncounter.Event:update(dt)
 			self.ui.image_container.states.visible = not self.ability.hide_image
 		end
 	end
+
+	if self.ability.hide_panel then
+		self:hide_panel("ability")
+	else
+		self:show_panel("ability")
+	end
+
 	if needs_recalculate then
 		self.ui.panel:recalculate()
 	end

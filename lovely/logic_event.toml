@@ -23,10 +23,9 @@ target = 'functions/button_callbacks.lua'
 position = 'before'
 pattern = '''if G.shop and not G.shop.alignment.offset.py then'''
 payload = '''
-if G.TheEncounter_event and G.TheEncounter_event.ui.panel then
-    if G.GAME.PACK_INTERRUPT or (G.TheEncounter_event.ability.hide_on_tarot and G.TAROT_INTERRUPT) and not G.TheEncounter_event.ui.panel.alignment.offset.py then
-        G.TheEncounter_event.ui.panel.alignment.offset.py = G.TheEncounter_event.ui.panel.alignment.offset.y
-        G.TheEncounter_event.ui.panel.alignment.offset.y = G.ROOM.T.y + 39
+if G.TheEncounter_event then
+    if G.GAME.PACK_INTERRUPT or (G.TheEncounter_event.ability.hide_on_tarot and G.TAROT_INTERRUPT) then
+        G.TheEncounter_event:hide_panel("use_card")
     end
 end
 '''
@@ -39,11 +38,8 @@ target = 'functions/button_callbacks.lua'
 position = 'before'
 pattern = '''if area and area.cards[1] then'''
 payload = '''
-if G.TheEncounter_event and G.TheEncounter_event.ui.panel then
-    if G.TheEncounter_event.ui.panel.alignment.offset.py then
-        G.TheEncounter_event.ui.panel.alignment.offset.y = G.TheEncounter_event.ui.panel.alignment.offset.py
-        G.TheEncounter_event.ui.panel.alignment.offset.py = nil
-    end
+if G.TheEncounter_event then
+    G.TheEncounter_event:show_panel("use_card")
 end
 '''
 match_indent = true
