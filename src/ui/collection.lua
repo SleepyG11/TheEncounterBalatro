@@ -1,3 +1,7 @@
+local items_per_gage = 12
+
+--
+
 TheEncounter.current_mod.custom_collection_tabs = function()
 	return {
 		UIBox_button({
@@ -12,98 +16,169 @@ end
 
 --
 
-function TheEncounter.UI.collection_domains_list_UIBox(e)
-	local custom_gameobject_tabs = { {} }
-	local curr_height = 0
-	local curr_col = 1
-	local object_tabs = {}
-	for _, domain in ipairs(G.P_CENTER_POOLS.enc_Domain) do
-		if not domain.no_collection then
-			local domain_colours = TheEncounter.UI.get_colours(domain)
-			local t = { key = domain.key, set = "enc_Domain" }
-			local res = {}
-			if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
-				res = domain:collection_loc_vars({}) or {}
-				t.vars = res.vars or {}
-				t.key = res.key or t.key
-				t.set = res.set or t.set
-			end
-			local loc_name = localize({
-				type = "name",
-				key = t.key,
-				set = t.set,
-				vars = t.vars or {},
-				no_spacing = true,
-				default_col = domain_colours.text_colour,
-			})
+function TheEncounter.UI.collection_domains_list_page_UIBox(e, page)
+	page = page or 1
 
-			local button = {
-				n = G.UIT.R,
-				config = {
-					button = "your_collection_enc_event_domain",
-					minw = 3,
-					minh = 0.9,
-					colour = domain_colours.colour,
-					ref_table = domain,
-					-- TODO: generate_card_ui with full info_queue somehow for button, no idea how to do it sorry
-					func = "enc_collection_domain_tooltip",
-					r = 0.1,
-					hover = true,
-					shadow = true,
-					padding = 0.25,
-					align = "cm",
-				},
-				nodes = {
-					{
-						n = G.UIT.C,
-						config = { align = "cm" },
-						nodes = loc_name,
-					},
-				},
-			}
-			object_tabs[#object_tabs + 1] = button
+	local filtered_domains = {}
+	for _, domain in ipairs(G.P_CENTER_POOLS.enc_Domain) do
+		if not domain.no_collection and (not G.ACTIVE_MOD_UI or G.ACTIVE_MOD_UI == domain.mod) then
+			table.insert(filtered_domains, domain)
 		end
 	end
-	local custom_gameobject_rows = {}
-	if #object_tabs > 0 then
-		for _, gameobject_tabs in ipairs(object_tabs) do
-			table.insert(custom_gameobject_tabs[curr_col], gameobject_tabs)
-			curr_height = curr_height + gameobject_tabs.config.minh
-			if curr_height > 2 then
-				curr_height = 0
-				curr_col = curr_col + 1
-				custom_gameobject_tabs[curr_col] = {}
-			end
-		end
-		for _, v in ipairs(custom_gameobject_tabs) do
-			table.insert(custom_gameobject_rows, { n = G.UIT.C, config = { align = "cm", padding = 0.15 }, nodes = v })
-		end
 
-		local t = {
+	local object_tabs = {}
+	for index = items_per_gage * (page - 1) + 1, math.min(items_per_gage * page, #filtered_domains) do
+		local domain = filtered_domains[index]
+		local domain_colours = TheEncounter.UI.get_colours(domain)
+		local t = { key = domain.key, set = "enc_Domain" }
+		local res = {}
+		if domain.collection_loc_vars and type(domain.collection_loc_vars) == "function" then
+			res = domain:collection_loc_vars({}) or {}
+			t.vars = res.vars or {}
+			t.key = res.key or t.key
+			t.set = res.set or t.set
+		end
+		local loc_name = localize({
+			type = "name",
+			key = t.key,
+			set = t.set,
+			vars = t.vars or {},
+			no_spacing = true,
+			default_col = domain_colours.text_colour,
+		})
+
+		local button = {
 			n = G.UIT.C,
-			config = { align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.1, emboss = 0.05 },
+			config = {
+				button = "your_collection_enc_event_domain",
+				minw = 3.5,
+				maxw = 3.5,
+				minh = 0.9,
+				colour = domain_colours.colour,
+				ref_table = domain,
+				-- TODO: generate_card_ui with full info_queue somehow for button, no idea how to do it sorry
+				func = "enc_collection_domain_tooltip",
+				r = 0.1,
+				hover = true,
+				shadow = true,
+				padding = 0.25,
+				align = "cm",
+			},
 			nodes = {
-				{ n = G.UIT.R, config = { align = "cm", padding = 0.15 }, nodes = custom_gameobject_rows },
+				{
+					n = G.UIT.C,
+					config = { align = "cm" },
+					nodes = loc_name,
+				},
 			},
 		}
-
-		local ui_cfg = G.ACTIVE_MOD_UI and G.ACTIVE_MOD_UI.ui_config or {}
-		return create_UIBox_generic_options({
-			colour = ui_cfg.collection_colour or ui_cfg.colour,
-			bg_colour = ui_cfg.collection_bg_colour or ui_cfg.bg_colour,
-			back_colour = ui_cfg.collection_back_colour or ui_cfg.back_colour,
-			outline_colour = ui_cfg.collection_outline_colour or ui_cfg.outline_colour,
-			back_func = "your_collection_other_gameobjects",
-			contents = { t },
-		})
+		object_tabs[#object_tabs + 1] = button
 	end
+
+	local grid_padding = 0.1
+
+	local result_rows = {}
+	local current_row = {}
+	for index, button in ipairs(object_tabs) do
+		if index % 4 == 1 then
+			current_row = {
+				n = G.UIT.R,
+				config = { align = "cm" },
+				nodes = {},
+			}
+			if index ~= 1 then
+				table.insert(result_rows, { n = G.UIT.R, config = { minh = grid_padding } })
+			end
+			table.insert(result_rows, current_row)
+		end
+		if index % 4 ~= 1 then
+			table.insert(current_row.nodes, { n = G.UIT.C, config = { minw = grid_padding } })
+		end
+		table.insert(current_row.nodes, button)
+	end
+
+	return {
+		n = G.UIT.ROOT,
+		config = { align = "cm", colour = G.C.CLEAR },
+		nodes = result_rows,
+	}
+end
+
+function TheEncounter.UI.collection_domains_list_UIBox(e)
+	local filtered_domains = {}
+	for _, domain in ipairs(G.P_CENTER_POOLS.enc_Domain) do
+		if not domain.no_collection and (not G.ACTIVE_MOD_UI or G.ACTIVE_MOD_UI == domain.mod) then
+			table.insert(filtered_domains, domain)
+		end
+	end
+
+	local options = {}
+	local max_page = math.ceil(#filtered_domains / items_per_gage)
+	for i = 1, max_page do
+		table.insert(options, localize("k_page") .. " " .. tostring(i) .. "/" .. tostring(max_page))
+	end
+
+	local t = {
+		n = G.UIT.C,
+		config = { align = "cm" },
+		nodes = {
+			{
+				n = G.UIT.R,
+				config = { align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.25, emboss = 0.05 },
+				nodes = {
+					{
+						n = G.UIT.O,
+						config = {
+							id = "enc_domains_list_page_render",
+							object = UIBox({
+								definition = TheEncounter.UI.collection_domains_list_page_UIBox(e, 1),
+								config = {},
+							}),
+						},
+					},
+				},
+			},
+			max_page > 0 and {
+				n = G.UIT.R,
+				config = { align = "cm" },
+				nodes = {
+					create_option_cycle({
+						options = options,
+						w = 4.5,
+						cycle_shoulders = true,
+						opt_callback = "enc_domains_list_change_page",
+						current_option = 1,
+						colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour
+							or G.C.RED,
+						no_pips = true,
+						focus_args = { snap_to = true, nav = "wide" },
+					}),
+				},
+			} or nil,
+		},
+	}
+
+	local ui_cfg = G.ACTIVE_MOD_UI and G.ACTIVE_MOD_UI.ui_config or {}
+	return create_UIBox_generic_options({
+		colour = ui_cfg.collection_colour or ui_cfg.colour,
+		bg_colour = ui_cfg.collection_bg_colour or ui_cfg.bg_colour,
+		back_colour = ui_cfg.collection_back_colour or ui_cfg.back_colour,
+		outline_colour = ui_cfg.collection_outline_colour or ui_cfg.outline_colour,
+		back_func = "your_collection_other_gameobjects",
+		contents = { t },
+	})
 end
 function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 	local domain = e.config.ref_table
 	local pool = {}
 
 	for _, scenario in ipairs(G.P_CENTER_POOLS.enc_Scenario) do
-		if not scenario.no_collection and scenario.domains and scenario.domains[domain.key] then
+		if
+			not scenario.no_collection
+			and scenario.domains
+			and scenario.domains[domain.key]
+			and (not G.ACTIVE_MOD_UI or G.ACTIVE_MOD_UI == scenario.mod)
+		then
 			pool[#pool + 1] = scenario
 		end
 	end
@@ -134,8 +209,8 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 					{ shader = "dissolve" },
 				})
 				temp_blind.float = true
-				card.T.w = 1.3
-				card.T.h = 1.3
+				card.T.w = temp_blind.T.w
+				card.T.h = temp_blind.T.h
 				remove_all(card.children)
 				card.children.center = temp_blind
 			end
@@ -185,6 +260,19 @@ function TheEncounter.UI.collection_domain_events_list_UIBox(e)
 end
 
 --
+
+function G.FUNCS.enc_domains_list_change_page(e)
+	local container = G.OVERLAY_MENU:get_UIE_by_ID("enc_domains_list_page_render")
+	TheEncounter.UI.set_element_object(
+		container,
+		UIBox({
+			definition = TheEncounter.UI.collection_domains_list_page_UIBox(e, e.to_key),
+			config = {
+				parent = container,
+			},
+		})
+	)
+end
 
 function G.FUNCS.your_collection_enc_events(e)
 	G.SETTINGS.paused = true
