@@ -77,7 +77,7 @@ local hpot_event_get_random_combat_effect = function(seed)
 
 	return chosen_effect
 end
-local hpot_event_get_random_combat_reward = function(domain, seed)
+local hpot_event_get_random_combat_reward = function(as_encounter, seed)
 	-- TODO: localize these
 	local combat_rewards = {
 		{ jokers = { { rarity = "Common" } }, text = "Common joker" },
@@ -88,7 +88,7 @@ local hpot_event_get_random_combat_reward = function(domain, seed)
 		-- { consumables = { { set = "bottlecap_Uncommon", need_room = true } } },
 		-- { consumables = { { set = "Czech", need_room = true } } },
 		-- { consumables = { { set = "Hanafuda", need_room = true, amount = 2 } } },
-		{ tags = { random_amount = 2 }, text = "2 Random tags" },
+		{ tags = { random_amount = 2 }, text = "2 random Tags" },
 		{ tags = { keys = { "tag_double" } }, text = "Double tag" },
 		{ dollars = 4, text = "4 Dollars" },
 		-- { credits = 30 },
@@ -102,15 +102,15 @@ local hpot_event_get_random_combat_reward = function(domain, seed)
 	-- end
 
 	local encounter_rewards = {
-		{ jokers = { { rarity = "Uncommon" } } },
-		{ jokers = { { rarity = "Rare", need_room = true } } },
-		{ consumables = { { set = "Spectral", need_room = true, amount = 2 } } },
+		{ jokers = { { rarity = "Uncommon" } }, text = "Uncommon joker" },
+		{ jokers = { { rarity = "Rare", need_room = true } }, text = "Rare joker" },
+		{ consumables = { { set = "Spectral", need_room = true, amount = 2 } }, text = "2 Spectrals" },
 		-- { consumables = { { set = "bottlecap_Uncommon", need_room = true, amount = 2 } } },
 		-- { consumables = { { set = "bottlecap_Rare", need_room = true } } },
 		-- { consumables = { { set = "Czech", need_room = true, amount = 2 } } },
-		{ tags = { random_amount = 5 } },
-		{ tags = { keys = { "tag_double", "tag_double" } } },
-		{ dollars = 8 },
+		{ tags = { random_amount = 5 }, text = "5 random Tags" },
+		{ tags = { keys = { "tag_double", "tag_double" } }, text = "2 Double Tags" },
+		{ dollars = 8, text = "8 Dollars" },
 		-- { credits = 30 },
 		-- { sparkle = 75000 },
 		-- { crypto = 2 },
@@ -134,10 +134,10 @@ local hpot_event_get_random_combat_reward = function(domain, seed)
 		level_up_hand = { key = most_played, amount = 2 },
 		text = "Level up " .. localize(most_played, "poker_hands") .. " 2 times",
 	}
-	-- encounter_rewards[#encounter_rewards + 1] = {
-	-- 	level_up_hand = { key = most_played, amount = 4 },
-	-- 	text = "Level up " .. localize(most_played, "poker_hands") .. " 4 times",
-	-- }
+	encounter_rewards[#encounter_rewards + 1] = {
+		level_up_hand = { key = most_played, amount = 4 },
+		text = "Level up " .. localize(most_played, "poker_hands") .. " 4 times",
+	}
 
 	local _poker_hands = {}
 	for handname, _ in pairs(G.GAME.hands) do
@@ -328,7 +328,10 @@ local hpot_event_get_random_combat_reward = function(domain, seed)
 		}
 	end
 
-	return pseudorandom_element(combat_rewards, seed or "hpot_event_combat_reward")
+	return pseudorandom_element(
+		as_encounter and encounter_rewards or combat_rewards,
+		seed or "hpot_event_combat_reward"
+	)
 end
 local hpot_start_additional_round = function(event)
 	local hpot_combat = {
@@ -822,6 +825,27 @@ TheEncounter.Domain({
 	colour = HEX("D60000"),
 	background_colour = HEX("A50000"),
 })
+TheEncounter.Domain({
+	key = "encounter",
+	loc_txt = {
+		name = "Encounter",
+		text = {
+			"Face the difficult challenge",
+		},
+	},
+
+	can_repeat = true,
+
+	reward = 4,
+
+	colour = HEX("AE0202"),
+	background_colour = HEX("900000"),
+
+	setup = function(self, event)
+		event.ability.extra.is_encounter = true
+		event.ability.extra.blind = hpot_event_get_random_boss()
+	end,
+})
 TheEncounter.Scenario({
 	key = "tavern",
 	starting_step_key = "st_enc_tavern_start",
@@ -835,6 +859,7 @@ TheEncounter.Scenario({
 
 	domains = {
 		do_enc_combat = true,
+		do_enc_encounter = true,
 	},
 
 	colour = HEX("D60000"),
@@ -858,9 +883,8 @@ TheEncounter.Step({
 		hide_image = true,
 	},
 	setup = function(self, event)
-		event.ability.extra.blind = hpot_event_get_random_boss()
 		event.ability.extra.effect = hpot_event_get_random_combat_effect()
-		event.ability.extra.reward = hpot_event_get_random_combat_reward()
+		event.ability.extra.reward = hpot_event_get_random_combat_reward(event.ability.extra.is_encounter)
 	end,
 	loc_vars = function(self, info_queue, event)
 		return {
